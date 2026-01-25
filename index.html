@@ -14,7 +14,7 @@
     <meta name="twitter:image" content="logo.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Space+Grotesk:wght@300;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -23,12 +23,32 @@
                     colors: { darkBg: '#020408', lightBg: '#f8fafc', accentBlue: '#3b82f6', luaOrange: '#f97316' },
                     animation: { 
                         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'float': 'float 6s ease-in-out infinite'
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'fade-in': 'fadeIn 1.2s ease-out forwards',
+                        'scale-in': 'scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+                        'text-reveal': 'textReveal 1.5s cubic-bezier(0.77, 0, 0.175, 1) forwards'
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-20px)' },
+                        },
+                        slideUp: { 
+                            from: { opacity: 0, transform: 'translateY(30px)' }, 
+                            to: { opacity: 1, transform: 'translateY(0)' } 
+                        },
+                        fadeIn: {
+                            from: { opacity: 0 },
+                            to: { opacity: 1 }
+                        },
+                        scaleIn: {
+                            from: { opacity: 0, transform: 'scale(0.9)' },
+                            to: { opacity: 1, transform: 'scale(1)' }
+                        },
+                        textReveal: {
+                            from: { opacity: 0, transform: 'translateY(30px)' },
+                            to: { opacity: 1, transform: 'translateY(0)' }
                         }
                     }
                 }
@@ -47,12 +67,21 @@
             transition: width 0.3s, height 0.3s;
         }
 
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -2;
+            opacity: 0.4;
+        }
+
         .nav-glass { backdrop-filter: blur(25px) saturate(180%); border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
         .dark .nav-glass { background: rgba(2, 4, 8, 0.75); }
         
         .tab-content { display: none; animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .tab-content.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
         .glass-card { 
             backdrop-filter: blur(12px) saturate(150%);
@@ -84,9 +113,55 @@
             transform: rotate(45deg); transition: 0.7s;
         }
         .btn-shine:hover::after { left: 120%; }
+
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(147, 51, 234, 0.05) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .magnetic-btn {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
     </style>
 </head>
 <body class="antialiased overflow-x-hidden">
+    <canvas id="particles-canvas"></canvas>
     <div class="cursor-glow" id="glow"></div>
 
     <div id="mobile-menu" class="fixed inset-0 z-[1000] bg-darkBg/98 backdrop-blur-2xl flex flex-col items-center justify-center space-y-10 lg:hidden">
@@ -138,202 +213,1168 @@
 
     <main class="pt-40 md:pt-64 pb-32 px-6 max-w-7xl mx-auto">
         
+        <!-- IMPROVED HOMEPAGE -->
         <section id="anasayfa" class="tab-content active">
-            <div class="text-center space-y-20">
-                <div class="inline-flex items-center gap-3 px-8 py-3.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] shadow-[0_0_30px_-5px_rgba(59,130,246,0.3)] animate-bounce">
-                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_15px_#3b82f6]"></span> OptiFlow V1.2 Yayında!
+            <!-- Hero Section -->
+            <div class="text-center space-y-12 relative min-h-[80vh] flex flex-col items-center justify-center">
+                <div class="inline-flex items-center gap-3 px-8 py-3.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] shadow-[0_0_30px_-5px_rgba(59,130,246,0.3)] animate-bounce reveal">
+                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_15px_#3b82f6] animate-pulse"></span> OptiFlow V1.2 Yayında!
                 </div>
-                <h1 class="text-6xl md:text-[140px] font-black tracking-tight leading-tight uppercase italic">
-                    <span class="dark:text-white">YENİ BİR</span><br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-500 drop-shadow-2xl">VİZYON.</span>
+                
+                <h1 class="text-6xl md:text-[140px] font-black tracking-tight leading-[0.9] uppercase italic reveal" style="animation-delay: 0.2s;">
+                    <span class="dark:text-white block">YENİ BİR</span>
+                    <span class="text-gradient block mt-4">VİZYON.</span>
                 </h1>
-                <p class="text-gray-500 dark:text-gray-400 text-xl md:text-3xl max-w-3xl mx-auto font-medium italic leading-relaxed opacity-80">
+                
+                <p class="text-gray-500 dark:text-gray-400 text-xl md:text-3xl max-w-3xl mx-auto font-medium italic leading-relaxed opacity-80 reveal" style="animation-delay: 0.4s;">
                     "Sıradanlığı sorgulayan, geleceği bugünden inşa edenlerin kalesi."
                 </p>
-                <div class="flex flex-wrap justify-center gap-8 pt-10">
-                    <button onclick="showTab('projeler')" class="btn-shine px-16 py-7 bg-blue-600 text-white font-black rounded-3xl text-xs tracking-[0.3em] uppercase hover:bg-blue-500 shadow-2xl transform hover:-translate-y-1 active:scale-95">PROJELERİ KEŞFET</button>
-                    <button onclick="showTab('partner')" class="px-16 py-7 glass-card border-orange-500/30 text-orange-500 font-black rounded-3xl text-xs tracking-[0.3em] uppercase shadow-2xl hover:bg-white/10 transition-all transform hover:-translate-y-1 active:scale-95">PARTNERİMİZE GÖZ AT</button>
+                
+                <div class="flex flex-wrap justify-center gap-8 pt-10 reveal" style="animation-delay: 0.6s;">
+                    <button onclick="showTab('projeler')" class="btn-shine magnetic-btn px-16 py-7 bg-blue-600 text-white font-black rounded-3xl text-xs tracking-[0.3em] uppercase hover:bg-blue-500 shadow-2xl transform hover:-translate-y-1 active:scale-95">PROJELERİ KEŞFET</button>
+                    <button onclick="showTab('partner')" class="magnetic-btn px-16 py-7 glass-card border-orange-500/30 text-orange-500 font-black rounded-3xl text-xs tracking-[0.3em] uppercase shadow-2xl hover:bg-white/10 transition-all transform hover:-translate-y-1 active:scale-95">PARTNERİMİZE GÖZ AT</button>
+                </div>
+
+                <div class="scroll-indicator reveal" style="animation-delay: 0.8s;">
+                    <div class="w-6 h-10 rounded-full border-2 border-blue-500/50 flex items-start justify-center p-2">
+                        <div class="w-1.5 h-3 bg-blue-500 rounded-full animate-bounce"></div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Featured Project Highlight -->
+            <div class="mt-32 reveal">
+                <h2 class="text-5xl md:text-7xl font-black italic uppercase tracking-tighter mb-16 text-center">
+                    <span class="text-blue-500">ÖNE ÇIKAN</span> PROJE
+                </h2>
+                <div class="glass-card p-12 md:p-20 rounded-[4rem] group relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-transparent to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    
+                    <div class="flex flex-col lg:flex-row gap-16 items-center relative z-10">
+                        <div class="w-64 h-64 md:w-80 md:h-80 rounded-[3.5rem] shadow-2xl group-hover:rotate-3 transition-all duration-700 border border-white/10 relative overflow-hidden"
+                             style="background-image: url('optiflow.png'); background-size: cover; background-position: center;">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        </div>
+                        
+                        <div class="flex-1 space-y-8 text-center lg:text-left">
+                            <div class="flex flex-wrap justify-center lg:justify-start items-center gap-6">
+                                <h3 class="text-6xl font-black uppercase italic tracking-tighter">OptiFlow</h3>
+                                <span class="px-6 py-2 bg-green-500/10 text-green-400 text-[10px] font-black rounded-full uppercase border border-green-500/20 shadow-lg animate-pulse">YAYINDA</span>
+                            </div>
+                            
+                            <p class="text-gray-400 text-2xl leading-relaxed italic font-light">
+                                Minecraft deneyiminizi kökten değiştiren optimizasyon motoru. <span class="text-white font-bold">%40 daha fazla FPS</span> ve ultra-düşük gecikme.
+                            </p>
+                            
+                            <!-- OptiFlow Features -->
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="glass-card p-6 rounded-2xl space-y-3 border border-blue-500/20">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-xl">⚡</div>
+                                        <h4 class="font-black text-lg">Yüksek Performans</h4>
+                                    </div>
+                                    <p class="text-gray-400 text-sm">Optimize kod yapısı ile %40'a varan FPS artışı</p>
+                                </div>
+
+                                <div class="glass-card p-6 rounded-2xl space-y-3 border border-blue-500/20">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-xl">🛡️</div>
+                                        <h4 class="font-black text-lg">Güvenli & Stabil</h4>
+                                    </div>
+                                    <p class="text-gray-400 text-sm">Kapsamlı testlerden geçmiş, çökme yok</p>
+                                </div>
+
+                                <div class="glass-card p-6 rounded-2xl space-y-3 border border-blue-500/20">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-xl">🎯</div>
+                                        <h4 class="font-black text-lg">Kolay Kurulum</h4>
+                                    </div>
+                                    <p class="text-gray-400 text-sm">Tek tık kurulum, dakikalar içinde hazır</p>
+                                </div>
+
+                                <div class="glass-card p-6 rounded-2xl space-y-3 border border-blue-500/20">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-xl">🆓</div>
+                                        <h4 class="font-black text-lg">Tamamen Ücretsiz</h4>
+                                    </div>
+                                    <p class="text-gray-400 text-sm">Premium kalite, gizli ücret yok</p>
+                                </div>
+
+                                <div class="glass-card p-6 rounded-2xl space-y-3 border border-blue-500/20">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-xl">🔄</div>
+                                        <h4 class="font-black text-lg">Düzenli Güncelleme</h4>
+                                    </div>
+                                    <p class="text-gray-400 text-sm">Her yeni sürüm için hızlı destek</p>
+                                </div>
+
+                                <div class="glass-card p-6 rounded-2xl space-y-3 border border-blue-500/20">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-xl">💬</div>
+                                        <h4 class="font-black text-lg">Discord Desteği</h4>
+                                    </div>
+                                    <p class="text-gray-400 text-sm">Hızlı yanıt süresi, aktif topluluk</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
+                                <div class="px-6 py-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
+                                    <span class="text-blue-400 font-black text-sm">✓ Fabric & Forge</span>
+                                </div>
+                                <div class="px-6 py-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
+                                    <span class="text-blue-400 font-black text-sm">✓ 1.20.1 Uyumlu</span>
+                                </div>
+                                <div class="px-6 py-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
+                                    <span class="text-blue-400 font-black text-sm">✓ Düşük Sistem</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-wrap gap-6 pt-4">
+                                <a href="https://www.curseforge.com/minecraft/modpacks/optiflow" target="_blank" class="btn-shine inline-flex items-center gap-5 px-14 py-6 bg-white text-black font-black rounded-2xl text-[11px] uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all shadow-2xl">İNCELE →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <!-- Call to Action -->
+            <div class="mt-32 text-center space-y-12 reveal">
+                <h2 class="text-5xl md:text-7xl font-black italic uppercase tracking-tighter">
+                    PROJELERİMİZE GÖZ AT
+                </h2>
+                <p class="text-gray-400 text-2xl max-w-2xl mx-auto italic">
+                    Sınırları zorlayan, standartları yeniden tanımlayan projelerimizi keşfedin.
+                </p>
+                <div class="flex flex-wrap justify-center gap-8 pt-8">
+                    <button onclick="showTab('projeler')" class="btn-shine px-20 py-8 bg-blue-600 text-white font-black rounded-3xl text-sm tracking-[0.3em] uppercase hover:bg-blue-500 shadow-2xl transform hover:-translate-y-2 active:scale-95">PROJELERİ GÖRÜNTÜLE</button>
+                    <button onclick="showTab('discord')" class="px-20 py-8 glass-card border-blue-500/30 text-blue-500 font-black rounded-3xl text-sm tracking-[0.3em] uppercase shadow-2xl hover:bg-white/10 transition-all transform hover:-translate-y-2 active:scale-95">DISCORD'A KATIL</button>
                 </div>
             </div>
         </section>
 
-        <section id="partner" class="tab-content space-y-16">
-            <h2 class="text-6xl md:text-8xl font-black italic uppercase tracking-tighter">Resmi Partner</h2>
-            <div class="glass-card p-10 md:p-20 rounded-[4rem] border-orange-500/20">
-                <div class="flex flex-col lg:flex-row gap-16 items-start">
-                    <div class="w-32 h-32 md:w-48 md:h-48 bg-gradient-to-br from-orange-600 to-yellow-500 rounded-[3rem] flex items-center justify-center shadow-2xl animate-float overflow-hidden">
-                        <img src="luanetwork.jpg" class="w-full h-full object-cover" alt="LuaNetwork Logo" onerror="this.parentElement.innerText='🦊'">
+        <section id="partner" class="tab-content space-y-20">
+            <div class="text-center space-y-8 reveal">
+                <div class="inline-block px-8 py-3 bg-orange-500/10 border border-orange-500/30 rounded-full">
+                    <span class="text-orange-500 font-black text-xs uppercase tracking-[0.3em]">🤝 Resmi İşbirliği</span>
+                </div>
+                <h2 class="text-6xl md:text-8xl font-black italic uppercase tracking-tighter">
+                    <span class="text-orange-500">PARTNER</span> SUNUCU
+                </h2>
+            </div>
+
+            <div class="glass-card p-12 md:p-24 rounded-[4rem] border-orange-500/20 group relative overflow-hidden reveal">
+                <div class="absolute inset-0 bg-gradient-to-br from-orange-600/5 via-transparent to-yellow-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                
+                <div class="flex flex-col lg:flex-row gap-20 items-center relative z-10">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-orange-500 blur-3xl opacity-30 animate-pulse-slow"></div>
+                        <div class="relative w-48 h-48 md:w-64 md:h-64 bg-gradient-to-br from-orange-600 to-yellow-500 rounded-[3.5rem] flex items-center justify-center shadow-2xl animate-float overflow-hidden border-4 border-orange-500/30">
+                            <img src="luanetwork.jpg" class="w-full h-full object-cover" alt="LuaNetwork Logo" onerror="this.parentElement.innerText='🦊'; this.parentElement.style.fontSize='8rem'">
+                        </div>
                     </div>
-                    <div class="flex-1 space-y-8">
-                        <div>
-                            <h3 class="text-5xl font-black uppercase italic tracking-tighter text-orange-500">LuaNetwork SkyBlock</h3>
-                            <p class="text-2xl text-gray-400 italic mt-2 font-bold">Gökyüzünde hayatta kalmaya hazır mısın?</p>
+                    
+                    <div class="flex-1 space-y-10 text-center lg:text-left">
+                        <div class="space-y-4">
+                            <h3 class="text-5xl md:text-7xl font-black uppercase italic tracking-tighter text-orange-500">LuaNetwork</h3>
+                            <p class="text-3xl text-gray-400 italic font-bold">SkyBlock Edition</p>
+                            <p class="text-xl text-gray-500 italic">Gökyüzünde hayatta kalmaya hazır mısın?</p>
                         </div>
                         
-                        <div class="grid md:grid-cols-2 gap-10">
-                            <div class="space-y-4">
-                                <h4 class="text-white font-black uppercase tracking-widest text-sm border-l-4 border-orange-500 pl-4">Sunucu Bilgileri</h4>
-                                <div class="bg-white/5 p-6 rounded-3xl border border-white/5 space-y-2">
-                                    <p class="text-[10px] text-gray-500 uppercase font-black">IP Adresi</p>
-                                    <p class="text-xl font-black text-white tracking-tight">mc.luanetwork.com.tr</p>
-                                    <p class="text-[10px] text-gray-500 uppercase font-black mt-4">Sürüm Desteği</p>
-                                    <p class="text-lg font-bold text-white">1.16.5 – 1.21.10</p>
-                                    <p class="text-xs text-orange-400 italic font-bold">1.21+ önerilir! (Özel Kaynak Paketi Uyumu)</p>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="glass-card p-8 rounded-[2.5rem] space-y-6 border border-orange-500/10 hover:border-orange-500/30 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 bg-orange-500/20 rounded-2xl flex items-center justify-center text-2xl">🌐</div>
+                                    <h4 class="text-white font-black uppercase tracking-wider text-lg">Sunucu Bilgileri</h4>
+                                </div>
+                                <div class="space-y-4">
+                                    <div>
+                                        <p class="text-xs text-orange-500 uppercase font-black tracking-wider mb-2">IP Adresi</p>
+                                        <p class="text-2xl font-black text-white tracking-tight">mc.luanetwork.com.tr</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-orange-500 uppercase font-black tracking-wider mb-2">Sürüm Desteği</p>
+                                        <p class="text-lg font-bold text-white">1.16.5 – 1.21.10</p>
+                                        <p class="text-xs text-orange-400 italic font-bold mt-1">✨ 1.21+ önerilir!</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="space-y-4">
-                                <h4 class="text-white font-black uppercase tracking-widest text-sm border-l-4 border-orange-500 pl-4">SkyBlock Özellikleri</h4>
-                                <ul class="text-gray-400 space-y-2 italic font-medium">
-                                    <li>⚡ Özgün ve eğlenceli SkyBlock sistemi</li>
-                                    <li>💎 Özel Elmas & Netherite Blok Spawner</li>
-                                    <li>🤖 Özel Minyon & Ada Efektleri</li>
-                                    <li>📈 Dengeli ekonomi & Akıcı oyun deneyimi</li>
+                            
+                            <div class="glass-card p-8 rounded-[2.5rem] space-y-6 border border-orange-500/10 hover:border-orange-500/30 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 bg-orange-500/20 rounded-2xl flex items-center justify-center text-2xl">⭐</div>
+                                    <h4 class="text-white font-black uppercase tracking-wider text-lg">Özellikler</h4>
+                                </div>
+                                <ul class="text-gray-400 space-y-3 text-lg">
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-orange-500 text-xl">⚡</span>
+                                        <span>Özgün SkyBlock sistemi</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-orange-500 text-xl">💎</span>
+                                        <span>Özel spawner sistemi</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-orange-500 text-xl">🤖</span>
+                                        <span>Minyon & Ada efektleri</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-orange-500 text-xl">📈</span>
+                                        <span>Dengeli ekonomi sistemi</span>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
 
-                        <div class="flex flex-wrap gap-4 pt-6">
-                            <a href="https://luanetwork.com.tr/" target="_blank" class="px-10 py-5 bg-orange-600 text-white font-black rounded-2xl text-[10px] uppercase tracking-widest hover:bg-orange-500 transition-all shadow-xl italic tracking-tighter">Web Sitesi</a>
-                            <a href="https://discord.gg/yfpqrY68tM" target="_blank" class="px-10 py-5 bg-[#5865F2] text-white font-black rounded-2xl text-[10px] uppercase tracking-widest hover:opacity-90 transition-all shadow-xl italic tracking-tighter">Discord'a Katıl</a>
+                        <div class="flex flex-wrap gap-6 pt-6 justify-center lg:justify-start">
+                            <a href="https://luanetwork.com.tr/" target="_blank" class="btn-shine px-12 py-6 bg-orange-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:bg-orange-500 transition-all shadow-2xl">
+                                🌐 Web Sitesi
+                            </a>
+                            <a href="https://discord.gg/yfpqrY68tM" target="_blank" class="px-12 py-6 bg-[#5865F2] text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:opacity-90 transition-all shadow-2xl">
+                                💬 Discord
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Partner Stats -->
+            <div class="grid md:grid-cols-3 gap-8 reveal">
+                <div class="glass-card p-10 rounded-[3rem] text-center space-y-4 border-orange-500/10 group hover:scale-105 transition-all">
+                    <div class="text-6xl">🎮</div>
+                    <div class="text-5xl font-black text-orange-500">Aktif</div>
+                    <p class="text-sm uppercase tracking-[0.3em] font-black text-gray-400">7/24 Online</p>
+                </div>
+                <div class="glass-card p-10 rounded-[3rem] text-center space-y-4 border-orange-500/10 group hover:scale-105 transition-all">
+                    <div class="text-6xl">⚡</div>
+                    <div class="text-5xl font-black text-orange-500">Hızlı</div>
+                    <p class="text-sm uppercase tracking-[0.3em] font-black text-gray-400">Düşük Ping</p>
+                </div>
+                <div class="glass-card p-10 rounded-[3rem] text-center space-y-4 border-orange-500/10 group hover:scale-105 transition-all">
+                    <div class="text-6xl">🛡️</div>
+                    <div class="text-5xl font-black text-orange-500">Güvenli</div>
+                    <p class="text-sm uppercase tracking-[0.3em] font-black text-gray-400">Anti-Cheat</p>
+                </div>
+            </div>
         </section>
 
-        <section id="projeler" class="tab-content">
-            <h2 class="text-6xl md:text-8xl font-black italic uppercase tracking-tighter mb-24 text-center md:text-left">Projelerimiz</h2>
+        <section id="projeler" class="tab-content space-y-20">
+            <div class="text-center space-y-8 reveal">
+                <div class="inline-block px-8 py-3 bg-blue-500/10 border border-blue-500/30 rounded-full">
+                    <span class="text-blue-500 font-black text-xs uppercase tracking-[0.3em]">🚀 Portföyümüz</span>
+                </div>
+                <h2 class="text-6xl md:text-8xl font-black italic uppercase tracking-tighter">
+                    <span class="text-blue-500">PROJELERİMİZ</span>
+                </h2>
+                <p class="text-gray-400 text-2xl max-w-3xl mx-auto italic">
+                    Sınırları zorlayan, standartları yeniden tanımlayan projeler.
+                </p>
+            </div>
             
-            <div class="glass-card p-10 md:p-24 rounded-[4rem] group mb-24 relative">
+            <!-- Featured: OptiFlow -->
+            <div class="glass-card p-12 md:p-24 rounded-[4rem] group relative overflow-hidden reveal">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-purple-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                
                 <div class="flex flex-col lg:flex-row gap-20 items-center relative z-10">
-                    
-                    <div class="w-56 h-56 md:w-72 md:h-72 rounded-[3.5rem] shadow-2xl group-hover:rotate-6 transition-all duration-700 animate-float border border-white/10"
-                         style="background-image: url('optiflow.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-                         </div>
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-blue-500 blur-3xl opacity-30 animate-pulse-slow"></div>
+                        <div class="relative w-64 h-64 md:w-80 md:h-80 rounded-[3.5rem] shadow-2xl group-hover:rotate-3 transition-all duration-700 border-4 border-blue-500/30 overflow-hidden"
+                             style="background-image: url('optiflow.png'); background-size: cover; background-position: center;">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                            <div class="absolute bottom-6 left-6 right-6">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-4 py-2 bg-green-500 text-white text-xs font-black rounded-full uppercase shadow-lg animate-pulse">Live</span>
+                                    <span class="px-4 py-2 bg-white/20 backdrop-blur-xl text-white text-xs font-black rounded-full uppercase">v1.2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
                     <div class="flex-1 space-y-10 text-center lg:text-left">
-                        <div class="flex flex-wrap justify-center lg:justify-start items-center gap-6">
-                            <h3 class="text-6xl font-black uppercase italic tracking-tighter">OptiFlow</h3>
-                            <span class="px-6 py-2 bg-green-500/10 text-green-400 text-[10px] font-black rounded-full uppercase border border-green-500/20 shadow-lg">YAYINDA</span>
+                        <div class="space-y-4">
+                            <h3 class="text-6xl md:text-7xl font-black uppercase italic tracking-tighter bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+                                OptiFlow
+                            </h3>
+                            <p class="text-gray-500 text-sm uppercase tracking-[0.3em] font-black">
+                                Premium Optimization Pack
+                            </p>
+                            <p class="text-gray-400 text-2xl leading-relaxed italic font-light">
+                                Minecraft'ın gerçek potansiyelini ortaya çıkarın. <span class="text-white font-bold">%40 FPS artışı</span>, sıfır gecikme, maksimum stabilite.
+                            </p>
                         </div>
-                        <p class="text-gray-400 text-2xl leading-relaxed italic font-light">Minecraft deneyiminizi kökten değiştiren optimizasyon motoru. <span class="text-white font-bold">%40 daha fazla FPS</span>.</p>
-                        <a href="https://www.curseforge.com/minecraft/modpacks/optiflow" target="_blank" class="inline-flex items-center gap-5 px-14 py-6 bg-white text-black font-black rounded-2xl text-[11px] uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all shadow-2xl">İNCELE →</a>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="glass-card p-6 rounded-2xl text-center border border-blue-500/20">
+                                <div class="text-3xl font-black text-blue-500">+40%</div>
+                                <p class="text-xs text-gray-500 uppercase font-black mt-2">FPS Boost</p>
+                            </div>
+                            <div class="glass-card p-6 rounded-2xl text-center border border-blue-500/20">
+                                <div class="text-3xl font-black text-blue-500">5.0</div>
+                                <p class="text-xs text-gray-500 uppercase font-black mt-2">Rating</p>
+                            </div>
+                            <div class="glass-card p-6 rounded-2xl text-center border border-blue-500/20">
+                                <div class="text-3xl font-black text-blue-500">24/7</div>
+                                <p class="text-xs text-gray-500 uppercase font-black mt-2">Support</p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-4">
+                            <div class="px-6 py-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
+                                <span class="text-blue-400 font-black text-sm">✓ Fabric & Forge</span>
+                            </div>
+                            <div class="px-6 py-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
+                                <span class="text-blue-400 font-black text-sm">✓ 1.20.1</span>
+                            </div>
+                            <div class="px-6 py-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
+                                <span class="text-blue-400 font-black text-sm">✓ Low-End PC</span>
+                            </div>
+                        </div>
+                        
+                        <a href="https://www.curseforge.com/minecraft/modpacks/optiflow" target="_blank" class="btn-shine inline-flex items-center gap-5 px-14 py-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:shadow-2xl transition-all">
+                            <span>İNCELE</span>
+                            <span>→</span>
+                        </a>
                     </div>
                 </div>
             </div>
 
-            <div class="space-y-16">
-                <h3 class="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-blue-500">Geliştirilenler</h3>
+            <!-- In Development -->
+            <div class="space-y-12 reveal">
+                <div class="flex items-center gap-6">
+                    <h3 class="text-4xl md:text-6xl font-black italic uppercase tracking-tighter">
+                        <span class="text-purple-500">GELİŞTİRİLİYOR</span>
+                    </h3>
+                    <div class="h-1 flex-1 bg-gradient-to-r from-purple-500/50 to-transparent rounded-full"></div>
+                </div>
                 
-                <div class="grid md:grid-cols-2 gap-10">
-                    <div class="glass-card p-12 rounded-[3.5rem] border border-white/5 hover:border-blue-500/50 transition-all">
-                        <div class="text-5xl mb-6">⚔️</div>
-                        <h4 class="text-3xl font-black uppercase italic mb-4">Ingot&Sword Craft</h4>
-                        <p class="text-gray-400 text-lg italic mb-8">Duyurulacak</p>
-                        <span class="px-6 py-2 bg-blue-500/10 text-blue-400 text-[10px] font-black rounded-full uppercase border border-blue-500/20">Mod Geliştirme</span>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="glass-card p-12 rounded-[3.5rem] border border-purple-500/20 group hover:border-purple-500/50 transition-all relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl"></div>
+                        <div class="relative space-y-6">
+                            <div class="w-20 h-20 bg-purple-500/10 rounded-3xl flex items-center justify-center text-5xl group-hover:scale-110 transition-transform">
+                                ⚔️
+                            </div>
+                            <div>
+                                <h4 class="text-4xl font-black uppercase italic mb-3">Ingot&Sword Craft</h4>
+                                <p class="text-gray-400 text-lg italic leading-relaxed">
+                                    Daha derin crafting mekanikleri, yeni silah sistemi ve gelişmiş combat deneyimi.
+                                </p>
+                            </div>
+                            <div class="flex flex-wrap gap-3">
+                                <span class="px-5 py-2 bg-purple-500/10 text-purple-400 text-xs font-black rounded-full uppercase border border-purple-500/20">Mod Development</span>
+                                <span class="px-5 py-2 bg-yellow-500/10 text-yellow-400 text-xs font-black rounded-full uppercase border border-yellow-500/20">Coming Soon</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="glass-card p-12 rounded-[3.5rem] border border-white/5 hover:border-blue-500/50 transition-all">
-                        <div class="text-5xl mb-6">🚗</div>
-                        <h4 class="text-3xl font-black uppercase italic mb-4">Gta V Script</h4>
-                        <p class="text-gray-400 text-lg italic mb-8">Duyurulacak</p>
-                        <span class="px-6 py-2 bg-blue-500/10 text-blue-400 text-[10px] font-black rounded-full uppercase border border-green-500/20">Scripting</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="duyurular" class="tab-content space-y-16">
-            <h2 class="text-6xl md:text-8xl font-black italic uppercase tracking-tighter">Duyurular</h2>
-            <div class="glass-card p-12 rounded-[3.5rem] border-l-[12px] border-l-blue-600">
-                <span class="text-blue-500 font-black text-[11px] uppercase tracking-widest">25 Ocak 2026</span>
-                <h3 class="text-4xl font-black mt-2 uppercase italic">Partnerlik Anlaşması: LuaNetwork</h3>
-                <p class="text-gray-400 mt-6 text-xl leading-relaxed italic">Topluluğumuzun Minecraft ayağını güçlendirmek adına LuaNetwork ile resmi partnerliğimizi duyuruyoruz.</p>
-            </div>
-        </section>
-
-        <section id="indirmeler" class="tab-content space-y-16">
-            <h2 class="text-6xl md:text-8xl font-black italic uppercase tracking-tighter">İndirmeler</h2>
-            <div class="glass-card p-16 rounded-[4rem] text-center space-y-10 max-w-lg mx-auto">
-                <div class="text-8xl animate-bounce">📦</div>
-                <h3 class="text-3xl font-black uppercase italic">OptiFlow v1.2</h3>
-                <a href="https://www.curseforge.com/minecraft/modpacks/optiflow" target="_blank" class="btn-shine block w-full bg-blue-600 text-white py-7 rounded-[2.rem] font-black text-xs tracking-[0.3em] uppercase hover:bg-blue-500 transition-all shadow-2xl">DOSYAYI İNDİR</a>
-            </div>
-        </section>
-
-        <section id="discord" class="tab-content space-y-16">
-            <h2 class="text-6xl md:text-8xl font-black italic uppercase tracking-tighter">Topluluğa Katıl</h2>
-            <div class="grid md:grid-cols-2 gap-10">
-                <div class="glass-card p-16 rounded-[4rem] text-center space-y-8 group">
-                    <div class="text-7xl group-hover:rotate-12 transition-transform">🛡️</div>
-                    <h3 class="text-4xl font-black uppercase italic">Arcanth Project</h3>
-                    <p class="text-gray-400 text-lg italic">Geleceği şekillendiren geliştirici topluluğu.</p>
-                    <a href="https://discord.gg/y4tAHYGzC6" target="_blank" class="block w-full bg-[#5865F2] py-6 rounded-2xl font-black text-xs tracking-widest text-white hover:opacity-90 transition-all">SUNUCUMUZA GİT</a>
-                </div>
-                <div class="glass-card p-16 rounded-[4rem] text-center space-y-8 group border-orange-500/20">
-                    <div class="text-7xl group-hover:rotate-12 transition-transform">⛏️</div>
-                    <h3 class="text-4xl font-black uppercase italic">Minecraft Topluluğumuz</h3>
-                    <p class="text-orange-500 text-lg italic font-bold">LuaNetwork Discord Sunucusu</p>
-                    <a href="https://discord.gg/yfpqrY68tM" target="_blank" class="block w-full bg-orange-600 py-6 rounded-2xl font-black text-xs tracking-widest text-white hover:bg-orange-500 transition-all">LUANETWORK'E KATIL</a>
-                </div>
-            </div>
-        </section>
-
-        <section id="iletisim" class="tab-content">
-            <div class="grid lg:grid-cols-2 gap-24 items-center">
-                <div class="space-y-12 text-center lg:text-left">
-                    <h2 class="text-7xl md:text-[110px] font-black uppercase leading-[0.8] tracking-tighter italic">BİR <br>İSTEĞİN <br><span class="text-blue-500">Mİ VAR?</span></h2>
-                    <div class="p-10 glass-card inline-flex items-center gap-8 rounded-[3rem]">
-                        <div class="w-20 h-20 bg-blue-600 rounded-[1.8rem] flex items-center justify-center text-4xl shadow-2xl animate-pulse">📧</div>
-                        <div class="text-left">
-                            <p class="text-xs font-black uppercase text-blue-500 tracking-[0.3em] mb-1 italic">Resmi İletişim</p>
-                            <p class="text-2xl font-black dark:text-white italic">optiflow892@gmail.com</p>
+                    <div class="glass-card p-12 rounded-[3.5rem] border border-purple-500/20 group hover:border-purple-500/50 transition-all relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl"></div>
+                        <div class="relative space-y-6">
+                            <div class="w-20 h-20 bg-purple-500/10 rounded-3xl flex items-center justify-center text-5xl group-hover:scale-110 transition-transform">
+                                🚗
+                            </div>
+                            <div>
+                                <h4 class="text-4xl font-black uppercase italic mb-3">GTA V Script</h4>
+                                <p class="text-gray-400 text-lg italic leading-relaxed">
+                                    Oyun deneyimini zenginleştiren, optimize edilmiş ve özelleştirilebilir script paketi.
+                                </p>
+                            </div>
+                            <div class="flex flex-wrap gap-3">
+                                <span class="px-5 py-2 bg-purple-500/10 text-purple-400 text-xs font-black rounded-full uppercase border border-purple-500/20">Scripting</span>
+                                <span class="px-5 py-2 bg-yellow-500/10 text-yellow-400 text-xs font-black rounded-full uppercase border border-yellow-500/20">In Progress</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="glass-card p-12 md:p-16 rounded-[4.5rem]">
-                    <form id="contactForm" class="space-y-8">
-                        <input type="text" name="name" placeholder="Adınız" required class="w-full bg-white/5 p-7 rounded-3xl border border-white/10 outline-none focus:border-blue-500 transition-all font-bold">
-                        <input type="email" name="email" placeholder="E-Posta" required class="w-full bg-white/5 p-7 rounded-3xl border border-white/10 outline-none focus:border-blue-500 transition-all font-bold">
-                        <textarea name="message" rows="5" placeholder="Mesajınız" required class="w-full bg-white/5 p-7 rounded-3xl border border-white/10 outline-none focus:border-blue-500 transition-all font-bold resize-none"></textarea>
-                        <button type="submit" id="submitBtn" class="btn-shine w-full bg-blue-600 text-white py-8 rounded-[2.5rem] font-black text-[10px] tracking-[0.5em] uppercase transition-all shadow-2xl">MESAJI GÖNDER</button>
-                    </form>
-                    <div id="formStatus" class="hidden mt-8 p-6 rounded-3xl text-center font-black text-xs uppercase tracking-widest"></div>
+            </div>
+
+            <!-- Tech Stack -->
+            <div class="glass-card p-16 rounded-[4rem] text-center space-y-10 reveal">
+                <h3 class="text-3xl font-black uppercase italic tracking-tighter">
+                    <span class="text-blue-500">Kullandığımız</span> Teknolojiler
+                </h3>
+                <div class="flex flex-wrap justify-center gap-6">
+                    <div class="px-8 py-4 bg-white/5 rounded-2xl border border-white/10 font-black text-lg hover:border-blue-500/50 transition-all">
+                        Java
+                    </div>
+                    <div class="px-8 py-4 bg-white/5 rounded-2xl border border-white/10 font-black text-lg hover:border-blue-500/50 transition-all">
+                        Fabric API
+                    </div>
+                    <div class="px-8 py-4 bg-white/5 rounded-2xl border border-white/10 font-black text-lg hover:border-blue-500/50 transition-all">
+                        Forge
+                    </div>
+                    <div class="px-8 py-4 bg-white/5 rounded-2xl border border-white/10 font-black text-lg hover:border-blue-500/50 transition-all">
+                        C++
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="duyurular" class="tab-content space-y-20">
+            <div class="text-center space-y-8 reveal">
+                <div class="inline-block px-8 py-3 bg-green-500/10 border border-green-500/30 rounded-full">
+                    <span class="text-green-500 font-black text-xs uppercase tracking-[0.3em]">📢 Haberler</span>
+                </div>
+                <h2 class="text-6xl md:text-8xl font-black italic uppercase tracking-tighter">
+                    <span class="text-green-500">DUYURULAR</span>
+                </h2>
+                <p class="text-gray-400 text-2xl max-w-3xl mx-auto italic">
+                    Projelerimizden son gelişmeler ve önemli haberler.
+                </p>
+            </div>
+
+            <!-- Timeline -->
+            <div class="relative space-y-12 reveal">
+                <!-- Timeline Line -->
+                <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-cyan-500 via-green-500 via-blue-500 to-purple-500 opacity-20"></div>
+
+                <!-- Announcement 0 - NEW GUI UPDATE -->
+                <div class="relative">
+                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-cyan-500 rounded-full border-4 border-darkBg z-10 animate-pulse"></div>
+                    
+                    <div class="md:mr-[calc(50%+3rem)] md:text-right glass-card p-12 rounded-[3.5rem] border-r-8 border-r-cyan-500 group hover:border-r-cyan-400 transition-all">
+                        <div class="flex items-start justify-between flex-wrap gap-6 mb-6 md:flex-row-reverse">
+                            <div class="space-y-2">
+                                <span class="inline-block px-5 py-2 bg-cyan-500/10 text-cyan-400 text-xs font-black rounded-full uppercase tracking-widest border border-cyan-500/20">
+                                    26 Ocak 2026
+                                </span>
+                                <h3 class="text-4xl md:text-5xl font-black uppercase italic">
+                                    Büyük Arayüz Güncellemesi
+                                </h3>
+                            </div>
+                            <div class="text-6xl">🎨</div>
+                        </div>
+                        <p class="text-gray-400 text-xl leading-relaxed italic mb-6">
+                            Web sitemiz <span class="text-cyan-500 font-bold">tamamen yenilendi</span>! Modern tasarım, gelişmiş animasyonlar, optimize edilmiş kullanıcı deneyimi. Her sayfa baştan tasarlandı - projelerimizi keşfetmek artık çok daha keyifli.
+                        </p>
+                        <div class="flex flex-wrap gap-4 md:justify-end">
+                            <span class="px-5 py-2 bg-cyan-500/10 text-cyan-400 text-sm font-black rounded-xl">Design</span>
+                            <span class="px-5 py-2 bg-blue-500/10 text-blue-400 text-sm font-black rounded-xl">UI/UX</span>
+                            <span class="px-5 py-2 bg-purple-500/10 text-purple-400 text-sm font-black rounded-xl">Animation</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Announcement 1 -->
+                <div class="relative">
+                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-green-500 rounded-full border-4 border-darkBg z-10 animate-pulse"></div>
+                    
+                    <div class="md:ml-[calc(50%+3rem)] glass-card p-12 rounded-[3.5rem] border-l-8 border-l-green-500 group hover:border-l-green-400 transition-all">
+                        <div class="flex items-start justify-between flex-wrap gap-6 mb-6">
+                            <div class="space-y-2">
+                                <span class="inline-block px-5 py-2 bg-green-500/10 text-green-400 text-xs font-black rounded-full uppercase tracking-widest border border-green-500/20">
+                                    25 Ocak 2026
+                                </span>
+                                <h3 class="text-4xl md:text-5xl font-black uppercase italic">
+                                    Partnerlik: LuaNetwork
+                                </h3>
+                            </div>
+                            <div class="text-6xl">🤝</div>
+                        </div>
+                        <p class="text-gray-400 text-xl leading-relaxed italic mb-6">
+                            Topluluğumuzun Minecraft ayağını güçlendirmek adına <span class="text-orange-500 font-bold">LuaNetwork</span> ile resmi partnerliğimizi duyuruyoruz. Üyelerimiz artık premium SkyBlock deneyimi yaşayabilecek.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <span class="px-5 py-2 bg-orange-500/10 text-orange-400 text-sm font-black rounded-xl">Partnership</span>
+                            <span class="px-5 py-2 bg-blue-500/10 text-blue-400 text-sm font-black rounded-xl">Community</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Announcement 2 -->
+                <div class="relative">
+                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-blue-500 rounded-full border-4 border-darkBg z-10"></div>
+                    
+                    <div class="md:mr-[calc(50%+3rem)] md:text-right glass-card p-12 rounded-[3.5rem] border-r-8 border-r-blue-500 group hover:border-r-blue-400 transition-all">
+                        <div class="flex items-start justify-between flex-wrap gap-6 mb-6 md:flex-row-reverse">
+                            <div class="space-y-2">
+                                <span class="inline-block px-5 py-2 bg-blue-500/10 text-blue-400 text-xs font-black rounded-full uppercase tracking-widest border border-blue-500/20">
+                                    20 Ocak 2026
+                                </span>
+                                <h3 class="text-4xl md:text-5xl font-black uppercase italic">
+                                    OptiFlow v1.2 Yayında
+                                </h3>
+                            </div>
+                            <div class="text-6xl">🚀</div>
+                        </div>
+                        <p class="text-gray-400 text-xl leading-relaxed italic mb-6">
+                            Yeni sürümümüz <span class="text-blue-500 font-bold">%15 daha fazla performans</span> artışı, geliştirilmiş stabilite ve 1.21 tam desteği ile sizlerle. Şu ana kadar en kapsamlı güncellememiz!
+                        </p>
+                        <div class="flex flex-wrap gap-4 md:justify-end">
+                            <span class="px-5 py-2 bg-green-500/10 text-green-400 text-sm font-black rounded-xl">Update</span>
+                            <span class="px-5 py-2 bg-purple-500/10 text-purple-400 text-sm font-black rounded-xl">Performance</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Announcement 3 -->
+                <div class="relative">
+                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-purple-500 rounded-full border-4 border-darkBg z-10"></div>
+                    
+                    <div class="md:ml-[calc(50%+3rem)] glass-card p-12 rounded-[3.5rem] border-l-8 border-l-purple-500 group hover:border-l-purple-400 transition-all">
+                        <div class="flex items-start justify-between flex-wrap gap-6 mb-6">
+                            <div class="space-y-2">
+                                <span class="inline-block px-5 py-2 bg-purple-500/10 text-purple-400 text-xs font-black rounded-full uppercase tracking-widest border border-purple-500/20">
+                                    10 Ocak 2026
+                                </span>
+                                <h3 class="text-4xl md:text-5xl font-black uppercase italic">
+                                    3000+ Kullanıcı Barajı
+                                </h3>
+                            </div>
+                            <div class="text-6xl">🎉</div>
+                        </div>
+                        <p class="text-gray-400 text-xl leading-relaxed italic mb-6">
+                            Topluluğumuz <span class="text-purple-500 font-bold">3000 aktif kullanıcıya</span> ulaştı! Bu başarı sizlerin sayesinde. Discord sunucumuzda özel etkinlik yakında!
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <span class="px-5 py-2 bg-yellow-500/10 text-yellow-400 text-sm font-black rounded-xl">Milestone</span>
+                            <span class="px-5 py-2 bg-pink-500/10 text-pink-400 text-sm font-black rounded-xl">Community</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subscribe -->
+            <div class="glass-card p-16 rounded-[4rem] text-center space-y-8 max-w-2xl mx-auto reveal">
+                <div class="text-6xl">📬</div>
+                <h3 class="text-4xl font-black uppercase italic">Haberleri Kaçırma</h3>
+                <p class="text-gray-400 text-lg italic">Discord'a katıl, tüm duyurular direkt sana gelsin.</p>
+                <button onclick="showTab('discord')" class="btn-shine px-12 py-6 bg-blue-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:bg-blue-500 transition-all shadow-2xl">
+                    Discord'a Katıl
+                </button>
+            </div>
+        </section>
+
+        <section id="indirmeler" class="tab-content space-y-20">
+            <div class="text-center space-y-8 reveal">
+                <div class="inline-block px-8 py-3 bg-blue-500/10 border border-blue-500/30 rounded-full">
+                    <span class="text-blue-500 font-black text-xs uppercase tracking-[0.3em]">📦 Dosyalar</span>
+                </div>
+                <h2 class="text-6xl md:text-8xl font-black italic uppercase tracking-tighter">
+                    <span class="text-blue-500">İNDİRMELER</span>
+                </h2>
+                <p class="text-gray-400 text-2xl max-w-3xl mx-auto italic">
+                    En son sürümleri buradan indirebilirsiniz.
+                </p>
+            </div>
+
+            <!-- Featured Download -->
+            <div class="glass-card p-16 md:p-24 rounded-[4rem] text-center space-y-12 max-w-4xl mx-auto reveal group relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-purple-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                
+                <div class="relative z-10 space-y-12">
+                    <div class="inline-block">
+                        <div class="relative w-32 h-32 mx-auto">
+                            <div class="absolute inset-0 bg-blue-500 blur-2xl opacity-50 animate-pulse-slow"></div>
+                            <div class="relative text-8xl animate-bounce">📦</div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-center gap-4 flex-wrap">
+                            <h3 class="text-5xl md:text-6xl font-black uppercase italic">OptiFlow</h3>
+                            <span class="px-6 py-2 bg-green-500/10 text-green-500 text-sm font-black rounded-full uppercase border border-green-500/20">v1.2 Latest</span>
+                        </div>
+                        
+                        <p class="text-gray-400 text-xl leading-relaxed italic max-w-2xl mx-auto">
+                            Premium optimizasyon paketi. Tek tıkla kur, anında performans artışını hisset.
+                        </p>
+                    </div>
+
+                    <!-- Version Info -->
+                    <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                        <div class="glass-card p-6 rounded-2xl border border-blue-500/20">
+                            <div class="text-blue-500 font-black text-sm uppercase tracking-widest mb-2">Sürüm</div>
+                            <div class="text-3xl font-black">1.2</div>
+                        </div>
+                        <div class="glass-card p-6 rounded-2xl border border-blue-500/20">
+                            <div class="text-blue-500 font-black text-sm uppercase tracking-widest mb-2">Minecraft</div>
+                            <div class="text-3xl font-black">1.20.1</div>
+                        </div>
+                    </div>
+
+                    <!-- Features List -->
+                    <div class="grid md:grid-cols-2 gap-6 text-left max-w-3xl mx-auto">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center text-xl flex-shrink-0">✓</div>
+                            <div>
+                                <div class="font-black text-lg">Otomatik Kurulum</div>
+                                <div class="text-gray-500 text-sm">Tek tık, sıfır konfigürasyon</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center text-xl flex-shrink-0">✓</div>
+                            <div>
+                                <div class="font-black text-lg">%40 FPS Boost</div>
+                                <div class="text-gray-500 text-sm">Garantili performans artışı</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center text-xl flex-shrink-0">✓</div>
+                            <div>
+                                <div class="font-black text-lg">Düşük Sistem</div>
+                                <div class="text-gray-500 text-sm">2GB RAM yeterli</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center text-xl flex-shrink-0">✓</div>
+                            <div>
+                                <div class="font-black text-lg">Ücretsiz</div>
+                                <div class="text-gray-500 text-sm">Gizli ücret yok</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="https://www.curseforge.com/minecraft/modpacks/optiflow" target="_blank" class="btn-shine inline-block w-full max-w-md bg-gradient-to-r from-blue-600 to-purple-600 text-white py-8 rounded-[2.5rem] font-black text-sm tracking-[0.3em] uppercase hover:shadow-2xl transition-all">
+                        CURSEFORGE'DAN İNDİR
+                    </a>
+                    
+                    <p class="text-gray-500 text-sm italic">
+                        İndirme sorunları için <button onclick="showTab('discord')" class="text-blue-500 underline font-bold">Discord</button>'a katılın
+                    </p>
+                </div>
+            </div>
+
+            <!-- How to Install -->
+            <div class="space-y-12 reveal">
+                <h3 class="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-center">
+                    <span class="text-purple-500">NASIL</span> KURULUR?
+                </h3>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="glass-card p-10 rounded-[3rem] text-center space-y-6 group hover:border-purple-500/50 transition-all">
+                        <div class="w-20 h-20 bg-purple-500/10 rounded-3xl flex items-center justify-center text-4xl font-black text-purple-500 mx-auto group-hover:scale-110 transition-transform">
+                            1
+                        </div>
+                        <h4 class="text-2xl font-black uppercase italic">İNDİR</h4>
+                        <p class="text-gray-400 leading-relaxed">CurseForge'dan dosyayı bilgisayarına indir</p>
+                    </div>
+
+                    <div class="glass-card p-10 rounded-[3rem] text-center space-y-6 group hover:border-purple-500/50 transition-all">
+                        <div class="w-20 h-20 bg-purple-500/10 rounded-3xl flex items-center justify-center text-4xl font-black text-purple-500 mx-auto group-hover:scale-110 transition-transform">
+                            2
+                        </div>
+                        <h4 class="text-2xl font-black uppercase italic">KUR</h4>
+                        <p class="text-gray-400 leading-relaxed">CurseForge launcher ile açıp yükle</p>
+                    </div>
+
+                    <div class="glass-card p-10 rounded-[3rem] text-center space-y-6 group hover:border-purple-500/50 transition-all">
+                        <div class="w-20 h-20 bg-purple-500/10 rounded-3xl flex items-center justify-center text-4xl font-black text-purple-500 mx-auto group-hover:scale-110 transition-transform">
+                            3
+                        </div>
+                        <h4 class="text-2xl font-black uppercase italic">OYNA</h4>
+                        <p class="text-gray-400 leading-relaxed">Minecraft'ı başlat ve keyfini çıkar</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Requirements -->
+            <div class="glass-card p-16 rounded-[4rem] reveal">
+                <h3 class="text-3xl font-black uppercase italic tracking-tighter text-center mb-12">
+                    Sistem <span class="text-blue-500">Gereksinimleri</span>
+                </h3>
+                
+                <div class="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+                    <div class="space-y-6">
+                        <h4 class="text-xl font-black uppercase tracking-wider text-green-500 flex items-center gap-3">
+                            <span class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">✓</span>
+                            Minimum
+                        </h4>
+                        <div class="space-y-3 text-gray-400">
+                            <div class="flex justify-between">
+                                <span>RAM:</span>
+                                <span class="font-bold text-white">2GB</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>GPU:</span>
+                                <span class="font-bold text-white">Intel HD 4000</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Java:</span>
+                                <span class="font-bold text-white">8+</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <h4 class="text-xl font-black uppercase tracking-wider text-blue-500 flex items-center gap-3">
+                            <span class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">★</span>
+                            Önerilen
+                        </h4>
+                        <div class="space-y-3 text-gray-400">
+                            <div class="flex justify-between">
+                                <span>RAM:</span>
+                                <span class="font-bold text-white">4GB+</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>GPU:</span>
+                                <span class="font-bold text-white">GTX 1050+</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Java:</span>
+                                <span class="font-bold text-white">17+</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="discord" class="tab-content space-y-20">
+            <div class="text-center space-y-8 reveal">
+                <div class="inline-block px-8 py-3 bg-[#5865F2]/10 border border-[#5865F2]/30 rounded-full">
+                    <span class="text-[#5865F2] font-black text-xs uppercase tracking-[0.3em]">💬 Topluluk</span>
+                </div>
+                <h2 class="text-6xl md:text-8xl font-black italic uppercase tracking-tighter">
+                    <span class="text-[#5865F2]">TOPLULUĞA</span> KATIL
+                </h2>
+                <p class="text-gray-400 text-2xl max-w-3xl mx-auto italic">
+                    Binlerce geliştirici ve oyuncuyla buluş, fikir paylaş, birlikte büyü.
+                </p>
+            </div>
+
+            <!-- Main Discord Cards -->
+            <div class="grid lg:grid-cols-2 gap-10 reveal">
+                <!-- Arcanth Project Discord -->
+                <div class="glass-card p-12 md:p-16 rounded-[4rem] text-center space-y-10 group relative overflow-hidden border-[#5865F2]/20 hover:border-[#5865F2]/50 transition-all">
+                    <div class="absolute inset-0 bg-gradient-to-br from-[#5865F2]/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    
+                    <div class="relative z-10 space-y-10">
+                        <div class="relative inline-block">
+                            <div class="absolute inset-0 bg-[#5865F2] blur-3xl opacity-30 animate-pulse-slow"></div>
+                            <div class="relative text-8xl group-hover:scale-110 transition-transform duration-500">🛡️</div>
+                        </div>
+                        
+                        <div class="space-y-8">
+                            <h3 class="text-5xl font-black uppercase italic tracking-tighter">
+                                Arcanth Project
+                            </h3>
+                            <p class="text-gray-400 text-xl italic leading-relaxed">
+                                Geleceği şekillendiren geliştirici topluluğu. Kod, proje ve vizyonunu paylaş.
+                            </p>
+                        </div>
+
+                        <div class="space-y-4 text-left">
+                            <div class="flex items-center gap-3 text-gray-400">
+                                <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center text-green-500">✓</div>
+                                <span>Özel destek kanalları</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-gray-400">
+                                <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center text-green-500">✓</div>
+                                <span>Erken erişim güncellemeleri</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-gray-400">
+                                <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center text-green-500">✓</div>
+                                <span>Kod paylaşım forumu</span>
+                            </div>
+                        </div>
+                        
+                        <a href="https://discord.gg/y4tAHYGzC6" target="_blank" class="btn-shine block w-full bg-[#5865F2] py-7 rounded-2xl font-black text-sm tracking-widest text-white hover:bg-[#4752c4] transition-all shadow-2xl">
+                            SUNUCUYA KATIL
+                        </a>
+                    </div>
+                </div>
+
+                <!-- LuaNetwork Discord -->
+                <div class="glass-card p-12 md:p-16 rounded-[4rem] text-center space-y-10 group relative overflow-hidden border-orange-500/20 hover:border-orange-500/50 transition-all">
+                    <div class="absolute inset-0 bg-gradient-to-br from-orange-600/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    
+                    <div class="relative z-10 space-y-10">
+                        <div class="relative inline-block">
+                            <div class="absolute inset-0 bg-orange-500 blur-3xl opacity-30 animate-pulse-slow"></div>
+                            <div class="relative text-8xl group-hover:scale-110 transition-transform duration-500">⛏️</div>
+                        </div>
+                        
+                        <div class="space-y-8">
+                            <h3 class="text-5xl font-black uppercase italic tracking-tighter text-orange-500">
+                                LuaNetwork
+                            </h3>
+                            <p class="text-gray-400 text-xl italic leading-relaxed">
+                                Minecraft tutkunlarının buluşma noktası. SkyBlock'ta hayatta kal!
+                            </p>
+                        </div>
+
+                        <div class="space-y-4 text-left">
+                            <div class="flex items-center gap-3 text-gray-400">
+                                <div class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-500">⚡</div>
+                                <span>Sunucu duyuruları</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-gray-400">
+                                <div class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-500">⚡</div>
+                                <span>Oyuncu etkinlikleri</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-gray-400">
+                                <div class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-500">⚡</div>
+                                <span>Ödüllü turnuvalar</span>
+                            </div>
+                        </div>
+                        
+                        <a href="https://discord.gg/yfpqrY68tM" target="_blank" class="btn-shine block w-full bg-orange-600 py-7 rounded-2xl font-black text-sm tracking-widest text-white hover:bg-orange-500 transition-all shadow-2xl">
+                            LUANETWORK'E KATIL
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Why Discord -->
+            <div class="glass-card p-16 rounded-[4rem] reveal">
+                <h3 class="text-4xl font-black uppercase italic tracking-tighter text-center mb-16">
+                    Discord'da <span class="text-[#5865F2]">Neler Var?</span>
+                </h3>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="space-y-6 text-center">
+                        <div class="w-20 h-20 bg-[#5865F2]/10 rounded-3xl flex items-center justify-center text-4xl mx-auto">
+                            💬
+                        </div>
+                        <h4 class="text-2xl font-black uppercase italic">Canlı Destek</h4>
+                        <p class="text-gray-400 leading-relaxed">Sorunlarına anlık çözüm, deneyimli moderatörlerden yardım.</p>
+                    </div>
+
+                    <div class="space-y-6 text-center">
+                        <div class="w-20 h-20 bg-[#5865F2]/10 rounded-3xl flex items-center justify-center text-4xl mx-auto">
+                            🎮
+                        </div>
+                        <h4 class="text-2xl font-black uppercase italic">Oyun Partileri</h4>
+                        <p class="text-gray-400 leading-relaxed">Arkadaşlarla takıl, turnuvalara katıl, ödüller kazan.</p>
+                    </div>
+
+                    <div class="space-y-6 text-center">
+                        <div class="w-20 h-20 bg-[#5865F2]/10 rounded-3xl flex items-center justify-center text-4xl mx-auto">
+                            🚀
+                        </div>
+                        <h4 class="text-2xl font-black uppercase italic">Erken Erişim</h4>
+                        <p class="text-gray-400 leading-relaxed">Beta testlerine katıl, yeni özellikleri ilk sen dene.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="text-center space-y-8 reveal">
+                <h3 class="text-5xl font-black uppercase italic tracking-tighter">
+                    Hâlâ <span class="text-[#5865F2]">Bekliyorsun?</span>
+                </h3>
+                <p class="text-gray-400 text-xl italic max-w-2xl mx-auto">
+                    Binlerce kişi zaten burada. Sen de gel, sohbete katıl!
+                </p>
+                <div class="flex flex-wrap justify-center gap-6">
+                    <a href="https://discord.gg/y4tAHYGzC6" target="_blank" class="btn-shine px-12 py-6 bg-[#5865F2] text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:bg-[#4752c4] transition-all shadow-2xl">
+                        Arcanth'a Katıl
+                    </a>
+                    <a href="https://discord.gg/yfpqrY68tM" target="_blank" class="px-12 py-6 bg-orange-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:bg-orange-500 transition-all shadow-2xl">
+                        LuaNetwork'e Katıl
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="iletisim" class="tab-content space-y-20">
+            <div class="text-center space-y-8 reveal">
+                <div class="inline-block px-8 py-3 bg-blue-500/10 border border-blue-500/30 rounded-full">
+                    <span class="text-blue-500 font-black text-xs uppercase tracking-[0.3em]">📧 Ulaşın</span>
+                </div>
+                <h2 class="text-6xl md:text-8xl font-black italic uppercase tracking-tighter">
+                    <span class="text-blue-500">İLETİŞİME</span> GEÇ
+                </h2>
+                <p class="text-gray-400 text-2xl max-w-3xl mx-auto italic">
+                    Sorularınız, önerileriniz veya işbirliği teklifleri için bizimle iletişime geçin.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-5 gap-12 items-start reveal">
+                <!-- Contact Info -->
+                <div class="lg:col-span-2 space-y-8">
+                    <div class="glass-card p-10 rounded-[3rem] space-y-6 group hover:border-blue-500/50 transition-all">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-3xl shadow-xl animate-pulse-slow">
+                                📧
+                            </div>
+                            <div>
+                                <p class="text-xs font-black uppercase text-blue-500 tracking-[0.3em] mb-1">E-POSTA</p>
+                                <p class="text-xl font-black text-white">optiflow892@gmail.com</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-10 rounded-[3rem] space-y-6 group hover:border-[#5865F2]/50 transition-all">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-[#5865F2] rounded-2xl flex items-center justify-center text-3xl shadow-xl">
+                                💬
+                            </div>
+                            <div>
+                                <p class="text-xs font-black uppercase text-[#5865F2] tracking-[0.3em] mb-1">DISCORD</p>
+                                <p class="text-xl font-black text-white">Arcanth Project</p>
+                            </div>
+                        </div>
+                        <a href="https://discord.gg/y4tAHYGzC6" target="_blank" class="block w-full text-center bg-[#5865F2] py-4 rounded-xl font-black text-xs uppercase tracking-widest text-white hover:opacity-90 transition-all">
+                            Sunucuya Git
+                        </a>
+                    </div>
+
+                    <div class="glass-card p-10 rounded-[3rem] space-y-6">
+                        <h4 class="text-xl font-black uppercase italic tracking-wider">
+                            <span class="text-blue-500">Yanıt</span> Süresi
+                        </h4>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-400">Discord:</span>
+                                <span class="font-black text-green-500">~24 saat</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-400">E-Posta:</span>
+                                <span class="font-black text-blue-500">~48 saat</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="lg:col-span-3 glass-card p-12 md:p-16 rounded-[4.5rem] relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-transparent to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    
+                    <div class="relative z-10 space-y-8">
+                        <div class="text-center space-y-4">
+                            <h3 class="text-4xl font-black uppercase italic tracking-tighter">
+                                Mesaj <span class="text-blue-500">Gönder</span>
+                            </h3>
+                            <p class="text-gray-400 italic">Formunu doldur, en kısa sürede geri dönelim</p>
+                        </div>
+
+                        <form id="contactForm" class="space-y-6">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label class="text-xs font-black uppercase text-gray-500 tracking-widest">Adınız *</label>
+                                    <input type="text" name="name" required 
+                                           class="w-full bg-white/5 p-6 rounded-2xl border border-white/10 outline-none focus:border-blue-500 transition-all font-bold text-white placeholder:text-gray-600"
+                                           placeholder="Ahmet Yılmaz">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-xs font-black uppercase text-gray-500 tracking-widest">E-Posta *</label>
+                                    <input type="email" name="email" required 
+                                           class="w-full bg-white/5 p-6 rounded-2xl border border-white/10 outline-none focus:border-blue-500 transition-all font-bold text-white placeholder:text-gray-600"
+                                           placeholder="ornek@mail.com">
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="text-xs font-black uppercase text-gray-500 tracking-widest">Konu</label>
+                                <input type="text" name="subject" 
+                                       class="w-full bg-white/5 p-6 rounded-2xl border border-white/10 outline-none focus:border-blue-500 transition-all font-bold text-white placeholder:text-gray-600"
+                                       placeholder="OptiFlow hakkında soru">
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="text-xs font-black uppercase text-gray-500 tracking-widest">Mesajınız *</label>
+                                <textarea name="message" rows="6" required 
+                                          class="w-full bg-white/5 p-6 rounded-2xl border border-white/10 outline-none focus:border-blue-500 transition-all font-bold text-white resize-none placeholder:text-gray-600"
+                                          placeholder="Mesajınızı buraya yazın..."></textarea>
+                            </div>
+
+                            <button type="submit" id="submitBtn" 
+                                    class="btn-shine w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-7 rounded-[2rem] font-black text-sm tracking-[0.3em] uppercase transition-all shadow-2xl hover:shadow-blue-500/50">
+                                MESAJI GÖNDER
+                            </button>
+
+                            <p class="text-xs text-gray-500 text-center italic">
+                                E-posta 48 saat, Discord 24 saat içinde yanıtlanır. Acil durumlar için Discord'u tercih edin.
+                            </p>
+                        </form>
+
+                        <div id="formStatus" class="hidden mt-8 p-6 rounded-3xl text-center font-black text-sm uppercase tracking-widest"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ -->
+            <div class="space-y-12 reveal">
+                <h3 class="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-center">
+                    Sıkça <span class="text-blue-500">Sorulanlar</span>
+                </h3>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="glass-card p-8 rounded-[2.5rem] space-y-4 border border-white/5 hover:border-blue-500/30 transition-all">
+                        <h4 class="text-xl font-black uppercase">OptiFlow ücretsiz mi?</h4>
+                        <p class="text-gray-400 leading-relaxed">Evet, tamamen ücretsiz. Hiçbir gizli ücret veya premium sürüm yok.</p>
+                    </div>
+
+                    <div class="glass-card p-8 rounded-[2.5rem] space-y-4 border border-white/5 hover:border-blue-500/30 transition-all">
+                        <h4 class="text-xl font-black uppercase">Hangi Minecraft sürümlerini destekliyor?</h4>
+                        <p class="text-gray-400 leading-relaxed">1.20.1 ve üzeri tüm sürümleri destekliyoruz. Hem Fabric hem Forge uyumludur.</p>
+                    </div>
+
+                    <div class="glass-card p-8 rounded-[2.5rem] space-y-4 border border-white/5 hover:border-blue-500/30 transition-all">
+                        <h4 class="text-xl font-black uppercase">Kurulum ne kadar sürer?</h4>
+                        <p class="text-gray-400 leading-relaxed">CurseForge launcher ile sadece birkaç dakika. Otomatik kurulum yapılır.</p>
+                    </div>
+
+                    <div class="glass-card p-8 rounded-[2.5rem] space-y-4 border border-white/5 hover:border-blue-500/30 transition-all">
+                        <h4 class="text-xl font-black uppercase">Sorun yaşarsam ne yapmalıyım?</h4>
+                        <p class="text-gray-400 leading-relaxed">Discord sunucumuza katılıp destek kanalından yardım alabilirsiniz. 7/24 aktifiz.</p>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
 
     <script>
+        // Particle System
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const particleCount = 50;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 2 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(59, 130, 246, 0.5)';
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            // Connect particles
+            particles.forEach((p1, i) => {
+                particles.slice(i + 1).forEach(p2 => {
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = `rgba(59, 130, 246, ${0.2 * (1 - distance / 150)})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                });
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Cursor Glow Effect
         const glow = document.getElementById('glow');
         window.addEventListener('mousemove', (e) => {
             glow.style.left = e.clientX + 'px';
             glow.style.top = e.clientY + 'px';
         });
 
-        function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('open'); }
-        function mobileNav(tabId) { showTab(tabId); toggleMobileMenu(); }
+        // Scroll Reveal
+        const revealElements = document.querySelectorAll('.reveal');
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
 
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        revealElements.forEach(el => observer.observe(el));
+
+        // Magnetic Button Effect
+        const magneticBtns = document.querySelectorAll('.magnetic-btn');
+        magneticBtns.forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+            });
+            
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = '';
+            });
+        });
+
+        // Mobile Menu
+        function toggleMobileMenu() { 
+            document.getElementById('mobile-menu').classList.toggle('open'); 
+        }
+        
+        function mobileNav(tabId) { 
+            showTab(tabId); 
+            toggleMobileMenu(); 
+        }
+
+        // Theme Toggle
         function toggleTheme() {
             const html = document.documentElement;
             const icon = document.getElementById('theme-icon');
             if (html.classList.contains('dark')) {
-                html.classList.remove('dark'); html.classList.add('light'); icon.innerText = '☀️';
+                html.classList.remove('dark'); 
+                html.classList.add('light'); 
+                icon.innerText = '☀️';
             } else {
-                html.classList.remove('light'); html.classList.add('dark'); icon.innerText = '🌙';
+                html.classList.remove('light'); 
+                html.classList.add('dark'); 
+                icon.innerText = '🌙';
             }
         }
 
+        // Tab Navigation
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-link'));
+            
             const targetTab = document.getElementById(tabId);
             if(targetTab) targetTab.classList.add('active');
+            
             const targetBtn = document.getElementById('btn-' + tabId);
             if(targetBtn) targetBtn.classList.add('active-link');
+            
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
+        // Contact Form
         const contactForm = document.getElementById('contactForm');
         const formStatus = document.getElementById('formStatus');
         const submitBtn = document.getElementById('submitBtn');
@@ -342,18 +1383,23 @@
             e.preventDefault();
             submitBtn.disabled = true;
             submitBtn.innerText = 'İLETİLİYOR...';
+            
             const formData = new FormData(contactForm);
+            
             try {
                 const response = await fetch('https://formsubmit.co/ajax/optiflow892@gmail.com', {
                     method: 'POST',
                     body: formData,
                     headers: { 'Accept': 'application/json' }
                 });
+                
                 if (response.ok) {
                     formStatus.innerText = 'Efendim, mesajınız başarıyla iletildi.';
                     formStatus.className = 'mt-8 p-6 rounded-3xl text-center font-black text-xs bg-green-500/10 text-green-500 border border-green-500/20 block';
                     contactForm.reset();
-                } else { throw new Error(); }
+                } else { 
+                    throw new Error(); 
+                }
             } catch (error) {
                 formStatus.innerText = 'Hata oluştu, tekrar deneyin.';
                 formStatus.className = 'mt-8 p-6 rounded-3xl text-center font-black text-xs bg-red-500/10 text-red-500 border border-red-500/20 block';
