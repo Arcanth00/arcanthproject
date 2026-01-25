@@ -1,155 +1,184 @@
 <!DOCTYPE html>
-<html lang="tr" class="scroll-smooth">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArcanthProject | Dijital Vizyon</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>ArcanthProject | Teknoloji ve Oyun Vizyonu</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        darkBg: '#080a0f',
-                        darkCard: '#11141d',
-                        accentBlue: '#3b82f6',
-                        accentPurple: '#a855f7'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        .glass { background: rgba(17, 20, 29, 0.7); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .gradient-text { background: linear-gradient(135deg, #60a5fa 0%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, rgba(0,0,0,0) 70%); z-index: -1; }
-        .tab-content { display: none; animation: fadeIn 0.4s ease-in-out; }
+        body { 
+            background-color: #05070a; 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        .bg-mesh {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% -20%, #1e293b 0%, #05070a 60%);
+            z-index: -1;
+        }
+        .nav-glass { background: rgba(5, 7, 10, 0.8); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .tab-content { display: none; animation: slideUp 0.5s ease-out forwards; }
         .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .nav-link.active { color: white; border-bottom: 2px solid #3b82f6; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .active-link { color: #3b82f6 !important; border-bottom: 2px solid #3b82f6; }
+        .card-gradient { background: linear-gradient(145deg, #0f172a, #05070a); border: 1px solid rgba(255,255,255,0.03); }
     </style>
 </head>
-<body class="bg-darkBg text-gray-300 font-sans selection:bg-blue-500/30">
+<body>
 
-    <div class="hero-glow"></div>
+    <div class="bg-mesh"></div>
 
-    <nav class="glass fixed w-full top-0 z-[100]">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-3 group cursor-pointer" onclick="showTab('anasayfa')">
-                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg rotate-45 flex items-center justify-center group-hover:rotate-[135deg] transition-all duration-500">
-                    <span class="rotate-[-45deg] group-hover:rotate-[-135deg] transition-all text-white font-bold tracking-tighter italic">A</span>
-                </div>
-                <span class="text-xl font-extrabold text-white tracking-tight">ArcanthProject</span>
+    <nav class="nav-glass fixed w-full top-0 z-50">
+        <div class="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="showTab('anasayfa')">
+                <img src="https://i.imgur.com/your-logo-link.png" class="w-8 h-8" alt=""> <span class="text-xl font-bold tracking-tight text-white">ArcanthProject</span>
             </div>
 
-            <div class="hidden lg:flex items-center gap-8 text-sm font-medium">
-                <a href="javascript:void(0)" onclick="showTab('anasayfa')" class="nav-link hover:text-white transition py-2 active" data-tab="anasayfa">Anasayfa</a>
-                <a href="javascript:void(0)" onclick="showTab('duyurular')" class="nav-link hover:text-white transition py-2" data-tab="duyurular">Duyurular</a>
-                <a href="javascript:void(0)" onclick="showTab('projeler')" class="nav-link hover:text-white transition py-2" data-tab="projeler">Projeler</a>
-                <a href="javascript:void(0)" onclick="showTab('indirmeler')" class="nav-link hover:text-white transition py-2" data-tab="indirmeler">İndirmeler</a>
-                <a href="javascript:void(0)" onclick="showTab('egitim')" class="nav-link hover:text-white transition py-2" data-tab="egitim">Eğitim</a>
-                <a href="javascript:void(0)" onclick="showTab('hakkimizda')" class="nav-link hover:text-white transition py-2" data-tab="hakkimizda">Hakkımızda</a>
+            <div class="hidden lg:flex items-center gap-6 text-[13px] font-medium text-gray-400">
+                <button onclick="showTab('anasayfa')" class="nav-btn hover:text-white transition-all pb-1 active-link" id="btn-anasayfa">Anasayfa</button>
+                <button onclick="showTab('duyurular')" class="nav-btn hover:text-white transition-all pb-1" id="btn-duyurular">Duyurular</button>
+                <button onclick="showTab('projeler')" class="nav-btn hover:text-white transition-all pb-1" id="btn-projeler">Projeler</button>
+                <button onclick="showTab('indirmeler')" class="nav-btn hover:text-white transition-all pb-1" id="btn-indirmeler">İndirmeler</button>
+                <button onclick="showTab('egitim')" class="nav-btn hover:text-white transition-all pb-1" id="btn-egitim">Eğitim/Rehberler</button>
+                <button onclick="showTab('forum')" class="nav-btn hover:text-white transition-all pb-1" id="btn-forum">Forum</button>
+                <button onclick="showTab('hakkimizda')" class="nav-btn hover:text-white transition-all pb-1" id="btn-hakkimizda">Hakkımızda</button>
+                <button onclick="showTab('iletisim')" class="nav-btn hover:text-white transition-all pb-1" id="btn-iletisim">İletişim</button>
             </div>
 
-            <button class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-blue-900/20 active:scale-95 transition-all">
-                Giriş Yap
-            </button>
+            <div class="flex items-center gap-4">
+                <button class="text-gray-400 hover:text-white text-lg">🌙</button>
+                <button class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-lg text-sm font-bold transition-all shadow-lg shadow-blue-600/20">
+                    Giriş Yap / Kayıt Ol
+                </button>
+            </div>
         </div>
     </nav>
 
-    <div class="pt-32 pb-20 max-w-7xl mx-auto px-6">
-        
+    <main class="pt-40 pb-20 px-6 max-w-7xl mx-auto">
+
         <section id="anasayfa" class="tab-content active text-center">
-            <div class="mb-12 inline-block px-4 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/5 text-blue-400 text-xs font-bold uppercase tracking-widest">
-                2026 Vizyonu Yayında
+            <div class="mb-10 flex justify-center">
+                <div class="w-24 h-24 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-2xl rotate-45 flex items-center justify-center shadow-2xl shadow-blue-500/20">
+                    <span class="rotate-[-45deg] text-4xl">💎</span>
+                </div>
             </div>
-            <h1 class="text-5xl md:text-7xl font-extrabold text-white mb-8 leading-[1.1]">
-                Teknoloji ve Oyun Dünyasında <br> <span class="gradient-text">Yeni Bir Vizyon</span>
+            <h1 class="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tighter">
+                Teknoloji ve Oyun Dünyasında Yeni <br> <span class="text-blue-500">Bir Vizyon</span>
             </h1>
-            <p class="text-xl text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed font-light">
-                GTA V ve Minecraft modları geliştiriyor, detaylı eğitim içerikleri sunuyor ve güçlü bir topluluk oluşturuyoruz. Dijital geleceği birlikte inşa edelim.
+            <p class="text-gray-400 text-lg max-w-2xl mx-auto mb-12 leading-relaxed">
+                GTA V ve Minecraft modları geliştiriyor, detaylı eğitim içerikleri sunuyor ve güçlü bir topluluk oluşturuyoruz.
             </p>
-            <div class="flex flex-wrap justify-center gap-6">
-                <button onclick="showTab('projeler')" class="bg-white text-black px-10 py-4 rounded-xl font-bold hover:bg-gray-200 transition-all flex items-center gap-2">
-                    Projeleri Keşfet <span>→</span>
-                </button>
-                <button class="bg-darkCard border border-gray-800 text-white px-10 py-4 rounded-xl font-bold hover:border-blue-500 transition-all">
-                    Topluluğa Katıl
-                </button>
+            <div class="flex justify-center gap-4">
+                <button onclick="showTab('projeler')" class="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-xl font-bold transition-all">Projeleri Keşfet</button>
+                <button class="border border-gray-700 hover:border-white text-white px-10 py-4 rounded-xl font-bold transition-all">Topluluğa Katıl</button>
             </div>
         </section>
 
         <section id="duyurular" class="tab-content">
-            <h2 class="text-3xl font-bold text-white mb-8">Son Duyurular</h2>
-            <div class="grid gap-4">
-                <div class="bg-darkCard p-6 rounded-2xl border border-gray-800 hover:border-blue-500/50 transition">
-                    <span class="text-blue-500 text-xs font-bold uppercase">Sistem Güncellemesi</span>
-                    <h3 class="text-xl font-bold text-white mt-2">Yeni Web Arayüzüne Geçiş Yaptık</h3>
-                    <p class="text-gray-400 mt-2">ArcanthProject deneyimini GitHub üzerinden daha hızlı ve modern bir yapıya taşıdık.</p>
+            <h2 class="text-3xl font-bold mb-8">Son Duyurular</h2>
+            <div class="space-y-4">
+                <div class="card-gradient p-6 rounded-2xl">
+                    <span class="text-blue-500 text-xs font-bold uppercase">GÜNCELLEME • 25 OCAK 2026</span>
+                    <h3 class="text-xl font-bold text-white mt-1">Arcanth v2.0 Web Arayüzü Yayında!</h3>
+                    <p class="text-gray-400 mt-2 text-sm">Topluluğumuz için daha hızlı, modern ve erişilebilir bir deneyim hazırladık.</p>
                 </div>
             </div>
         </section>
 
         <section id="projeler" class="tab-content">
-            <h2 class="text-3xl font-bold text-white mb-8">Geliştirdiğimiz Projeler</h2>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="group bg-darkCard rounded-3xl overflow-hidden border border-gray-800">
-                    <div class="h-48 bg-gradient-to-r from-blue-900 to-black"></div>
-                    <div class="p-8">
-                        <h3 class="text-2xl font-bold text-white group-hover:text-blue-400 transition">GTA V Mod Paketi</h3>
-                        <p class="text-gray-400 mt-4">Ultra gerçekçi grafikler ve yeni araç mekanikleri içeren özel modifikasyon paketi.</p>
+            <h2 class="text-3xl font-bold mb-8 text-center">Aktif Projelerimiz</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="card-gradient rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all">
+                    <div class="h-40 bg-blue-900/20 flex items-center justify-center text-4xl">🚗</div>
+                    <div class="p-6">
+                        <h4 class="font-bold text-white text-lg">GTA V Realism Pack</h4>
+                        <p class="text-gray-500 text-xs mt-2 italic">Versiyon 4.2 - Kararlı</p>
                     </div>
                 </div>
-                <div class="group bg-darkCard rounded-3xl overflow-hidden border border-gray-800">
-                    <div class="h-48 bg-gradient-to-r from-purple-900 to-black"></div>
-                    <div class="p-8">
-                        <h3 class="text-2xl font-bold text-white group-hover:text-purple-400 transition">Minecraft Survival++</h3>
-                        <p class="text-gray-400 mt-4">Klasik Minecraft deneyimini modern RPG öğeleriyle harmanlayan sunucu altyapısı.</p>
+                <div class="card-gradient rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all">
+                    <div class="h-40 bg-green-900/20 flex items-center justify-center text-4xl">🌲</div>
+                    <div class="p-6">
+                        <h4 class="font-bold text-white text-lg">Minecraft RPG Core</h4>
+                        <p class="text-gray-500 text-xs mt-2 italic">Versiyon 1.1 - Beta</p>
+                    </div>
+                </div>
+                <div class="card-gradient rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all">
+                    <div class="h-40 bg-purple-900/20 flex items-center justify-center text-4xl">⚙️</div>
+                    <div class="p-6">
+                        <h4 class="font-bold text-white text-lg">Custom Launcher</h4>
+                        <p class="text-gray-500 text-xs mt-2 italic">Geliştiriliyor</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="indirmeler" class="tab-content">
-            <div class="text-center py-20 bg-darkCard rounded-3xl border border-dashed border-gray-700">
-                <p class="text-gray-500">İndirme merkezi hazırlanıyor. Yakında tüm mod dosyaları burada olacak.</p>
+            <h2 class="text-3xl font-bold mb-8">Dosya Merkezi</h2>
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="text-gray-500 border-b border-gray-800 text-sm">
+                        <th class="pb-4">Dosya Adı</th>
+                        <th class="pb-4">Boyut</th>
+                        <th class="pb-4">Eylem</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm">
+                    <tr class="border-b border-gray-900">
+                        <td class="py-4 font-medium">Arcanth_Graphics_Fix.rar</td>
+                        <td class="py-4 text-gray-500">1.2 GB</td>
+                        <td class="py-4"><button class="text-blue-500 hover:underline">İndir</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="egitim" class="tab-content text-center py-20">
+            <h2 class="text-3xl font-bold mb-4">Eğitim Akademi</h2>
+            <p class="text-gray-400">Yazılım ve mod geliştirme rehberleri yakında burada.</p>
+        </section>
+
+        <section id="forum" class="tab-content">
+            <div class="bg-blue-600/10 border border-blue-500/20 p-8 rounded-3xl text-center">
+                <h2 class="text-2xl font-bold text-white mb-2">Forum Sayfasına Yönlendiriliyorsunuz...</h2>
+                <p class="text-gray-400 mb-6">Tartışmalara katılmak için topluluk hesabınızla giriş yapın.</p>
+                <button class="bg-blue-600 px-6 py-2 rounded-lg font-bold">Foruma Git</button>
             </div>
         </section>
 
-        <section id="egitim" class="tab-content">
-             <h2 class="text-3xl font-bold text-white mb-8">Eğitim Rehberleri</h2>
-             <div class="text-gray-400">Yazılım ve mod geliştirme üzerine rehberlerimiz çok yakında eklenecek.</div>
+        <section id="hakkimizda" class="tab-content max-w-2xl mx-auto leading-relaxed">
+            <h2 class="text-3xl font-bold mb-6">Hakkımızda</h2>
+            <p>ArcanthProject, 2024 yılında oyun dünyasına yeni bir soluk getirmek amacıyla kurulmuş bağımsız bir geliştirici grubudur. Odak noktamız, oyuncuların deneyimini kişiselleştiren modlar ve bu alanda kendini geliştirmek isteyenlere sunduğumuz eğitimlerdir.</p>
         </section>
 
-        <section id="hakkimizda" class="tab-content text-center max-w-2xl mx-auto">
-            <h2 class="text-3xl font-bold text-white mb-6">Biz Kimiz?</h2>
-            <p class="leading-relaxed">ArcanthProject, oyun tutkunları ve teknoloji meraklılarını bir araya getiren bağımsız bir geliştirici topluluğudur. Amacımız, dijital oyun dünyasında yenilikçi çözümler üretmektir.</p>
+        <section id="iletisim" class="tab-content">
+            <h2 class="text-3xl font-bold mb-8">Bize Ulaşın</h2>
+            <form class="grid gap-4 max-w-xl">
+                <input type="text" placeholder="Adınız" class="bg-darkCard p-4 rounded-xl border border-gray-800 outline-none focus:border-blue-500">
+                <textarea placeholder="Mesajınız" rows="5" class="bg-darkCard p-4 rounded-xl border border-gray-800 outline-none focus:border-blue-500"></textarea>
+                <button class="bg-blue-600 p-4 rounded-xl font-bold">Gönder</button>
+            </form>
         </section>
 
-    </div>
+    </main>
 
     <script>
         function showTab(tabId) {
             // Tüm içerikleri gizle
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            // Tüm linklerdeki aktifliği kaldır
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Seçilen tabı göster
-            document.getElementById(tabId).classList.add('active');
-            // İlgili linki aktif yap
-            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
 
-            // Sayfayı yukarı kaydır
-            window.scrollTo(0, 0);
+            // Tüm linklerdeki aktifliği kaldır
+            const btns = document.querySelectorAll('.nav-btn');
+            btns.forEach(btn => btn.classList.remove('active-link'));
+
+            // İlgili tabı göster ve butonu aktifleştir
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById('btn-' + tabId).classList.add('active-link');
+
+            // Sayfa başna dön
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
     </script>
 </body>
