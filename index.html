@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArcanthProject | Dijital Vizyon</title>
+    <title>ArcanthProject | Digital Visionary</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script>
@@ -12,192 +12,275 @@
             theme: {
                 extend: {
                     colors: {
-                        darkBg: '#05070a',
-                        lightBg: '#f8fafc',
+                        darkBg: '#020408',
+                        accentBlue: '#3b82f6',
+                        accentCyan: '#22d3ee',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.4s ease, color 0.4s ease; }
-        .bg-mesh { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
-        .dark .bg-mesh { background: radial-gradient(circle at 50% -20%, #1e293b 0%, #05070a 60%); }
-        .light .bg-mesh { background: radial-gradient(circle at 50% -20%, #e2e8f0 0%, #f8fafc 60%); }
-        .nav-glass { backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .tab-content { display: none; animation: slideUp 0.5s ease-out forwards; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #020408;
+            overflow-x: hidden;
+        }
+        
+        /* Gelişmiş Mesh Arka Plan */
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(34, 211, 238, 0.05) 0%, transparent 40%);
+            z-index: -1;
+        }
+
+        .nav-glass { 
+            backdrop-filter: blur(12px); 
+            background: rgba(2, 4, 8, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03); 
+        }
+
+        .tab-content { 
+            display: none; 
+            animation: fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+        }
         .tab-content.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .active-link { color: #3b82f6 !important; border-bottom: 2px solid #3b82f6; }
-        .card-shadow { box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); }
-        .logo-glow { filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.5)); }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.98) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s ease;
+        }
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+        }
+
+        .active-link { 
+            color: #3b82f6 !important; 
+            position: relative;
+        }
+        .active-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(to right, #3b82f6, #22d3ee);
+            border-radius: 2px;
+        }
+
+        .logo-ring {
+            position: relative;
+        }
+        .logo-ring::before {
+            content: '';
+            position: absolute;
+            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            border-radius: 50%;
+            border: 2px solid rgba(59, 130, 246, 0.2);
+            animation: pulse-slow 3s infinite;
+        }
     </style>
 </head>
-<body class="dark:bg-darkBg dark:text-gray-200 bg-lightBg text-gray-800 antialiased">
-    <div class="bg-mesh"></div>
+<body class="dark:text-gray-200 text-gray-800 antialiased">
+    <div class="bg-glow"></div>
 
-    <nav class="nav-glass fixed w-full top-0 z-50 dark:bg-black/60 bg-white/70">
-        <div class="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-3 cursor-pointer group" onclick="showTab('anasayfa')">
-                <img src="logo.png" class="w-10 h-10 rounded-full object-cover border border-blue-500/30 logo-glow transition-transform group-hover:scale-110" onerror="this.src='https://via.placeholder.com/40/3b82f6/FFFFFF?text=A'">
-                <span class="text-xl font-extrabold italic dark:text-white text-gray-900 tracking-tighter">ArcanthProject</span>
+    <nav class="nav-glass fixed w-full top-0 z-50">
+        <div class="max-w-[1400px] mx-auto px-8 h-24 flex items-center justify-between">
+            <div class="flex items-center gap-4 cursor-pointer group" onclick="showTab('anasayfa')">
+                <div class="logo-ring">
+                    <img src="logo.png" class="w-12 h-12 rounded-full object-cover shadow-lg" onerror="this.src='https://via.placeholder.com/48/3b82f6/FFFFFF?text=A'">
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-extrabold italic tracking-tighter text-white">ARCANTH</span>
+                    <span class="text-[10px] tracking-[0.3em] font-bold text-blue-500 uppercase">Project</span>
+                </div>
             </div>
             
-            <div class="hidden lg:flex items-center gap-8 text-[13px] font-bold uppercase tracking-wider">
-                <button onclick="showTab('anasayfa')" class="nav-btn pb-1 active-link transition-colors hover:text-blue-500" id="btn-anasayfa">Anasayfa</button>
-                <button onclick="showTab('duyurular')" class="nav-btn pb-1 transition-colors hover:text-blue-500" id="btn-duyurular">Duyurular</button>
-                <button onclick="showTab('projeler')" class="nav-btn pb-1 transition-colors hover:text-blue-500" id="btn-projeler">Projeler</button>
-                <button onclick="showTab('indirmeler')" class="nav-btn pb-1 transition-colors hover:text-blue-500" id="btn-indirmeler">İndirmeler</button>
-                <button onclick="showTab('egitim')" class="nav-btn pb-1 transition-colors hover:text-blue-500" id="btn-egitim">Eğitim</button>
-                <button onclick="showTab('discord')" class="nav-btn pb-1 text-blue-500 hover:text-blue-400" id="btn-discord">Discord</button>
-                <button onclick="showTab('hakkimizda')" class="nav-btn pb-1 transition-colors hover:text-blue-500" id="btn-hakkimizda">Hakkımızda</button>
-                <button onclick="showTab('iletisim')" class="nav-btn pb-1 transition-colors hover:text-blue-500" id="btn-iletisim">İletişim</button>
+            <div class="hidden lg:flex items-center gap-10 text-[12px] font-bold uppercase tracking-[0.15em]">
+                <button onclick="showTab('anasayfa')" class="nav-btn transition-all hover:text-white" id="btn-anasayfa">Anasayfa</button>
+                <button onclick="showTab('duyurular')" class="nav-btn transition-all hover:text-white" id="btn-duyurular">Duyurular</button>
+                <button onclick="showTab('projeler')" class="nav-btn transition-all hover:text-white" id="btn-projeler">Projeler</button>
+                <button onclick="showTab('indirmeler')" class="nav-btn transition-all hover:text-white" id="btn-indirmeler">İndirmeler</button>
+                <button onclick="showTab('egitim')" class="nav-btn transition-all hover:text-white" id="btn-egitim">Eğitim</button>
+                <button onclick="showTab('discord')" class="nav-btn text-blue-500 hover:text-blue-400" id="btn-discord">Discord</button>
+                <button onclick="showTab('hakkimizda')" class="nav-btn transition-all hover:text-white" id="btn-hakkimizda">Hakkımızda</button>
+                <button onclick="showTab('iletisim')" class="nav-btn transition-all hover:text-white" id="btn-iletisim">İletişim</button>
             </div>
 
-            <div class="flex items-center gap-5">
-                <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-gray-500/10 hover:bg-gray-500/20 transition-all" title="Temayı Değiştir">
-                    <span id="theme-icon-sun" class="hidden text-xl">☀️</span>
-                    <span id="theme-icon-moon" class="text-xl">🌙</span>
+            <div class="flex items-center gap-6">
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full glass-card flex items-center justify-center transition-transform hover:rotate-12">
+                    <span id="theme-icon-sun" class="hidden">☀️</span>
+                    <span id="theme-icon-moon">🌙</span>
                 </button>
-                <button onclick="alert('Efendim, giriş sistemi şu an geliştirme aşamasındadır. Çok yakında aktif edilecektir.')" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl text-sm font-black shadow-lg shadow-blue-600/30 transition-all active:scale-95 uppercase">
-                    Giriş Yap
+                <button onclick="alert('Giriş sistemi şu an geliştirme aşamasındadır. Çok yakında aktif edilecektir.')" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-8 py-3 rounded-full text-xs font-black shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all uppercase tracking-widest active:scale-95">
+                    Giriş
                 </button>
             </div>
         </div>
     </nav>
 
-    <main class="pt-44 pb-20 px-6 max-w-7xl mx-auto">
+    <main class="pt-48 pb-32 px-8 max-w-7xl mx-auto">
         
-        <section id="anasayfa" class="tab-content active text-center">
-            <div class="relative inline-block mb-10">
-                <img src="logo.png" class="w-40 h-40 mx-auto rounded-full object-cover border-8 border-blue-500/10 shadow-2xl logo-glow" onerror="this.src='https://via.placeholder.com/160/3b82f6/FFFFFF?text=A'">
-            </div>
-            <h1 class="text-7xl md:text-9xl font-black mb-16 tracking-tighter dark:text-white text-gray-900 leading-none">
-                Yeni Bir <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-400">Vizyon</span>
-            </h1>
-            <div class="flex flex-wrap justify-center gap-6">
-                <button onclick="showTab('projeler')" class="bg-blue-600 hover:bg-blue-700 text-white px-12 py-5 rounded-2xl font-bold text-lg transition-all shadow-2xl shadow-blue-600/40">Projeleri Keşfet</button>
-                <button onclick="showTab('discord')" class="dark:bg-white/5 bg-gray-200 border border-gray-300 dark:border-white/10 hover:border-blue-500 px-12 py-5 rounded-2xl font-bold text-lg transition-all">Topluluğa Katıl</button>
-            </div>
-        </section>
-
-        <section id="duyurular" class="tab-content">
-            <h2 class="text-4xl font-black mb-12 italic border-l-8 border-blue-600 pl-6">Son Duyurular</h2>
-            <div class="grid gap-6">
-                <div class="p-8 rounded-[2rem] dark:bg-white/5 bg-white border border-gray-200 dark:border-white/10 card-shadow">
-                    <span class="text-blue-500 font-bold text-xs tracking-widest uppercase">Sistem Güncellemesi • Ocak 2026</span>
-                    <h3 class="text-2xl font-extrabold mt-2 mb-4">Yeni Web Sitemiz Yayında!</h3>
-                    <p class="opacity-70 leading-relaxed">ArcanthProject dijital altyapısını tamamen yeniledik. Artık daha hızlı, daha güvenli ve modern bir arayüzle karşınızdayız.</p>
+        <section id="anasayfa" class="tab-content active">
+            <div class="text-center space-y-12">
+                <div class="relative inline-block group">
+                    <div class="absolute inset-0 bg-blue-500 blur-3xl opacity-10 group-hover:opacity-20 transition-opacity"></div>
+                    <img src="logo.png" class="relative w-48 h-48 mx-auto rounded-full object-cover border-4 border-white/5 shadow-2xl" onerror="this.src='https://via.placeholder.com/192/3b82f6/FFFFFF?text=A'">
+                </div>
+                <h1 class="text-8xl md:text-9xl font-black tracking-[ -0.05em] text-white leading-[0.85]">
+                    YENİ BİR <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-br from-blue-500 via-cyan-400 to-blue-600">VIZYON.</span>
+                </h1>
+                <p class="max-w-2xl mx-auto text-lg text-gray-400 font-medium leading-relaxed">
+                    Minecraft ve GTA V dünyasına teknolojik bir dokunuş. Performans ve estetiğin buluştuğu dijital ekosistemi keşfedin.
+                </p>
+                <div class="flex flex-wrap justify-center gap-6 pt-8">
+                    <button onclick="showTab('projeler')" class="group relative px-12 py-5 bg-white text-black font-black rounded-2xl overflow-hidden transition-all">
+                        <span class="relative z-10">PROJELERİ İNCELE</span>
+                        <div class="absolute inset-0 bg-gray-200 translate-y-full group-hover:translate-y-0 transition-transform"></div>
+                    </button>
+                    <button onclick="showTab('discord')" class="px-12 py-5 glass-card font-black rounded-2xl hover:text-blue-500 transition-all border border-white/10">TOPLULUĞA KATIL</button>
                 </div>
             </div>
         </section>
 
         <section id="projeler" class="tab-content">
-            <h2 class="text-4xl font-black mb-12 text-center uppercase tracking-widest">Aktif Projeler</h2>
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
+                <div>
+                    <span class="text-blue-500 font-black tracking-[0.3em] uppercase text-xs">Katalog</span>
+                    <h2 class="text-5xl font-black text-white mt-2 uppercase tracking-tighter">Aktif Projeler</h2>
+                </div>
+                <p class="text-gray-500 font-medium max-w-xs">Geliştirdiğimiz tüm modlar ve scriptler dünya standartlarında optimize edilmiştir.</p>
+            </div>
             <div class="grid md:grid-cols-3 gap-8">
-                <div class="group p-8 rounded-[2.5rem] dark:bg-white/5 bg-white border border-gray-200 dark:border-white/10 hover:border-blue-500 transition-all card-shadow">
-                    <div class="w-16 h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center text-3xl mb-6">🚀</div>
-                    <h4 class="font-black text-2xl mb-3">OptiFlow</h4>
-                    <p class="text-sm opacity-60 mb-6">Minecraft dünyasında FPS sorunlarına son veren, estetik ve performansı birleştiren özel mod paketi.</p>
-                    <a href="https://www.curseforge.com/minecraft/modpacks/optiflow" target="_blank" class="inline-flex items-center gap-2 font-bold text-blue-500 hover:gap-4 transition-all uppercase text-xs">İncele <span class="text-xl">→</span></a>
+                <div class="glass-card p-10 rounded-[2.5rem] group">
+                    <div class="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">🚀</div>
+                    <h4 class="font-black text-2xl text-white mb-4">OptiFlow</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-8 italic">"Sıfır gecikme, maksimum estetik."</p>
+                    <a href="https://www.curseforge.com/minecraft/modpacks/optiflow" target="_blank" class="inline-flex items-center gap-3 font-bold text-blue-500 hover:gap-5 transition-all uppercase text-[10px] tracking-widest">
+                        CURSEFORGE'DA GÖR <span>→</span>
+                    </a>
                 </div>
-                <div class="p-8 rounded-[2.5rem] dark:bg-white/5 bg-white border-2 border-yellow-500/20 card-shadow">
-                    <div class="w-16 h-16 bg-yellow-500/20 rounded-2xl flex items-center justify-center text-3xl mb-6">⚔️</div>
-                    <h4 class="font-black text-2xl mb-3">Sword Craft</h4>
-                    <p class="text-sm opacity-60 mb-6">Gelişmiş maden sistemleri ve efsanevi kılıçlar içeren RPG odaklı Minecraft içeriği.</p>
-                    <span class="px-4 py-2 bg-yellow-500/10 text-yellow-500 rounded-full text-[10px] font-black tracking-widest uppercase">Geliştiriliyor</span>
+                <div class="glass-card p-10 rounded-[2.5rem] border-yellow-500/20">
+                    <div class="w-16 h-16 bg-yellow-500/10 rounded-2xl flex items-center justify-center text-3xl mb-8">⚔️</div>
+                    <h4 class="font-black text-2xl text-white mb-4">Sword Craft</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-8">RPG mekaniklerini Minecraft'a taşıyan efsanevi kılıçlar serisi.</p>
+                    <span class="px-4 py-1.5 bg-yellow-500/10 text-yellow-500 rounded-full text-[9px] font-black tracking-widest uppercase">Geliştirme Aşamasında</span>
                 </div>
-                <div class="p-8 rounded-[2.5rem] dark:bg-white/5 bg-white border border-gray-200 dark:border-white/10 card-shadow">
-                    <div class="w-16 h-16 bg-cyan-500/20 rounded-2xl flex items-center justify-center text-3xl mb-6">🕵️</div>
-                    <h4 class="font-black text-2xl mb-3">GTA V Script</h4>
-                    <p class="text-sm opacity-60 mb-6">Gizli tutulan, oyun içi mekanikleri değiştirecek devasa bir proje.</p>
-                    <span class="px-4 py-2 bg-blue-500/10 text-blue-500 rounded-full text-[10px] font-black tracking-widest uppercase">Yakında</span>
+                <div class="glass-card p-10 rounded-[2.5rem] border-cyan-500/20">
+                    <div class="w-16 h-16 bg-cyan-500/10 rounded-2xl flex items-center justify-center text-3xl mb-8">🕵️</div>
+                    <h4 class="font-black text-2xl text-white mb-4">GTA V Script</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-8">Oyunun kurallarını yeniden yazan gelişmiş mekanikler.</p>
+                    <span class="px-4 py-1.5 bg-cyan-500/10 text-cyan-500 rounded-full text-[9px] font-black tracking-widest uppercase">Çok Yakında</span>
                 </div>
             </div>
-        </section>
-
-        <section id="indirmeler" class="tab-content text-center py-20">
-            <div class="max-w-xl mx-auto border-2 border-dashed border-gray-500/30 p-16 rounded-[3rem]">
-                <div class="text-6xl mb-6">📂</div>
-                <h2 class="text-3xl font-black mb-4">Dosya Merkezi</h2>
-                <p class="opacity-60">İndirme linkleri şu an doğrulanıyor. Çok yakında burada güvenli dosyalar bulacaksınız.</p>
-            </div>
-        </section>
-
-        <section id="egitim" class="tab-content py-10">
-            <h2 class="text-4xl font-black mb-10 italic">Eğitim ve Rehberler</h2>
-            <div class="bg-blue-600/5 border border-blue-500/20 p-10 rounded-3xl">
-                <h3 class="text-2xl font-bold mb-4">Nasıl Kurulur?</h3>
-                <p class="opacity-70 mb-6">OptiFlow ve diğer modlarımızın kurulum rehberleri video formatında hazırlanıyor.</p>
-                <div class="h-40 bg-black/20 rounded-2xl flex items-center justify-center border border-dashed border-blue-500/40 font-bold opacity-40 uppercase tracking-widest italic">Video İçeriği Yükleniyor...</div>
-            </div>
-        </section>
-
-        <section id="discord" class="tab-content">
-            <div class="max-w-4xl mx-auto bg-gradient-to-br from-[#5865F2] to-[#4752c4] p-16 rounded-[3rem] text-center text-white shadow-2xl shadow-[#5865F2]/40">
-                <h2 class="text-5xl font-black mb-6">Topluluğa Katılın</h2>
-                <p class="text-xl mb-12 opacity-90 leading-relaxed font-medium">Fikirlerinizi paylaşmak, anlık destek almak ve projelerimize dahil olmak için Discord sunucumuza bekliyoruz.</p>
-                <a href="https://discord.gg/wQQ7xJvfRj" target="_blank" class="bg-white text-[#5865F2] px-16 py-6 rounded-2xl font-black text-2xl transition-all hover:scale-105 hover:shadow-2xl active:scale-95 inline-block uppercase tracking-tighter">
-                    Discord Sunucumuza Katıl
-                </a>
-            </div>
-        </section>
-
-        <section id="hakkimizda" class="tab-content max-w-3xl mx-auto text-center">
-            <h2 class="text-5xl font-black mb-8 italic text-blue-600">Vizyonumuz</h2>
-            <p class="text-2xl leading-relaxed opacity-80 font-medium italic">"Biz sadece mod yapmıyoruz; oyunların ruhuna teknolojiyle yeni bir vizyon katıyoruz. ArcanthProject, sınırları zorlayanların buluşma noktasıdır."</p>
-            <div class="mt-12 w-20 h-1 bg-blue-600 mx-auto rounded-full"></div>
         </section>
 
         <section id="iletisim" class="tab-content">
-            <div class="max-w-2xl mx-auto p-1 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-[3rem] shadow-2xl">
-                <div class="dark:bg-darkBg bg-white p-12 rounded-[2.9rem]">
-                    <h2 class="text-4xl font-black mb-10 text-center tracking-tighter italic uppercase">Bize Ulaşın</h2>
-                    <form action="https://formsubmit.co/optiflow892@gmail.com" method="POST" class="grid gap-6">
+            <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8">
+                    <h2 class="text-6xl font-black text-white uppercase leading-none tracking-tighter">Bir İsteğin <br> Mi Var?</h2>
+                    <p class="text-gray-400 font-medium leading-relaxed">Projeler hakkında geri bildirim vermek veya özel bir çalışma istemek için formu doldurabilirsin.</p>
+                    <div class="flex flex-col gap-4 text-sm font-bold text-gray-500">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-blue-500">@</span>
+                            optiflow892@gmail.com
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card p-10 rounded-[3rem]">
+                    <form action="https://formsubmit.co/optiflow892@gmail.com" method="POST" class="space-y-6">
                         <input type="hidden" name="_captcha" value="false">
                         <input type="hidden" name="_next" value="https://arcanth00.github.io/arcanthproject/">
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <input type="text" name="name" placeholder="Adınız" required class="w-full dark:bg-white/5 bg-gray-100 p-5 rounded-2xl border border-transparent dark:border-white/10 outline-none focus:border-blue-500 transition-all font-bold">
-                            <input type="email" name="email" placeholder="E-Posta" required class="w-full dark:bg-white/5 bg-gray-100 p-5 rounded-2xl border border-transparent dark:border-white/10 outline-none focus:border-blue-500 transition-all font-bold">
+                        
+                        <div class="space-y-4">
+                            <input type="text" name="name" placeholder="Adınız" required class="w-full bg-white/5 p-5 rounded-2xl border border-white/5 outline-none focus:border-blue-500 transition-all font-bold text-white placeholder:text-gray-600">
+                            <input type="email" name="email" placeholder="E-Posta" required class="w-full bg-white/5 p-5 rounded-2xl border border-white/5 outline-none focus:border-blue-500 transition-all font-bold text-white placeholder:text-gray-600">
+                            <textarea name="message" rows="4" placeholder="Mesajınız" required class="w-full bg-white/5 p-5 rounded-2xl border border-white/5 outline-none focus:border-blue-500 transition-all font-bold text-white placeholder:text-gray-600 resize-none"></textarea>
                         </div>
-                        <textarea name="message" rows="5" placeholder="Mesajınız, Efendim?" required class="w-full dark:bg-white/5 bg-gray-100 p-5 rounded-2xl border border-transparent dark:border-white/10 outline-none focus:border-blue-500 transition-all font-bold"></textarea>
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white p-6 rounded-2xl font-black text-xl shadow-xl shadow-blue-600/30 transition-all uppercase active:scale-95">Mesajı İlet</button>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white p-6 rounded-2xl font-black text-sm tracking-[0.2em] transition-all uppercase active:scale-[0.98]">
+                            MESAJI GÖNDER
+                        </button>
                     </form>
                 </div>
             </div>
         </section>
 
-        </main>
+        <section id="duyurular" class="tab-content">
+            <h2 class="text-4xl font-black text-white mb-12 uppercase italic">Duyurular</h2>
+            <div class="glass-card p-12 rounded-[3rem]">
+                <span class="text-blue-500 font-black text-xs uppercase tracking-widest">Ocak 2026</span>
+                <h3 class="text-3xl font-black text-white mt-4 mb-6 uppercase">Web Altyapımız Güçlendirildi</h3>
+                <p class="text-gray-400 leading-relaxed font-medium">ArcanthProject dijital deneyimini en üst seviyeye çıkarmak için görsel motorumuzu güncelledik. Artık daha akıcı, daha modern.</p>
+            </div>
+        </section>
+
+        <section id="indirmeler" class="tab-content text-center py-20">
+            <div class="glass-card inline-block p-16 rounded-[4rem] max-w-2xl">
+                <span class="text-5xl mb-8 block">📦</span>
+                <h2 class="text-3xl font-black text-white mb-4 uppercase">Dosya Arşivi</h2>
+                <p class="text-gray-500 font-medium">Dosyalar güvenlik taramasından geçiriliyor. Çok yakında erişime açılacak.</p>
+            </div>
+        </section>
+
+        <section id="discord" class="tab-content">
+            <div class="glass-card p-20 rounded-[4rem] text-center border-blue-500/20 relative overflow-hidden">
+                <div class="absolute inset-0 bg-[#5865F2] opacity-[0.03]"></div>
+                <h2 class="text-6xl font-black text-white mb-8 tracking-tighter">BİZİMLE <br> GELİŞİN.</h2>
+                <p class="text-gray-400 max-w-xl mx-auto mb-12 font-medium">Fikirlerinizi projelere dönüştürdüğümüz, anlık destek sunduğumuz Discord sunucumuza davetlisiniz.</p>
+                <a href="https://discord.gg/wQQ7xJvfRj" target="_blank" class="px-16 py-6 bg-[#5865F2] hover:bg-[#4752c4] text-white rounded-2xl font-black text-xl transition-all inline-block uppercase tracking-tighter">
+                    Discord'a Katıl
+                </a>
+            </div>
+        </section>
+
+        <section id="hakkimizda" class="tab-content text-center space-y-12">
+            <h2 class="text-blue-500 font-black tracking-[0.4em] uppercase text-sm">Misyonumuz</h2>
+            <p class="text-4xl md:text-5xl font-black text-white leading-tight tracking-tighter italic">
+                "Biz sadece mod yapmıyoruz; dijital dünyaların sınırlarını yeniden tanımlıyoruz."
+            </p>
+            <div class="w-24 h-1 bg-gradient-to-r from-blue-600 to-cyan-400 mx-auto rounded-full"></div>
+        </section>
+
+        <section id="egitim" class="tab-content">
+            <div class="glass-card p-12 rounded-[3rem] border-blue-500/10">
+                <h2 class="text-3xl font-black text-white mb-8 uppercase italic">Akademi</h2>
+                <div class="h-64 border-2 border-dashed border-white/5 rounded-[2rem] flex items-center justify-center">
+                    <span class="text-gray-600 font-bold uppercase tracking-widest text-xs">Video İçerikleri Yakında</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
 
     <script>
-        // Sayfa Değiştirme Fonksiyonu
         function showTab(tabId) {
-            // Tüm içerikleri gizle
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            // Tüm menü linklerini sıfırla
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active-link');
-            });
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-link'));
             
-            // Seçilen içeriği göster
             const targetTab = document.getElementById(tabId);
-            if(targetTab) {
-                targetTab.classList.add('active');
-            }
+            if(targetTab) targetTab.classList.add('active');
             
-            // Menüdeki linki aktif yap
             const targetBtn = document.getElementById('btn-' + tabId);
-            if(targetBtn) {
-                targetBtn.classList.add('active-link');
-            }
+            if(targetBtn) targetBtn.classList.add('active-link');
             
-            // Sayfayı yukarı kaydır
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
-        // Tema Değiştirme Fonksiyonu
         function toggleTheme() {
             const html = document.documentElement;
             const sun = document.getElementById('theme-icon-sun');
@@ -205,14 +288,24 @@
             
             if (html.classList.contains('dark')) {
                 html.classList.replace('dark', 'light');
-                sun.classList.remove('hidden');
-                moon.classList.add('hidden');
+                sun.classList.remove('hidden'); moon.classList.add('hidden');
             } else {
                 html.classList.replace('light', 'dark');
-                sun.classList.add('hidden');
-                moon.classList.remove('hidden');
+                sun.classList.add('hidden'); moon.classList.remove('hidden');
             }
         }
+
+        // Navbar'ı kaydırma durumuna göre küçültme
+        window.onscroll = function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('h-20');
+                nav.classList.remove('h-24');
+            } else {
+                nav.classList.add('h-24');
+                nav.classList.remove('h-20');
+            }
+        };
     </script>
 </body>
 </html>
