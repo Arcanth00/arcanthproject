@@ -98,8 +98,8 @@
 <body class="dark:text-gray-200 text-gray-800 antialiased">
     <div class="bg-glow"></div>
 
-    <nav class="nav-glass fixed w-full top-0 z-50">
-        <div class="max-w-[1400px] mx-auto px-8 h-24 flex items-center justify-between">
+    <nav class="nav-glass fixed w-full top-0 z-50 transition-all duration-300 h-24">
+        <div class="max-w-[1400px] mx-auto px-8 h-full flex items-center justify-between">
             <div class="flex items-center gap-4 cursor-pointer group" onclick="showTab('anasayfa')">
                 <div class="logo-ring">
                     <img src="logo.png" class="w-12 h-12 rounded-full object-cover shadow-lg" onerror="this.src='https://via.placeholder.com/48/3b82f6/FFFFFF?text=A'">
@@ -126,7 +126,7 @@
                     <span id="theme-icon-sun" class="hidden">☀️</span>
                     <span id="theme-icon-moon">🌙</span>
                 </button>
-                <button onclick="alert('Giriş sistemi şu an geliştirme aşamasındadır. Çok yakında aktif edilecektir.')" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-8 py-3 rounded-full text-xs font-black shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all uppercase tracking-widest active:scale-95">
+                <button onclick="alert('Giriş sistemi şu an geliştirme aşamasındadır.')" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-8 py-3 rounded-full text-xs font-black shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all uppercase tracking-widest active:scale-95">
                     Giriş
                 </button>
             </div>
@@ -139,21 +139,20 @@
             <div class="text-center space-y-12">
                 <div class="relative inline-block group">
                     <div class="absolute inset-0 bg-blue-500 blur-3xl opacity-10 group-hover:opacity-20 transition-opacity"></div>
-                    <img src="logo.png" class="relative w-48 h-48 mx-auto rounded-full object-cover border-4 border-white/5 shadow-2xl" onerror="this.src='https://via.placeholder.com/192/3b82f6/FFFFFF?text=A'">
+                    <img src="logo.png" class="relative w-40 h-40 mx-auto rounded-full object-cover border-4 border-white/5 shadow-2xl" onerror="this.src='https://via.placeholder.com/160/3b82f6/FFFFFF?text=A'">
                 </div>
-                <h1 class="text-8xl md:text-9xl font-black tracking-[ -0.05em] text-white leading-[0.85]">
+                
+                <h1 class="text-6xl md:text-7xl font-black tracking-tight text-white leading-tight uppercase">
                     YENİ BİR <br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-br from-blue-500 via-cyan-400 to-blue-600">VIZYON.</span>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-br from-blue-500 via-cyan-400 to-blue-600">VIZYON</span>
                 </h1>
-                <p class="max-w-2xl mx-auto text-lg text-gray-400 font-medium leading-relaxed">
-                    Minecraft ve GTA V dünyasına teknolojik bir dokunuş. Performans ve estetiğin buluştuğu dijital ekosistemi keşfedin.
-                </p>
-                <div class="flex flex-wrap justify-center gap-6 pt-8">
-                    <button onclick="showTab('projeler')" class="group relative px-12 py-5 bg-white text-black font-black rounded-2xl overflow-hidden transition-all">
+
+                <div class="flex flex-wrap justify-center gap-6 pt-4">
+                    <button onclick="showTab('projeler')" class="group relative px-12 py-5 bg-white text-black font-black rounded-2xl overflow-hidden transition-all text-xs tracking-widest uppercase">
                         <span class="relative z-10">PROJELERİ İNCELE</span>
                         <div class="absolute inset-0 bg-gray-200 translate-y-full group-hover:translate-y-0 transition-transform"></div>
                     </button>
-                    <button onclick="showTab('discord')" class="px-12 py-5 glass-card font-black rounded-2xl hover:text-blue-500 transition-all border border-white/10">TOPLULUĞA KATIL</button>
+                    <button onclick="showTab('discord')" class="px-12 py-5 glass-card font-black rounded-2xl hover:text-blue-500 transition-all border border-white/10 text-xs tracking-widest uppercase">TOPLULUĞA KATIL</button>
                 </div>
             </div>
         </section>
@@ -164,7 +163,7 @@
                     <span class="text-blue-500 font-black tracking-[0.3em] uppercase text-xs">Katalog</span>
                     <h2 class="text-5xl font-black text-white mt-2 uppercase tracking-tighter">Aktif Projeler</h2>
                 </div>
-                <p class="text-gray-500 font-medium max-w-xs">Geliştirdiğimiz tüm modlar ve scriptler dünya standartlarında optimize edilmiştir.</p>
+                <p class="text-gray-500 font-medium max-w-xs text-sm">Geliştirdiğimiz tüm modlar ve scriptler dünya standartlarında optimize edilmiştir.</p>
             </div>
             <div class="grid md:grid-cols-3 gap-8">
                 <div class="glass-card p-10 rounded-[2.5rem] group">
@@ -206,11 +205,10 @@
                     <form action="https://formsubmit.co/optiflow892@gmail.com" method="POST" class="space-y-6">
                         <input type="hidden" name="_captcha" value="false">
                         <input type="hidden" name="_next" value="https://arcanth00.github.io/arcanthproject/">
-                        
                         <div class="space-y-4">
-                            <input type="text" name="name" placeholder="Adınız" required class="w-full bg-white/5 p-5 rounded-2xl border border-white/5 outline-none focus:border-blue-500 transition-all font-bold text-white placeholder:text-gray-600">
-                            <input type="email" name="email" placeholder="E-Posta" required class="w-full bg-white/5 p-5 rounded-2xl border border-white/5 outline-none focus:border-blue-500 transition-all font-bold text-white placeholder:text-gray-600">
-                            <textarea name="message" rows="4" placeholder="Mesajınız" required class="w-full bg-white/5 p-5 rounded-2xl border border-white/5 outline-none focus:border-blue-500 transition-all font-bold text-white placeholder:text-gray-600 resize-none"></textarea>
+                            <input type="text" name="name" placeholder="Adınız" required class="w-full bg-white/5 p-5 rounded-2xl border border-white/5 outline-none focus:border-blue-500 transition-all font-bold text-white placeholder:text-gray-600 text-sm">
+                            <input type="email" name="email" placeholder="E-Posta" required class="w-full bg-white/5 p-5 rounded-2xl border border-white/5 outline-none focus:border-blue-500 transition-all font-bold text-white placeholder:text-gray-600 text-sm">
+                            <textarea name="message" rows="4" placeholder="Mesajınız" required class="w-full bg-white/5 p-5 rounded-2xl border border-white/5 outline-none focus:border-blue-500 transition-all font-bold text-white placeholder:text-gray-600 text-sm resize-none"></textarea>
                         </div>
                         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white p-6 rounded-2xl font-black text-sm tracking-[0.2em] transition-all uppercase active:scale-[0.98]">
                             MESAJI GÖNDER
@@ -225,7 +223,7 @@
             <div class="glass-card p-12 rounded-[3rem]">
                 <span class="text-blue-500 font-black text-xs uppercase tracking-widest">Ocak 2026</span>
                 <h3 class="text-3xl font-black text-white mt-4 mb-6 uppercase">Web Altyapımız Güçlendirildi</h3>
-                <p class="text-gray-400 leading-relaxed font-medium">ArcanthProject dijital deneyimini en üst seviyeye çıkarmak için görsel motorumuzu güncelledik. Artık daha akıcı, daha modern.</p>
+                <p class="text-gray-400 leading-relaxed font-medium text-sm">ArcanthProject dijital deneyimini en üst seviyeye çıkarmak için görsel motorumuzu güncelledik. Artık daha akıcı, daha modern.</p>
             </div>
         </section>
 
@@ -233,15 +231,15 @@
             <div class="glass-card inline-block p-16 rounded-[4rem] max-w-2xl">
                 <span class="text-5xl mb-8 block">📦</span>
                 <h2 class="text-3xl font-black text-white mb-4 uppercase">Dosya Arşivi</h2>
-                <p class="text-gray-500 font-medium">Dosyalar güvenlik taramasından geçiriliyor. Çok yakında erişime açılacak.</p>
+                <p class="text-gray-500 font-medium text-sm">Dosyalar güvenlik taramasından geçiriliyor. Çok yakında erişime açılacak.</p>
             </div>
         </section>
 
         <section id="discord" class="tab-content">
             <div class="glass-card p-20 rounded-[4rem] text-center border-blue-500/20 relative overflow-hidden">
                 <div class="absolute inset-0 bg-[#5865F2] opacity-[0.03]"></div>
-                <h2 class="text-6xl font-black text-white mb-8 tracking-tighter">BİZİMLE <br> GELİŞİN.</h2>
-                <p class="text-gray-400 max-w-xl mx-auto mb-12 font-medium">Fikirlerinizi projelere dönüştürdüğümüz, anlık destek sunduğumuz Discord sunucumuza davetlisiniz.</p>
+                <h2 class="text-6xl font-black text-white mb-8 tracking-tighter uppercase">BİZİMLE <br> GELİŞİN</h2>
+                <p class="text-gray-400 max-w-xl mx-auto mb-12 font-medium text-sm">Fikirlerinizi projelere dönüştürdüğümüz, anlık destek sunduğumuz Discord sunucumuza davetlisiniz.</p>
                 <a href="https://discord.gg/wQQ7xJvfRj" target="_blank" class="px-16 py-6 bg-[#5865F2] hover:bg-[#4752c4] text-white rounded-2xl font-black text-xl transition-all inline-block uppercase tracking-tighter">
                     Discord'a Katıl
                 </a>
@@ -250,7 +248,7 @@
 
         <section id="hakkimizda" class="tab-content text-center space-y-12">
             <h2 class="text-blue-500 font-black tracking-[0.4em] uppercase text-sm">Misyonumuz</h2>
-            <p class="text-4xl md:text-5xl font-black text-white leading-tight tracking-tighter italic">
+            <p class="text-4xl md:text-5xl font-black text-white leading-tight tracking-tighter italic uppercase">
                 "Biz sadece mod yapmıyoruz; dijital dünyaların sınırlarını yeniden tanımlıyoruz."
             </p>
             <div class="w-24 h-1 bg-gradient-to-r from-blue-600 to-cyan-400 mx-auto rounded-full"></div>
@@ -260,7 +258,7 @@
             <div class="glass-card p-12 rounded-[3rem] border-blue-500/10">
                 <h2 class="text-3xl font-black text-white mb-8 uppercase italic">Akademi</h2>
                 <div class="h-64 border-2 border-dashed border-white/5 rounded-[2rem] flex items-center justify-center">
-                    <span class="text-gray-600 font-bold uppercase tracking-widest text-xs">Video İçerikleri Yakında</span>
+                    <span class="text-gray-600 font-bold uppercase tracking-widest text-[10px]">Video İçerikleri Yakında</span>
                 </div>
             </div>
         </section>
@@ -295,15 +293,16 @@
             }
         }
 
-        // Navbar'ı kaydırma durumuna göre küçültme
         window.onscroll = function() {
             const nav = document.querySelector('nav');
             if (window.scrollY > 50) {
                 nav.classList.add('h-20');
                 nav.classList.remove('h-24');
+                nav.classList.add('shadow-2xl');
             } else {
                 nav.classList.add('h-24');
                 nav.classList.remove('h-20');
+                nav.classList.remove('shadow-2xl');
             }
         };
     </script>
