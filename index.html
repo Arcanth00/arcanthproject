@@ -424,8 +424,8 @@
         <section id="anasayfa" class="tab-content active">
             <!-- Hero Section -->
             <div class="text-center space-y-12 relative min-h-[80vh] flex flex-col items-center justify-center">
-                <div class="inline-flex items-center gap-3 px-8 py-3.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] shadow-[0_0_30px_-5px_rgba(59,130,246,0.3)] animate-bounce reveal">
-                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_15px_#3b82f6] "></span> OptiFlow V1.2 Yayında!
+                <div class="inline-flex items-center gap-3 px-8 py-3.5 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-400 text-[10px] font-black uppercase tracking-[0.2em] shadow-[0_0_30px_-5px_rgba(168,85,247,0.3)] animate-bounce reveal">
+                    <span class="w-2.5 h-2.5 rounded-full bg-purple-500 shadow-[0_0_15px_#a855f7]"></span> Carbonium Beta Yayında!
                 </div>
                 
                 <h1 class="text-6xl md:text-[140px] font-black tracking-tight leading-[0.9] uppercase italic reveal" style="animation-delay: 0.2s;">
@@ -454,93 +454,128 @@
             <!-- Featured Project Highlight -->
             <div class="mt-32 reveal">
                 <h2 class="text-5xl md:text-7xl font-black italic uppercase tracking-tighter mb-16 text-center">
-                    <span class="text-blue-500">ÖNE ÇIKAN</span> PROJE
+                    <span class="text-blue-500">ÖNE ÇIKAN</span> PROJELER
                 </h2>
-                <div class="glass-card p-12 md:p-20 rounded-[4rem] group relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-transparent to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                    
-                    <div class="flex flex-col lg:flex-row gap-16 items-center relative z-10">
-                        <div class="w-64 h-64 md:w-80 md:h-80 rounded-[3.5rem] shadow-2xl group-hover:rotate-3 transition-all duration-700 border border-white/10 relative overflow-hidden"
-                             style="background-image: url('optiflow.png'); background-size: cover; background-position: center;">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        </div>
+                
+                <!-- Featured Projects Grid -->
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- OptiFlow Featured Card -->
+                    <div class="glass-card p-10 rounded-[3rem] group relative overflow-hidden hover:border-blue-500/50 transition-all flex flex-col">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-purple-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                         
-                        <div class="flex-1 space-y-8 text-center lg:text-left">
-                            <div class="flex flex-wrap justify-center lg:justify-start items-center gap-6">
-                                <h3 class="text-6xl font-black uppercase italic tracking-tighter">OptiFlow</h3>
-                                <span class="px-6 py-2 bg-green-500/10 text-green-400 text-[10px] font-black rounded-full uppercase border border-green-500/20 shadow-lg ">YAYINDA</span>
+                        <div class="relative z-10 space-y-6 flex-1 flex flex-col">
+                            <div class="flex items-center justify-between">
+                                <div class="w-20 h-20 rounded-2xl overflow-hidden border-2 border-blue-500/30"
+                                     style="background-image: url('optiflow.png'); background-size: cover; background-position: center;">
+                                </div>
+                                <div class="flex gap-2">
+                                    <span class="px-4 py-1 bg-green-500 text-white text-xs font-black rounded-full uppercase">Live</span>
+                                    <span class="px-4 py-1 bg-blue-500/20 text-blue-400 text-xs font-black rounded-full uppercase">Release</span>
+                                    <span class="px-4 py-1 bg-blue-500/20 text-blue-400 text-xs font-black rounded-full uppercase">v1.3</span>
+                                </div>
                             </div>
-                            
-                            <p class="text-gray-400 text-2xl leading-relaxed italic font-light">
-                                Minecraft deneyiminizi kökten değiştiren optimizasyon motoru. <span class="text-white font-bold">%40 daha fazla FPS</span> ve ultra-düşük gecikme.
+
+                            <div>
+                                <h3 class="text-4xl md:text-5xl font-black uppercase italic tracking-tighter bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                                    OptiFlow
+                                </h3>
+                                <p class="text-gray-500 text-xs uppercase tracking-widest font-black mt-1">
+                                    Premium Optimization Pack
+                                </p>
+                            </div>
+
+                            <p class="text-gray-400 leading-relaxed">
+                                Fabric için optimize edilmiş modpack. %40+ FPS artışı, sıfır gecikme, maksimum stabilite.
                             </p>
-                            
-                            <!-- OptiFlow Features -->
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <div class="glass-card p-6 rounded-2xl space-y-3 border border-blue-500/20">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-xl">⚡</div>
-                                        <h4 class="font-black text-lg">Yüksek Performans</h4>
-                                    </div>
-                                    <p class="text-gray-400 text-sm">Optimize kod yapısı ile %40'a varan FPS artışı</p>
-                                </div>
 
-                                <div class="glass-card p-6 rounded-2xl space-y-3 border border-blue-500/20">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-xl">🛡️</div>
-                                        <h4 class="font-black text-lg">Güvenli & Stabil</h4>
-                                    </div>
-                                    <p class="text-gray-400 text-sm">Kapsamlı testlerden geçmiş, çökme yok</p>
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="glass-card p-4 rounded-xl text-center border border-blue-500/20">
+                                    <div class="text-2xl font-black text-blue-500">%40+</div>
+                                    <p class="text-[10px] text-gray-500 uppercase font-black mt-1">FPS</p>
                                 </div>
-
-                                <div class="glass-card p-6 rounded-2xl space-y-3 border border-blue-500/20">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-xl">🎯</div>
-                                        <h4 class="font-black text-lg">Kolay Kurulum</h4>
-                                    </div>
-                                    <p class="text-gray-400 text-sm">Tek tık kurulum, dakikalar içinde hazır</p>
+                                <div class="glass-card p-4 rounded-xl text-center border border-blue-500/20">
+                                    <div class="text-2xl font-black text-blue-500">5.0</div>
+                                    <p class="text-[10px] text-gray-500 uppercase font-black mt-1">Rating</p>
                                 </div>
-
-                                <div class="glass-card p-6 rounded-2xl space-y-3 border border-blue-500/20">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-xl">🆓</div>
-                                        <h4 class="font-black text-lg">Tamamen Ücretsiz</h4>
-                                    </div>
-                                    <p class="text-gray-400 text-sm">Premium kalite, gizli ücret yok</p>
-                                </div>
-
-                                <div class="glass-card p-6 rounded-2xl space-y-3 border border-blue-500/20">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-xl">🔄</div>
-                                        <h4 class="font-black text-lg">Düzenli Güncelleme</h4>
-                                    </div>
-                                    <p class="text-gray-400 text-sm">Her yeni sürüm için hızlı destek</p>
-                                </div>
-
-                                <div class="glass-card p-6 rounded-2xl space-y-3 border border-blue-500/20">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-xl">💬</div>
-                                        <h4 class="font-black text-lg">Discord Desteği</h4>
-                                    </div>
-                                    <p class="text-gray-400 text-sm">Hızlı yanıt süresi, aktif topluluk</p>
+                                <div class="glass-card p-4 rounded-xl text-center border border-blue-500/20">
+                                    <div class="text-2xl font-black text-blue-500">24/7</div>
+                                    <p class="text-[10px] text-gray-500 uppercase font-black mt-1">Support</p>
                                 </div>
                             </div>
-                            
-                            <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
-                                <div class="px-6 py-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
-                                    <span class="text-blue-400 font-black text-sm">✓ Fabric ModPack</span>
+
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-400 font-black text-xs">✓ Fabric</span>
+                                <span class="px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-400 font-black text-xs">✓ 1.20.1</span>
+                                <span class="px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-400 font-black text-xs">✓ 1.21.4</span>
+                            </div>
+
+                            <!-- Spacer to match Carbonium height -->
+                            <div class="h-12"></div>
+
+                            <a href="https://www.curseforge.com/minecraft/modpacks/optiflow" target="_blank" class="btn-shine w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:shadow-2xl transition-all mt-auto">
+                                <span>İNCELE</span>
+                                <span>→</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Carbonium Featured Card -->
+                    <div class="glass-card p-10 rounded-[3rem] group relative overflow-hidden hover:border-purple-500/50 transition-all flex flex-col">
+                        <div class="absolute inset-0 bg-gradient-to-br from-purple-600/10 via-orange-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                        
+                        <div class="relative z-10 space-y-6 flex-1 flex flex-col">
+                            <div class="flex items-center justify-between">
+                                <div class="w-20 h-20 bg-purple-500/10 rounded-2xl flex items-center justify-center text-4xl">
+                                    ⚔️
                                 </div>
-                                <div class="px-6 py-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
-                                    <span class="text-blue-400 font-black text-sm">✓ 1.20.1 & 1.21.4</span>
-                                </div>
-                                <div class="px-6 py-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
-                                    <span class="text-blue-400 font-black text-sm">✓ Düşük Sistem</span>
+                                <div class="flex gap-2">
+                                    <span class="px-4 py-1 bg-green-500 text-white text-xs font-black rounded-full uppercase">Live</span>
+                                    <span class="px-4 py-1 bg-yellow-500 text-white text-xs font-black rounded-full uppercase">Beta</span>
+                                    <span class="px-4 py-1 bg-purple-500/20 text-purple-400 text-xs font-black rounded-full uppercase">v1.0</span>
                                 </div>
                             </div>
-                            
-                            <div class="flex flex-wrap gap-6 pt-4">
-                                <a href="https://www.curseforge.com/minecraft/modpacks/optiflow" target="_blank" class="btn-shine inline-flex items-center gap-5 px-14 py-6 bg-white text-black font-black rounded-2xl text-[11px] uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all shadow-2xl">İNCELE →</a>
+
+                            <div>
+                                <h3 class="text-4xl md:text-5xl font-black uppercase italic tracking-tighter bg-gradient-to-r from-purple-400 to-orange-400 bg-clip-text text-transparent">
+                                    Carbonium
+                                </h3>
+                                <p class="text-gray-500 text-xs uppercase tracking-widest font-black mt-1">
+                                    Forge Mod
+                                </p>
                             </div>
+
+                            <p class="text-gray-400 leading-relaxed">
+                                Karbon temalı materyaller, aletler, silahlar, zırh ve başarımlar ekleyen kapsamlı mod.
+                            </p>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="glass-card p-4 rounded-xl border border-purple-500/20">
+                                    <div class="text-purple-400 font-black text-xs mb-1">🔷 Materyaller</div>
+                                    <p class="text-[10px] text-gray-500">Yeni bloklar</p>
+                                </div>
+                                <div class="glass-card p-4 rounded-xl border border-purple-500/20">
+                                    <div class="text-purple-400 font-black text-xs mb-1">⚒️ Aletler</div>
+                                    <p class="text-[10px] text-gray-500">Silahlar & Zırh</p>
+                                </div>
+                                <div class="glass-card p-4 rounded-xl border border-purple-500/20">
+                                    <div class="text-purple-400 font-black text-xs mb-1">📜 Craft</div>
+                                    <p class="text-[10px] text-gray-500">Yeni tarifler</p>
+                                </div>
+                                <div class="glass-card p-4 rounded-xl border border-purple-500/20">
+                                    <div class="text-purple-400 font-black text-xs mb-1">🏆 Başarım</div>
+                                    <p class="text-[10px] text-gray-500">Achievements</p>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400 font-black text-xs">✓ Forge</span>
+                                <span class="px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400 font-black text-xs">✓ Creative Tab</span>
+                            </div>
+
+                            <a href="https://www.curseforge.com/minecraft/mc-mods/carbonium" target="_blank" class="btn-shine w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-orange-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:shadow-2xl transition-all mt-auto">
+                                <span>İNCELE</span>
+                                <span>→</span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -588,7 +623,10 @@
                     
                     <div class="flex-1 space-y-10 text-center lg:text-left">
                         <div class="space-y-4">
-                            <h3 class="text-5xl md:text-7xl font-black uppercase italic tracking-tighter text-orange-500">LuaNetwork</h3>
+                            <div class="flex items-center justify-center lg:justify-start gap-4 flex-wrap">
+                                <h3 class="text-5xl md:text-7xl font-black uppercase italic tracking-tighter text-orange-500">LuaNetwork</h3>
+                                <span class="px-6 py-2 bg-blue-500/10 text-blue-400 text-xs font-black rounded-full uppercase border border-blue-500/30">Partner</span>
+                            </div>
                             <p class="text-3xl text-gray-400 italic font-bold">SkyBlock Edition</p>
                             <p class="text-xl text-gray-500 italic">Gökyüzünde hayatta kalmaya hazır mısın?</p>
                         </div>
@@ -683,69 +721,122 @@
                 </p>
             </div>
             
-            <!-- Featured: OptiFlow -->
-            <div class="glass-card p-12 md:p-24 rounded-[4rem] group relative overflow-hidden reveal">
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-purple-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                
-                <div class="flex flex-col lg:flex-row gap-20 items-center relative z-10">
-                    <div class="relative">
-                        <div class="absolute inset-0 bg-blue-500 blur-3xl opacity-30 "></div>
-                        <div class="relative w-64 h-64 md:w-80 md:h-80 rounded-[3.5rem] shadow-2xl group-hover:rotate-3 transition-all duration-700 border-4 border-blue-500/30 overflow-hidden"
-                             style="background-image: url('optiflow.png'); background-size: cover; background-position: center;">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                            <div class="absolute bottom-6 left-6 right-6">
-                                <div class="flex items-center gap-3">
-                                    <span class="px-4 py-2 bg-green-500 text-white text-xs font-black rounded-full uppercase shadow-lg ">Live</span>
-                                    <span class="px-4 py-2 bg-white/20 backdrop-blur-xl text-white text-xs font-black rounded-full uppercase">v1.2</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Featured Projects Grid -->
+            <div class="grid lg:grid-cols-2 gap-8 reveal">
+                <!-- OptiFlow Card -->
+                <div class="glass-card p-10 rounded-[3rem] group relative overflow-hidden hover:border-blue-500/50 transition-all flex flex-col">
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-purple-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                     
-                    <div class="flex-1 space-y-10 text-center lg:text-left">
-                        <div class="space-y-4">
-                            <h3 class="text-6xl md:text-7xl font-black uppercase italic tracking-tighter bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
-                                OptiFlow
-                            </h3>
-                            <p class="text-gray-500 text-sm uppercase tracking-[0.3em] font-black">
-                                Premium Optimization Pack
-                            </p>
-                            <p class="text-gray-400 text-2xl leading-relaxed italic font-light">
-                                Minecraft'ın gerçek potansiyelini ortaya çıkarın. Fabric için optimize edilmiş <span class="text-white font-bold">modpack</span> ile %40 FPS artışı, sıfır gecikme, maksimum stabilite.
-                            </p>
-                        </div>
-                        
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            <div class="glass-card p-6 rounded-2xl text-center border border-blue-500/20">
-                                <div class="text-3xl font-black text-blue-500 text-3xl font-black text-blue-500" >0</div>
-                                <p class="text-xs text-gray-500 uppercase font-black mt-2">% FPS Boost</p>
+                    <div class="relative z-10 space-y-6 flex-1 flex flex-col">
+                        <div class="flex items-center justify-between">
+                            <div class="w-20 h-20 rounded-2xl overflow-hidden border-2 border-blue-500/30"
+                                 style="background-image: url('optiflow.png'); background-size: cover; background-position: center;">
                             </div>
-                            <div class="glass-card p-6 rounded-2xl text-center border border-blue-500/20">
-                                <div class="text-3xl font-black text-blue-500">5.0</div>
-                                <p class="text-xs text-gray-500 uppercase font-black mt-2">Rating</p>
-                            </div>
-                            <div class="glass-card p-6 rounded-2xl text-center border border-blue-500/20">
-                                <div class="text-3xl font-black text-blue-500">24/7</div>
-                                <p class="text-xs text-gray-500 uppercase font-black mt-2">Support</p>
+                            <div class="flex gap-2">
+                                <span class="px-4 py-1 bg-green-500 text-white text-xs font-black rounded-full uppercase">Live</span>
+                                <span class="px-4 py-1 bg-blue-500/20 text-blue-400 text-xs font-black rounded-full uppercase">Release</span>
+                                <span class="px-4 py-1 bg-blue-500/20 text-blue-400 text-xs font-black rounded-full uppercase">v1.3</span>
                             </div>
                         </div>
 
-                        <div class="flex flex-wrap gap-4">
-                            <div class="px-6 py-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
-                                <span class="text-blue-400 font-black text-sm">✓ Fabric ModPack</span>
+                        <div>
+                            <h3 class="text-4xl md:text-5xl font-black uppercase italic tracking-tighter bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                                OptiFlow
+                            </h3>
+                            <p class="text-gray-500 text-xs uppercase tracking-widest font-black mt-1">
+                                Premium Optimization Pack
+                            </p>
+                        </div>
+
+                        <p class="text-gray-400 leading-relaxed">
+                            Fabric için optimize edilmiş modpack. %40+ FPS artışı, sıfır gecikme, maksimum stabilite.
+                        </p>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="glass-card p-4 rounded-xl text-center border border-blue-500/20">
+                                <div class="text-2xl font-black text-blue-500">%40+</div>
+                                <p class="text-[10px] text-gray-500 uppercase font-black mt-1">FPS</p>
                             </div>
-                            <div class="px-6 py-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
-                                <span class="text-blue-400 font-black text-sm">✓ 1.20.1</span>
+                            <div class="glass-card p-4 rounded-xl text-center border border-blue-500/20">
+                                <div class="text-2xl font-black text-blue-500">5.0</div>
+                                <p class="text-[10px] text-gray-500 uppercase font-black mt-1">Rating</p>
                             </div>
-                            <div class="px-6 py-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
-                                <span class="text-blue-400 font-black text-sm">✓ 1.21.4</span>
-                            </div>
-                            <div class="px-6 py-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
-                                <span class="text-blue-400 font-black text-sm">✓ Low-End PC</span>
+                            <div class="glass-card p-4 rounded-xl text-center border border-blue-500/20">
+                                <div class="text-2xl font-black text-blue-500">24/7</div>
+                                <p class="text-[10px] text-gray-500 uppercase font-black mt-1">Support</p>
                             </div>
                         </div>
-                        
-                        <a href="https://www.curseforge.com/minecraft/modpacks/optiflow" target="_blank" class="btn-shine inline-flex items-center gap-5 px-14 py-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:shadow-2xl transition-all">
+
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-400 font-black text-xs">✓ Fabric</span>
+                            <span class="px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-400 font-black text-xs">✓ 1.20.1</span>
+                            <span class="px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-400 font-black text-xs">✓ 1.21.4</span>
+                        </div>
+
+                        <!-- Spacer to match Carbonium height -->
+                        <div class="h-12"></div>
+
+                        <a href="https://www.curseforge.com/minecraft/modpacks/optiflow" target="_blank" class="btn-shine w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:shadow-2xl transition-all mt-auto">
+                            <span>İNCELE</span>
+                            <span>→</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Carbonium Card -->
+                <div class="glass-card p-10 rounded-[3rem] group relative overflow-hidden hover:border-purple-500/50 transition-all flex flex-col">
+                    <div class="absolute inset-0 bg-gradient-to-br from-purple-600/10 via-orange-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    
+                    <div class="relative z-10 space-y-6 flex-1 flex flex-col">
+                        <div class="flex items-center justify-between">
+                            <div class="w-20 h-20 bg-purple-500/10 rounded-2xl flex items-center justify-center text-4xl">
+                                ⚔️
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="px-4 py-1 bg-green-500 text-white text-xs font-black rounded-full uppercase">Live</span>
+                                <span class="px-4 py-1 bg-yellow-500 text-white text-xs font-black rounded-full uppercase">Beta</span>
+                                <span class="px-4 py-1 bg-purple-500/20 text-purple-400 text-xs font-black rounded-full uppercase">v1.0</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-4xl md:text-5xl font-black uppercase italic tracking-tighter bg-gradient-to-r from-purple-400 to-orange-400 bg-clip-text text-transparent">
+                                Carbonium
+                            </h3>
+                            <p class="text-gray-500 text-xs uppercase tracking-widest font-black mt-1">
+                                Forge Mod
+                            </p>
+                        </div>
+
+                        <p class="text-gray-400 leading-relaxed">
+                            Karbon temalı materyaller, aletler, silahlar, zırh ve başarımlar ekleyen kapsamlı mod.
+                        </p>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="glass-card p-4 rounded-xl border border-purple-500/20">
+                                <div class="text-purple-400 font-black text-xs mb-1">🔷 Materyaller</div>
+                                <p class="text-[10px] text-gray-500">Yeni bloklar</p>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl border border-purple-500/20">
+                                <div class="text-purple-400 font-black text-xs mb-1">⚒️ Aletler</div>
+                                <p class="text-[10px] text-gray-500">Silahlar & Zırh</p>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl border border-purple-500/20">
+                                <div class="text-purple-400 font-black text-xs mb-1">📜 Craft</div>
+                                <p class="text-[10px] text-gray-500">Yeni tarifler</p>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl border border-purple-500/20">
+                                <div class="text-purple-400 font-black text-xs mb-1">🏆 Başarım</div>
+                                <p class="text-[10px] text-gray-500">Achievements</p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400 font-black text-xs">✓ Forge</span>
+                            <span class="px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400 font-black text-xs">✓ Creative Tab</span>
+                        </div>
+
+                        <a href="https://www.curseforge.com/minecraft/mc-mods/carbonium" target="_blank" class="btn-shine w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-orange-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:shadow-2xl transition-all mt-auto">
                             <span>İNCELE</span>
                             <span>→</span>
                         </a>
@@ -763,25 +854,6 @@
                 </div>
                 
                 <div class="grid md:grid-cols-2 gap-8">
-                    <div class="glass-card p-12 rounded-[3.5rem] border border-purple-500/20 group hover:border-purple-500/50 transition-all relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl"></div>
-                        <div class="relative space-y-6">
-                            <div class="w-20 h-20 bg-purple-500/10 rounded-3xl flex items-center justify-center text-5xl group-hover:scale-110 transition-transform">
-                                ⚔️
-                            </div>
-                            <div>
-                                <h4 class="text-4xl font-black uppercase italic mb-3">Ingot&Sword Craft</h4>
-                                <p class="text-gray-400 text-lg italic leading-relaxed">
-                                    Derin crafting mekanikleri, gelişmiş silah sistemi ve yeni combat deneyimi. Sadece Forge için optimize edilmiş mod.
-                                </p>
-                            </div>
-                            <div class="flex flex-wrap gap-3">
-                                <span class="px-5 py-2 bg-purple-500/10 text-purple-400 text-xs font-black rounded-full uppercase border border-purple-500/20">Forge Mod</span>
-                                <span class="px-5 py-2 bg-yellow-500/10 text-yellow-400 text-xs font-black rounded-full uppercase border border-yellow-500/20">Coming Soon</span>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="glass-card p-12 rounded-[3.5rem] border border-purple-500/20 group hover:border-purple-500/50 transition-all relative overflow-hidden">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl"></div>
                         <div class="relative space-y-6">
@@ -826,6 +898,7 @@
         </section>
 
         <section id="duyurular" class="tab-content space-y-20">
+        <section id="duyurular" class="tab-content space-y-20">
             <div class="text-center space-y-8 reveal">
                 <div class="inline-block px-8 py-3 bg-green-500/10 border border-green-500/30 rounded-full">
                     <span class="text-green-500 font-black text-xs uppercase tracking-[0.3em]">📢 Haberler</span>
@@ -838,151 +911,145 @@
                 </p>
             </div>
 
-            <!-- Timeline -->
-            <div class="relative space-y-12 reveal">
-                <!-- Timeline Line -->
-                <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-emerald-500 via-cyan-500 via-green-500 via-blue-500 to-purple-500 opacity-20"></div>
-
-                <!-- Announcement 0 - NEW OptiFlow v1.3 -->
-                <div class="relative">
-                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-emerald-500 rounded-full border-4 border-darkBg z-10 glow-pulse"></div>
+            <!-- Announcements Grid -->
+            <div class="grid md:grid-cols-2 gap-8 reveal">
+                
+                <!-- Card 1: Carbonium Beta -->
+                <div class="glass-card p-10 rounded-[3rem] group relative overflow-hidden hover:border-purple-500/50 transition-all">
+                    <div class="absolute inset-0 bg-gradient-to-br from-purple-600/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                     
-                    <div class="md:ml-[calc(50%+3rem)] glass-card p-12 rounded-[3.5rem] border-l-8 border-l-emerald-500 group hover:border-l-emerald-400 transition-all">
-                        <div class="flex items-start justify-between flex-wrap gap-6 mb-6">
-                            <div class="space-y-2">
-                                <span class="inline-block px-5 py-2 bg-emerald-500/10 text-emerald-400 text-xs font-black rounded-full uppercase tracking-widest border border-emerald-500/20">
-                                    26 Ocak 2026
-                                </span>
-                                <h3 class="text-4xl md:text-5xl font-black uppercase italic">
-                                    OptiFlow v1.3 Yayında!
-                                </h3>
+                    <div class="relative z-10 space-y-6">
+                        <div class="flex items-start justify-between">
+                            <div class="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
+                                ⚔️
                             </div>
-                            <div class="text-6xl">🎯</div>
+                            <span class="px-4 py-2 bg-purple-500/10 text-purple-400 text-xs font-black rounded-full uppercase border border-purple-500/20">
+                                26 Ocak 2026
+                            </span>
                         </div>
-                        <p class="text-gray-400 text-xl leading-relaxed italic mb-6">
+
+                        <div>
+                            <h3 class="text-3xl font-black uppercase italic mb-2">
+                                Carbonium Beta CurseForge'de!
+                            </h3>
+                        </div>
+
+                        <p class="text-gray-400 leading-relaxed">
+                            <span class="text-purple-500 font-bold">Carbonium Beta</span> artık CurseForge'de! Karbon temalı materyaller, aletler, silahlar, zırh ve başarımlar ile Minecraft deneyiminizi geliştirin. Forge için optimize edilmiş yeni modumuz test aşamasında!
+                        </p>
+
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-4 py-2 bg-purple-500/10 text-purple-400 text-xs font-black rounded-xl">Beta</span>
+                            <span class="px-4 py-2 bg-orange-500/10 text-orange-400 text-xs font-black rounded-xl">Forge Mod</span>
+                            <span class="px-4 py-2 bg-green-500/10 text-green-400 text-xs font-black rounded-xl">CurseForge</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: OptiFlow v1.3 -->
+                <div class="glass-card p-10 rounded-[3rem] group relative overflow-hidden hover:border-emerald-500/50 transition-all">
+                    <div class="absolute inset-0 bg-gradient-to-br from-emerald-600/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    
+                    <div class="relative z-10 space-y-6">
+                        <div class="flex items-start justify-between">
+                            <div class="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
+                                🎯
+                            </div>
+                            <span class="px-4 py-2 bg-emerald-500/10 text-emerald-400 text-xs font-black rounded-full uppercase border border-emerald-500/20">
+                                26 Ocak 2026
+                            </span>
+                        </div>
+
+                        <div>
+                            <h3 class="text-3xl font-black uppercase italic mb-2">
+                                OptiFlow v1.3 Yayında!
+                            </h3>
+                        </div>
+
+                        <p class="text-gray-400 leading-relaxed">
                             <span class="text-emerald-500 font-bold">OptiFlow v1.3</span> yayınlandı! Büyük adım: Minecraft sürümünü <span class="text-white font-bold">1.21.4'e yükselttik</span>. Daha stabil, daha optimize edilmiş performans ve güncel özellikler!
                         </p>
-                        <div class="flex flex-wrap gap-4">
-                            <span class="px-5 py-2 bg-emerald-500/10 text-emerald-400 text-sm font-black rounded-xl">v1.3</span>
-                            <span class="px-5 py-2 bg-blue-500/10 text-blue-400 text-sm font-black rounded-xl">MC 1.21.4</span>
-                            <span class="px-5 py-2 bg-purple-500/10 text-purple-400 text-sm font-black rounded-xl">Latest</span>
+
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-4 py-2 bg-emerald-500/10 text-emerald-400 text-xs font-black rounded-xl">v1.3</span>
+                            <span class="px-4 py-2 bg-blue-500/10 text-blue-400 text-xs font-black rounded-xl">MC 1.21.4</span>
+                            <span class="px-4 py-2 bg-purple-500/10 text-purple-400 text-xs font-black rounded-xl">Latest</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Announcement 1 - GUI Update -->
-                <div class="relative">
-                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-cyan-500 rounded-full border-4 border-darkBg z-10"></div>
+                <!-- Card 3: Büyük Arayüz Güncellemesi -->
+                <div class="glass-card p-10 rounded-[3rem] group relative overflow-hidden hover:border-cyan-500/50 transition-all">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-600/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                     
-                    <div class="md:mr-[calc(50%+3rem)] md:text-right glass-card p-12 rounded-[3.5rem] border-r-8 border-r-cyan-500 group hover:border-r-cyan-400 transition-all">
-                        <div class="flex items-start justify-between flex-wrap gap-6 mb-6 md:flex-row-reverse">
-                            <div class="space-y-2">
-                                <span class="inline-block px-5 py-2 bg-cyan-500/10 text-cyan-400 text-xs font-black rounded-full uppercase tracking-widest border border-cyan-500/20">
-                                    26 Ocak 2026
-                                </span>
-                                <h3 class="text-4xl md:text-5xl font-black uppercase italic">
-                                    Büyük Arayüz Güncellemesi
-                                </h3>
+                    <div class="relative z-10 space-y-6">
+                        <div class="flex items-start justify-between">
+                            <div class="w-16 h-16 bg-cyan-500/10 rounded-2xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
+                                🎨
                             </div>
-                            <div class="text-6xl">🎨</div>
+                            <span class="px-4 py-2 bg-cyan-500/10 text-cyan-400 text-xs font-black rounded-full uppercase border border-cyan-500/20">
+                                26 Ocak 2026
+                            </span>
                         </div>
-                        <p class="text-gray-400 text-xl leading-relaxed italic mb-6">
+
+                        <div>
+                            <h3 class="text-3xl font-black uppercase italic mb-2">
+                                Büyük Arayüz Güncellemesi
+                            </h3>
+                        </div>
+
+                        <p class="text-gray-400 leading-relaxed">
                             Web sitemiz <span class="text-cyan-500 font-bold">tamamen yenilendi</span>! Modern tasarım, gelişmiş animasyonlar, optimize edilmiş kullanıcı deneyimi. Her sayfa baştan tasarlandı - projelerimizi keşfetmek artık çok daha keyifli.
                         </p>
-                        <div class="flex flex-wrap gap-4 md:justify-end">
-                            <span class="px-5 py-2 bg-cyan-500/10 text-cyan-400 text-sm font-black rounded-xl">Design</span>
-                            <span class="px-5 py-2 bg-blue-500/10 text-blue-400 text-sm font-black rounded-xl">UI/UX</span>
-                            <span class="px-5 py-2 bg-purple-500/10 text-purple-400 text-sm font-black rounded-xl">Animation</span>
+
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-4 py-2 bg-cyan-500/10 text-cyan-400 text-xs font-black rounded-xl">Design</span>
+                            <span class="px-4 py-2 bg-blue-500/10 text-blue-400 text-xs font-black rounded-xl">UI/UX</span>
+                            <span class="px-4 py-2 bg-purple-500/10 text-purple-400 text-xs font-black rounded-xl">Animation</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Announcement 1 -->
-                <div class="relative">
-                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-green-500 rounded-full border-4 border-darkBg z-10 "></div>
+                <!-- Card 4: Partnerlik: LuaNetwork -->
+                <div class="glass-card p-10 rounded-[3rem] group relative overflow-hidden hover:border-green-500/50 transition-all">
+                    <div class="absolute inset-0 bg-gradient-to-br from-green-600/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                     
-                    <div class="md:ml-[calc(50%+3rem)] glass-card p-12 rounded-[3.5rem] border-l-8 border-l-green-500 group hover:border-l-green-400 transition-all">
-                        <div class="flex items-start justify-between flex-wrap gap-6 mb-6">
-                            <div class="space-y-2">
-                                <span class="inline-block px-5 py-2 bg-green-500/10 text-green-400 text-xs font-black rounded-full uppercase tracking-widest border border-green-500/20">
-                                    25 Ocak 2026
-                                </span>
-                                <h3 class="text-4xl md:text-5xl font-black uppercase italic">
-                                    Partnerlik: LuaNetwork
-                                </h3>
+                    <div class="relative z-10 space-y-6">
+                        <div class="flex items-start justify-between">
+                            <div class="w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
+                                🤝
                             </div>
-                            <div class="text-6xl">🤝</div>
+                            <span class="px-4 py-2 bg-green-500/10 text-green-400 text-xs font-black rounded-full uppercase border border-green-500/20">
+                                25 Ocak 2026
+                            </span>
                         </div>
-                        <p class="text-gray-400 text-xl leading-relaxed italic mb-6">
+
+                        <div>
+                            <h3 class="text-3xl font-black uppercase italic mb-2">
+                                Partnerlik: LuaNetwork
+                            </h3>
+                        </div>
+
+                        <p class="text-gray-400 leading-relaxed">
                             Topluluğumuzun Minecraft ayağını güçlendirmek adına <span class="text-orange-500 font-bold">LuaNetwork</span> ile resmi partnerliğimizi duyuruyoruz. Üyelerimiz artık premium SkyBlock deneyimi yaşayabilecek.
                         </p>
-                        <div class="flex flex-wrap gap-4">
-                            <span class="px-5 py-2 bg-orange-500/10 text-orange-400 text-sm font-black rounded-xl">Partnership</span>
-                            <span class="px-5 py-2 bg-blue-500/10 text-blue-400 text-sm font-black rounded-xl">Community</span>
+
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-4 py-2 bg-orange-500/10 text-orange-400 text-xs font-black rounded-xl">Partnership</span>
+                            <span class="px-4 py-2 bg-blue-500/10 text-blue-400 text-xs font-black rounded-xl">Community</span>
+                            <span class="px-4 py-2 bg-green-500/10 text-green-400 text-xs font-black rounded-xl">SkyBlock</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Announcement 2 -->
-                <div class="relative">
-                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-blue-500 rounded-full border-4 border-darkBg z-10"></div>
-                    
-                    <div class="md:mr-[calc(50%+3rem)] md:text-right glass-card p-12 rounded-[3.5rem] border-r-8 border-r-blue-500 group hover:border-r-blue-400 transition-all">
-                        <div class="flex items-start justify-between flex-wrap gap-6 mb-6 md:flex-row-reverse">
-                            <div class="space-y-2">
-                                <span class="inline-block px-5 py-2 bg-blue-500/10 text-blue-400 text-xs font-black rounded-full uppercase tracking-widest border border-blue-500/20">
-                                    9 Ekim 2025
-                                </span>
-                                <h3 class="text-4xl md:text-5xl font-black uppercase italic">
-                                    OptiFlow v1.2 Yayında
-                                </h3>
-                            </div>
-                            <div class="text-6xl">🚀</div>
-                        </div>
-                        <p class="text-gray-400 text-xl leading-relaxed italic mb-6">
-                            <span class="text-blue-500 font-bold">OptiFlow v1.2</span> resmi sürümü yayınlandı! Geliştirilmiş performans, hata düzeltmeleri ve yeni özelliklerle sizlerle. En son ve en stabil sürüm!
-                        </p>
-                        <div class="flex flex-wrap gap-4 md:justify-end">
-                            <span class="px-5 py-2 bg-green-500/10 text-green-400 text-sm font-black rounded-xl">v1.2 Release</span>
-                            <span class="px-5 py-2 bg-purple-500/10 text-purple-400 text-sm font-black rounded-xl">Latest</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Announcement 3 -->
-                <div class="relative">
-                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-purple-500 rounded-full border-4 border-darkBg z-10"></div>
-                    
-                    <div class="md:ml-[calc(50%+3rem)] glass-card p-12 rounded-[3.5rem] border-l-8 border-l-purple-500 group hover:border-l-purple-400 transition-all">
-                        <div class="flex items-start justify-between flex-wrap gap-6 mb-6">
-                            <div class="space-y-2">
-                                <span class="inline-block px-5 py-2 bg-purple-500/10 text-purple-400 text-xs font-black rounded-full uppercase tracking-widest border border-purple-500/20">
-                                    20 Eylül 2025
-                                </span>
-                                <h3 class="text-4xl md:text-5xl font-black uppercase italic">
-                                    OptiFlow v1.0 & v1.1 Lansmanı
-                                </h3>
-                            </div>
-                            <div class="text-6xl">🎊</div>
-                        </div>
-                        <p class="text-gray-400 text-xl leading-relaxed italic mb-6">
-                            <span class="text-purple-500 font-bold">OptiFlow</span> resmi olarak yayınlandı! v1.0 Beta ve v1.1 Release aynı gün çıktı. Minecraft optimizasyonunda yeni bir çağ başlıyor!
-                        </p>
-                        <div class="flex flex-wrap gap-4">
-                            <span class="px-5 py-2 bg-purple-500/10 text-purple-400 text-sm font-black rounded-xl">v1.0</span>
-                            <span class="px-5 py-2 bg-blue-500/10 text-blue-400 text-sm font-black rounded-xl">v1.1</span>
-                            <span class="px-5 py-2 bg-green-500/10 text-green-400 text-sm font-black rounded-xl">Launch</span>
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            <!-- Subscribe -->
+            <!-- Subscribe CTA -->
             <div class="glass-card p-16 rounded-[4rem] text-center space-y-8 max-w-2xl mx-auto reveal">
                 <div class="text-6xl">📬</div>
                 <h3 class="text-4xl font-black uppercase italic">Haberleri Kaçırma</h3>
                 <p class="text-gray-400 text-lg italic">Discord'a katıl, tüm duyurular direkt sana gelsin.</p>
-                <button onclick="showTab('discord')" class="btn-shine px-12 py-6 bg-blue-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:bg-blue-500 transition-all shadow-2xl">
+                <button onclick="showTab('discord')" class="btn-shine inline-block w-full max-w-sm mx-auto px-8 py-6 bg-blue-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:bg-blue-500 transition-all shadow-2xl">
                     Discord'a Katıl
                 </button>
             </div>
@@ -997,9 +1064,90 @@
                     <span class="text-blue-500">İNDİRMELER</span>
                 </h2>
                 <p class="text-gray-400 text-2xl max-w-3xl mx-auto italic">
-                    En son sürümleri buradan indirebilirsiniz.
+                    Projelerimizi indirin ve deneyimleyin.
                 </p>
             </div>
+
+            <!-- Download List -->
+            <div id="download-list">
+            <!-- Download Cards Grid -->
+            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto reveal">
+                <!-- OptiFlow Card -->
+                <div onclick="showDownloadDetail('optiflow')" class="glass-card p-10 rounded-[3rem] cursor-pointer group hover:border-blue-500/50 transition-all space-y-6">
+                    <div class="flex items-start justify-between">
+                        <div class="w-20 h-20 bg-blue-500/10 rounded-2xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
+                            📦
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="px-4 py-1 bg-green-500/10 text-green-500 text-xs font-black rounded-full">v1.2</span>
+                            <span class="px-4 py-1 bg-green-500/10 text-green-500 text-xs font-black rounded-full">v1.3</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-4xl font-black uppercase italic mb-2">OptiFlow</h3>
+                        <p class="text-gray-500 text-sm font-bold uppercase tracking-widest">Fabric ModPack</p>
+                    </div>
+                    
+                    <p class="text-gray-400 leading-relaxed">
+                        Minecraft optimizasyon modpack'i. %40 FPS artışı, sıfır gecikme, maksimum stabilite.
+                    </p>
+                    
+                    <div class="flex items-center gap-3">
+                        <span class="px-4 py-2 bg-blue-500/10 text-blue-400 text-xs font-black rounded-xl">MC 1.20.1</span>
+                        <span class="px-4 py-2 bg-blue-500/10 text-blue-400 text-xs font-black rounded-xl">MC 1.21.4</span>
+                    </div>
+                    
+                    <div class="pt-4 border-t border-white/5">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-500">Tıklayarak detayları gör</span>
+                            <span class="text-blue-500 group-hover:translate-x-2 transition-transform">→</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carbonium Card -->
+                <div onclick="showDownloadDetail('carbonium')" class="glass-card p-10 rounded-[3rem] cursor-pointer group hover:border-purple-500/50 transition-all space-y-6">
+                    <div class="flex items-start justify-between">
+                        <div class="w-20 h-20 bg-purple-500/10 rounded-2xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
+                            ⚔️
+                        </div>
+                        <span class="px-4 py-1 bg-yellow-500/10 text-yellow-500 text-xs font-black rounded-full">BETA</span>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-4xl font-black uppercase italic mb-2">Carbonium</h3>
+                        <p class="text-gray-500 text-sm font-bold uppercase tracking-widest">Forge Mod</p>
+                    </div>
+                    
+                    <p class="text-gray-400 leading-relaxed">
+                        Karbon temalı materyaller, aletler, silahlar, zırh ve başarımlar ekleyen kapsamlı Minecraft modu.
+                    </p>
+                    
+                    <div class="flex items-center gap-3">
+                        <span class="px-4 py-2 bg-purple-500/10 text-purple-400 text-xs font-black rounded-xl">Forge</span>
+                        <span class="px-4 py-2 bg-yellow-500/10 text-yellow-400 text-xs font-black rounded-xl">Beta</span>
+                    </div>
+                    
+                    <div class="pt-4 border-t border-white/5">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-500">Tıklayarak detayları gör</span>
+                            <span class="text-purple-500 group-hover:translate-x-2 transition-transform">→</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- OptiFlow Detail Page -->
+            <div id="download-detail-optiflow" style="display: none;">
+                <!-- Back Button -->
+                <div class="mb-8">
+                    <button onclick="backToDownloads()" class="glass-card px-8 py-4 rounded-2xl flex items-center gap-3 hover:border-blue-500/50 transition-all">
+                        <span class="text-2xl">←</span>
+                        <span class="font-black uppercase text-sm">Geri Dön</span>
+                    </button>
+                </div>
 
             <!-- Featured Download -->
             <div class="glass-card p-16 md:p-24 rounded-[4rem] text-center space-y-12 max-w-4xl mx-auto reveal group relative overflow-hidden">
@@ -1014,7 +1162,7 @@
                     </div>
                     
                     <div class="space-y-6">
-                        <div class="flex items-center justify-center gap-4 flex-wrap">
+                        <div class="flex flex-col items-center justify-center gap-4">
                             <h3 class="text-5xl md:text-6xl font-black uppercase italic">OptiFlow</h3>
                             <span class="px-6 py-2 bg-green-500/10 text-green-500 text-sm font-black rounded-full uppercase border border-green-500/20">Available Versions</span>
                         </div>
@@ -1068,7 +1216,7 @@
                         </div>
                     </div>
 
-                    <a href="https://www.curseforge.com/minecraft/modpacks/optiflow" target="_blank" class="btn-shine inline-block w-full max-w-md bg-gradient-to-r from-blue-600 to-purple-600 text-white py-8 rounded-[2.5rem] font-black text-sm tracking-[0.3em] uppercase hover:shadow-2xl transition-all">
+                    <a href="https://www.curseforge.com/minecraft/modpacks/optiflow" target="_blank" class="btn-shine inline-block w-full max-w-md px-8 py-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:shadow-2xl transition-all">
                         CURSEFORGE'DAN İNDİR
                     </a>
                     
@@ -1161,6 +1309,69 @@
                     </div>
                 </div>
             </div>
+            </div>
+
+            <!-- Carbonium Detail Page -->
+            <div id="download-detail-carbonium" style="display: none;">
+                <div class="mb-8">
+                    <button onclick="backToDownloads()" class="glass-card px-8 py-4 rounded-2xl flex items-center gap-3 hover:border-purple-500/50 transition-all">
+                        <span class="text-2xl">←</span>
+                        <span class="font-black uppercase text-sm">Geri Dön</span>
+                    </button>
+                </div>
+
+                <div class="glass-card p-16 md:p-24 rounded-[4rem] text-center space-y-12 max-w-4xl mx-auto reveal group relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-purple-600/5 via-orange-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <div class="relative z-10 space-y-12">
+                        <div class="inline-block"><div class="relative w-32 h-32 mx-auto"><div class="absolute inset-0 bg-purple-500 blur-2xl opacity-50"></div><div class="relative text-8xl">⚔️</div></div></div>
+                        <div class="space-y-6">
+                            <div class="flex flex-col items-center justify-center gap-4">
+                                <h3 class="text-5xl md:text-6xl font-black uppercase italic">Carbonium</h3>
+                                <span class="px-6 py-2 bg-yellow-500/10 text-yellow-500 text-sm font-black rounded-full uppercase border border-yellow-500/20">BETA</span>
+                            </div>
+                            <p class="text-gray-400 text-xl leading-relaxed italic max-w-2xl mx-auto">
+                                Carbonium, Minecraft'a karbon temalı materyaller, aletler, silahlar, zırh ve başarımlar ekleyen kapsamlı bir mod. Hem üretilebilir eşyalar hem de doğrudan oyuna eklenen yeni bloklar içerir.
+                            </p>
+                        </div>
+
+                        <!-- Features Grid -->
+                        <div class="grid md:grid-cols-2 gap-4 max-w-3xl mx-auto">
+                            <div class="glass-card p-6 rounded-2xl border border-purple-500/20">
+                                <div class="text-purple-500 font-black text-sm uppercase tracking-widest mb-2">🔷 Materyaller & Bloklar</div>
+                                <div class="text-gray-400 text-sm">Yeni karbon blokları ve materyaller</div>
+                            </div>
+                            <div class="glass-card p-6 rounded-2xl border border-purple-500/20">
+                                <div class="text-purple-500 font-black text-sm uppercase tracking-widest mb-2">⚒️ Aletler & Silahlar</div>
+                                <div class="text-gray-400 text-sm">Karbon kılıç, kazma, balta ve kürek</div>
+                            </div>
+                            <div class="glass-card p-6 rounded-2xl border border-purple-500/20">
+                                <div class="text-purple-500 font-black text-sm uppercase tracking-widest mb-2">🛡️ Zırh Seti</div>
+                                <div class="text-gray-400 text-sm">Tam karbon zırh seti</div>
+                            </div>
+                            <div class="glass-card p-6 rounded-2xl border border-purple-500/20">
+                                <div class="text-purple-500 font-black text-sm uppercase tracking-widest mb-2">🏆 Başarımlar</div>
+                                <div class="text-gray-400 text-sm">Özel mod başarımları</div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+
+                        <!-- Download Buttons -->
+                        <div class="space-y-4">
+                            <a href="https://www.curseforge.com/minecraft/mc-mods/carbonium" target="_blank" class="btn-shine inline-block w-full max-w-md px-8 py-6 bg-gradient-to-r from-purple-600 to-orange-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:shadow-2xl transition-all">
+                                🔥 CURSEFORGE'DAN İNDİR
+                            </a>
+                            <button class="inline-block w-full max-w-md px-8 py-6 bg-gradient-to-r from-blue-600/50 to-cyan-600/50 text-white font-black rounded-2xl text-sm uppercase tracking-widest opacity-50 cursor-not-allowed">
+                                📦 MODRINTH'DEN İNDİR (YAKINDA)
+                            </button>
+                        </div>
+                        
+                        <p class="text-gray-500 text-sm italic">
+                            Modrinth onayı bekleniyor. İndirme sorunları için <button onclick="backToDownloads(); showTab('discord');" class="text-blue-500 underline font-bold">Discord</button>'a katılın.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section id="discord" class="tab-content space-y-20">
@@ -1212,7 +1423,7 @@
                             </div>
                         </div>
                         
-                        <a href="https://discord.gg/y4tAHYGzC6" target="_blank" class="btn-shine block w-full bg-[#5865F2] py-7 rounded-2xl font-black text-sm tracking-widest text-white hover:bg-[#4752c4] transition-all shadow-2xl">
+                        <a href="https://discord.gg/y4tAHYGzC6" target="_blank" class="btn-shine inline-block w-full px-8 py-6 bg-[#5865F2] text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:bg-[#4752c4] transition-all shadow-2xl">
                             SUNUCUYA KATIL
                         </a>
                     </div>
@@ -1229,9 +1440,12 @@
                         </div>
                         
                         <div class="space-y-8">
-                            <h3 class="text-5xl font-black uppercase italic tracking-tighter text-orange-500">
-                                LuaNetwork
-                            </h3>
+                            <div class="flex items-center justify-center gap-4 flex-wrap">
+                                <h3 class="text-5xl font-black uppercase italic tracking-tighter text-orange-500">
+                                    LuaNetwork
+                                </h3>
+                                <span class="px-6 py-2 bg-blue-500/10 text-blue-400 text-xs font-black rounded-full uppercase border border-blue-500/30">Partner</span>
+                            </div>
                             <p class="text-gray-400 text-xl italic leading-relaxed">
                                 Minecraft tutkunlarının buluşma noktası. SkyBlock'ta hayatta kal!
                             </p>
@@ -1252,7 +1466,7 @@
                             </div>
                         </div>
                         
-                        <a href="https://discord.gg/yfpqrY68tM" target="_blank" class="btn-shine block w-full bg-orange-600 py-7 rounded-2xl font-black text-sm tracking-widest text-white hover:bg-orange-500 transition-all shadow-2xl">
+                        <a href="https://discord.gg/yfpqrY68tM" target="_blank" class="btn-shine inline-block w-full px-8 py-6 bg-orange-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:bg-orange-500 transition-all shadow-2xl">
                             LUANETWORK'E KATIL
                         </a>
                     </div>
@@ -1633,6 +1847,13 @@
             const targetBtn = document.getElementById('btn-' + tabId);
             if(targetBtn) targetBtn.classList.add('active-link');
             
+            // If switching to indirmeler, always show the list (not detail)
+            if(tabId === 'indirmeler') {
+                const downloadList = document.getElementById('download-list');
+                if(downloadList) downloadList.style.display = 'block';
+                document.querySelectorAll('[id^="download-detail-"]').forEach(el => el.style.display = 'none');
+            }
+            
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
@@ -1678,7 +1899,7 @@
 
             const searchData = [
                 { title: 'OptiFlow', type: 'Proje', page: 'projeler', desc: 'Minecraft optimizasyon modpack' },
-                { title: 'Ingot&Sword Craft', type: 'Proje', page: 'projeler', desc: 'Forge mod - Gelişmiş crafting sistemi' },
+                { title: 'Carbonium', type: 'Proje', page: 'indirmeler', desc: 'Forge mod - CurseForge\'de yayında!' },
                 { title: 'LuaNetwork Partner', type: 'Partner', page: 'partner', desc: 'Resmi Minecraft sunucu partnerimiz' },
                 { title: 'İletişim', type: 'Sayfa', page: 'iletisim', desc: 'Bize ulaşın' },
                 { title: 'Discord', type: 'Topluluk', page: 'discord', desc: 'Topluluğumuza katılın' },
@@ -1731,6 +1952,28 @@
             localStorage.setItem('cookies-accepted', 'true');
             const notice = document.getElementById('cookie-notice');
             if (notice) notice.classList.remove('show');
+        }
+
+        function showDownloadDetail(projectId) {
+            // Make sure indirmeler tab is active
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-link'));
+            
+            document.getElementById('indirmeler').classList.add('active');
+            const indirmelerBtn = document.getElementById('btn-indirmeler');
+            if(indirmelerBtn) indirmelerBtn.classList.add('active-link');
+            
+            // Hide download list, show detail
+            document.getElementById('download-list').style.display = 'none';
+            document.getElementById('download-detail-' + projectId).style.display = 'block';
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function backToDownloads() {
+            // Show download list, hide all details
+            document.getElementById('download-list').style.display = 'block';
+            document.querySelectorAll('[id^="download-detail-"]').forEach(el => el.style.display = 'none');
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         // ========== INITIALIZATION ==========
