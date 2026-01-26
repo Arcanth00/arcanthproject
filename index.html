@@ -1,75 +1,77 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="dark">
 <head>
     <meta charset="UTF-8">
+    <title>ArcanthProject | Bakımda</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArcanthProject</title>
+
+    <!-- Kolayca değiştirilebilir alan -->
+    <meta name="description" content="Sitemiz şu anda bakımda. Daha güçlü bir deneyimle geri dönüyoruz.">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-</head>
-<body class="bg-[#020408] text-white overflow-x-hidden font-sans">
-
-    <div id="maintenance-screen" class="hidden fixed inset-0 z-[999] bg-[#020408] flex items-center justify-center p-6">
-        <div class="max-w-2xl w-full text-center space-y-8">
-            <h1 class="text-6xl md:text-8xl font-black uppercase italic tracking-tighter">SİTE <span class="text-blue-500">BAKIMDA</span></h1>
-            <p id="m-message" class="text-gray-400 text-xl italic italic leading-relaxed">Sistem optimize ediliyor...</p>
-            
-            <div class="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-6">
-                <div class="flex justify-between text-xs uppercase tracking-widest font-bold text-gray-500">
-                    <span>İlerleme Durumu</span>
-                    <span id="progress-text">0%</span>
-                </div>
-                <div class="w-full bg-white/10 h-4 rounded-full overflow-hidden p-1">
-                    <div id="progress-bar" class="bg-blue-500 h-full rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(59,130,246,0.5)]" style="width: 0%"></div>
-                </div>
-                <p id="time-left" class="text-blue-500 font-black text-2xl italic tracking-widest uppercase">Hesaplanıyor...</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="main-content">
-        <h1 class="p-10 text-center">Hoş Geldiniz! Site şu an aktif.</h1>
-    </div>
-
     <script>
-        const firebaseConfig = { databaseURL: "https://arcanthproject-control-default-rtdb.firebaseio.com" };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database().ref("maintenance");
-
-        db.on("value", (snapshot) => {
-            const data = snapshot.val();
-            const screen = document.getElementById('maintenance-screen');
-            const content = document.getElementById('main-content');
-
-            if (data && data.isMaintenance) {
-                screen.classList.remove('hidden');
-                content.classList.add('hidden');
-                document.getElementById('m-message').innerText = data.message;
-                
-                // Zamanlama ve Bar Hesaplama
-                updateProgress(data.startTime, data.duration);
-                setInterval(() => updateProgress(data.startTime, data.duration), 60000); // Dakikada bir güncelle
-            } else {
-                screen.classList.add('hidden');
-                content.classList.remove('hidden');
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        bg: '#020408',
+                        accent: '#3b82f6'
+                    }
+                }
             }
-        });
-
-        function updateProgress(start, durationHours) {
-            const now = Date.now();
-            const durationMs = durationHours * 60 * 60 * 1000;
-            const end = start + durationMs;
-            
-            let percent = ((now - start) / durationMs) * 100;
-            percent = Math.min(Math.max(percent, 0), 100); // 0-100 arası sınırla
-
-            document.getElementById('progress-bar').style.width = percent + '%';
-            document.getElementById('progress-text').innerText = Math.floor(percent) + '%';
-            
-            const remainingHours = Math.max(0, ((end - now) / (1000 * 60 * 60)).toFixed(1));
-            document.getElementById('time-left').innerText = `Tahmini Kalan: ${remainingHours} SAAT`;
         }
     </script>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-bg text-white min-h-screen flex items-center justify-center px-6">
+
+    <div class="max-w-3xl text-center space-y-10">
+
+        <!-- LOGO (istersen kaldır) -->
+        <div class="flex justify-center">
+            <div class="w-24 h-24 rounded-3xl bg-accent/20 flex items-center justify-center text-4xl shadow-2xl">
+                ⚙️
+            </div>
+        </div>
+
+        <!-- ANA MESAJ -->
+        <h1 class="text-5xl md:text-7xl font-black uppercase italic tracking-tight">
+            Sitemiz <span class="text-accent">Bakımda</span>
+        </h1>
+
+        <p class="text-gray-400 text-xl md:text-2xl italic leading-relaxed">
+            Daha stabil, daha hızlı ve daha güçlü bir ArcanthProject deneyimi için
+            kısa bir teknik çalışma yapıyoruz.
+        </p>
+
+        <!-- BAKIM SÜRESİ -->
+        <div class="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4">
+            <p class="text-xs uppercase tracking-[0.3em] font-black text-gray-500">
+                Tahmini Bakım Süresi
+            </p>
+            <p class="text-3xl font-black text-accent">
+                2 – 6 Saat
+            </p>
+
+            <!-- BURAYI DEĞİŞTİREBİLİRSİN -->
+            <p class="text-gray-400 italic text-sm">
+                (Gerekirse uzatılabilir – kalite aceleye gelmez.)
+            </p>
+        </div>
+
+        <!-- ALT NOT -->
+        <p class="text-gray-500 text-sm italic">
+            Güncellemeler tamamlandığında site otomatik olarak tekrar açılacaktır.
+        </p>
+
+    </div>
+
 </body>
 </html>
