@@ -1,1 +1,57 @@
-
+{
+  "name": "ArcanthProject",
+  "short_name": "Arcanth",
+  "description": "Modern Minecraft geliştirme ekibi - OptiFlow ve LuaNetwork",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/assets/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["gaming", "utilities"],
+  "screenshots": [
+    {
+      "src": "/assets/screenshot-1.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Discord",
+      "short_name": "Discord",
+      "description": "Discord sunucumuza katıl",
+      "url": "/discord",
+      "icons": [
+        {
+          "src": "/assets/discord-icon.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Projeler",
+      "short_name": "Projeler",
+      "url": "/#projects",
+      "icons": [
+        {
+          "src": "/assets/projects-icon.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}
