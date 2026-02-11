@@ -309,6 +309,15 @@
             <button class="sidebar-item" onclick="showPage('downloads')">
                 📦 İndirmeler
             </button>
+            <button class="sidebar-item" onclick="showPage('categories')">
+                🏷️ Kategoriler
+            </button>
+            <button class="sidebar-item" onclick="showPage('cms')">
+                📝 İçerik
+            </button>
+            <button class="sidebar-item" onclick="showPage('cookies')">
+                🍪 Çerezler
+            </button>
             <button class="sidebar-item" onclick="showPage('settings')">
                 ⚙️ Ayarlar
             </button>
@@ -416,7 +425,8 @@
                         <thead>
                             <tr>
                                 <th>Adı</th>
-                                <th>Tür</th>
+                                <th>Versiyon</th>
+                                <th>Çıkış Tarihi</th>
                                 <th>Durum</th>
                                 <th>İşlemler</th>
                             </tr>
@@ -501,6 +511,180 @@
                 </div>
             </div>
         </div>
+
+        <!-- CATEGORIES PAGE -->
+        <div id="categories" class="page">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-black italic uppercase">
+                    <span class="text-blue-500">KATEGORİ</span>LER
+                </h2>
+                <button class="btn-primary" onclick="openCategoryModal()">
+                    ➕ Yeni Kategori
+                </button>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Adı</th>
+                                <th>Simge</th>
+                                <th>Açıklaması</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categoriesList">
+                            <tr>
+                                <td colspan="4" class="text-center text-gray-500 py-8">Kategori yok</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- CMS CONTENT PAGE -->
+        <div id="cms" class="page">
+            <h2 class="text-3xl font-black italic uppercase mb-8">
+                <span class="text-blue-500">SİTE İÇERİ</span>Ğİ
+            </h2>
+
+            <div class="grid grid-cols-1 gap-8">
+                <!-- Hero Başlığı -->
+                <div class="glass-card p-6">
+                    <h3 class="text-xl font-bold mb-4">🎯 Ana Başlık</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Hero Başlığı</label>
+                            <input type="text" id="heroTitle" class="input-field" placeholder="Ana başlığı girin">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Hero Alt Başlığı</label>
+                            <input type="text" id="heroSubtitle" class="input-field" placeholder="Alt başlığı girin">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Hero Açıklaması</label>
+                            <textarea id="heroDescription" class="input-field" rows="3" placeholder="Açıklamayı girin"></textarea>
+                        </div>
+                        <button class="btn-primary w-full" onclick="saveHeroContent()">
+                            💾 Kaydet
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Duyurular Başlığı -->
+                <div class="glass-card p-6">
+                    <h3 class="text-xl font-bold mb-4">📢 Duyurular Bölümü</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Duyurular Başlığı</label>
+                            <input type="text" id="announcementsSectionTitle" class="input-field" placeholder="Duyurular başlığını girin">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Duyurular Açıklaması</label>
+                            <textarea id="announcementsSectionDesc" class="input-field" rows="3" placeholder="Açıklamayı girin"></textarea>
+                        </div>
+                        <button class="btn-primary w-full" onclick="saveAnnouncementsSectionContent()">
+                            💾 Kaydet
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Projeler Başlığı -->
+                <div class="glass-card p-6">
+                    <h3 class="text-xl font-bold mb-4">🚀 Projeler Bölümü</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Projeler Başlığı</label>
+                            <input type="text" id="projectsSectionTitle" class="input-field" placeholder="Projeler başlığını girin">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Projeler Açıklaması</label>
+                            <textarea id="projectsSectionDesc" class="input-field" rows="3" placeholder="Açıklamayı girin"></textarea>
+                        </div>
+                        <button class="btn-primary w-full" onclick="saveProjectsSectionContent()">
+                            💾 Kaydet
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Footer İçeriği -->
+                <div class="glass-card p-6">
+                    <h3 class="text-xl font-bold mb-4">📄 Footer İçeriği</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Şirket Adı</label>
+                            <input type="text" id="footerCompanyName" class="input-field" placeholder="Şirket adını girin">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Copyright Metni</label>
+                            <input type="text" id="footerCopyright" class="input-field" placeholder="Copyright metnini girin">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Footer Açıklaması</label>
+                            <textarea id="footerDescription" class="input-field" rows="3" placeholder="Footer açıklamasını girin"></textarea>
+                        </div>
+                        <button class="btn-primary w-full" onclick="saveFooterContent()">
+                            💾 Kaydet
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COOKIES PAGE -->
+        <div id="cookies" class="page">
+            <h2 class="text-3xl font-black italic uppercase mb-8">
+                <span class="text-blue-500">ÇEREZ</span>LER
+            </h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Cookie Politikası -->
+                <div class="glass-card p-6">
+                    <h3 class="text-xl font-bold mb-4">🍪 Çerez Politikası</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Başlık</label>
+                            <input type="text" id="cookieTitle" class="input-field" placeholder="Çerez başlığını girin" value="Bu site çerezleri kullanıyor">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Açıklama</label>
+                            <textarea id="cookieDescription" class="input-field" rows="4" placeholder="Çerez açıklamasını girin" value="Deneyiminizi geliştirmek için temel çerezleri kullanıyoruz."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Kabul Butonu Metni</label>
+                            <input type="text" id="cookieAcceptText" class="input-field" placeholder="Kabul butonu metnini girin" value="ANLADIM">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-2">Reddet Butonu Metni</label>
+                            <input type="text" id="cookieRejectText" class="input-field" placeholder="Reddet butonu metnini girin" value="İSTEMİYORUM">
+                        </div>
+                        <button class="btn-primary w-full" onclick="saveCookieSettings()">
+                            💾 Kaydet
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cookie İstatistikleri -->
+                <div class="glass-card p-6">
+                    <h3 class="text-xl font-bold mb-4">📊 İstatistikler</h3>
+                    <div class="space-y-4">
+                        <div class="stat-card">
+                            <div class="stat-number" id="cookieAcceptedCount">0</div>
+                            <div class="stat-label">Kabul Edildi</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="cookieRejectedCount">0</div>
+                            <div class="stat-label">Reddedildi</div>
+                        </div>
+                        <button class="btn-secondary w-full bg-red-500/10 text-red-500 border-red-500/30" onclick="resetCookieStats()">
+                            🔄 İstatistikleri Sıfırla
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ANNOUNCEMENT MODAL -->
@@ -568,8 +752,15 @@
                     <select id="projectType" class="input-field">
                         <option value="modpack">ModPack</option>
                         <option value="mod">Mod</option>
-                        <option value="script">Script</option>
+                        <option value="script">Script (GTA5 vb.)</option>
                         <option value="other">Diğer</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">Kategori</label>
+                    <select id="projectCategory" class="input-field">
+                        <option value="">Kategori Seç</option>
                     </select>
                 </div>
 
@@ -580,6 +771,21 @@
                         <option value="beta">Beta</option>
                         <option value="release">Yayında</option>
                     </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">Logo / İkon (URL)</label>
+                    <input type="url" id="projectIcon" class="input-field" placeholder="https://example.com/logo.png">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">Çıkış Tarihi</label>
+                    <input type="date" id="projectReleaseDate" class="input-field">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">Versiyon</label>
+                    <input type="text" id="projectVersion" class="input-field" placeholder="v1.0.0">
                 </div>
 
                 <div>
@@ -645,6 +851,42 @@
         </div>
     </div>
 
+    <!-- CATEGORY MODAL -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-bold">Kategori Ekle</h3>
+                <button onclick="closeCategoryModal()" class="text-2xl">✕</button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-2">Kategori Adı</label>
+                    <input type="text" id="categoryName" class="input-field" placeholder="Kategori adını girin">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">Simge (Emoji veya URL)</label>
+                    <input type="text" id="categoryIcon" class="input-field" placeholder="🚀 veya https://...">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">Açıklama</label>
+                    <textarea id="categoryDescription" class="input-field" rows="3" placeholder="Kategori açıklamasını girin"></textarea>
+                </div>
+
+                <div class="flex gap-4">
+                    <button class="btn-primary flex-1" onclick="addCategory()">
+                        ➕ Ekle
+                    </button>
+                    <button class="btn-secondary flex-1" onclick="closeCategoryModal()">
+                        ✕ İptal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         /**
          * ===== ADMIN PANEL DATA MANAGEMENT =====
@@ -655,6 +897,10 @@
         const PROJECTS_KEY = 'admin_projects';
         const DOWNLOADS_KEY = 'admin_downloads';
         const ACTIVITY_KEY = 'admin_activity';
+        const CATEGORIES_KEY = 'admin_categories';
+        const CMS_KEY = 'admin_cms_content';
+        const COOKIES_KEY = 'admin_cookie_settings';
+        const COOKIE_STATS_KEY = 'admin_cookie_stats';
 
         // Initialization
         document.addEventListener('DOMContentLoaded', () => {
@@ -663,6 +909,9 @@
             loadAnnouncements();
             loadProjects();
             loadDownloads();
+            loadCategories();
+            loadCMSContent();
+            loadCookieSettings();
             updateDashboard();
         });
 
@@ -743,6 +992,39 @@
 
             if (!localStorage.getItem(ACTIVITY_KEY)) {
                 localStorage.setItem(ACTIVITY_KEY, JSON.stringify([]));
+            }
+
+            if (!localStorage.getItem(CATEGORIES_KEY)) {
+                localStorage.setItem(CATEGORIES_KEY, JSON.stringify([
+                    { id: 1, name: 'ModPack', icon: '📦', description: 'Minecraft Modpack\'ları' },
+                    { id: 2, name: 'Script', icon: '🎮', description: 'GTA 5 ve diğer script\'ler' },
+                    { id: 3, name: 'Tool', icon: '🔧', description: 'Yardımcı araçlar' }
+                ]));
+            }
+
+            if (!localStorage.getItem(CMS_KEY)) {
+                localStorage.setItem(CMS_KEY, JSON.stringify({
+                    hero: { title: 'Arcanth Project', subtitle: 'Oyun Projeleri', description: 'Yüksek kaliteli Minecraft ve GTA projeleri' },
+                    announcements: { title: 'Duyurular', description: 'Son haberler ve güncellemeleri takip edin' },
+                    projects: { title: 'Projeler', description: 'Tüm projelerimizi keşfedin' },
+                    footer: { company: 'Arcanth Project', copyright: '© 2024 Arcanth Project. Tüm hakları saklıdır.', description: 'Kaliteli oyun projeleri sunan geliştirici ekibi' }
+                }));
+            }
+
+            if (!localStorage.getItem(COOKIES_KEY)) {
+                localStorage.setItem(COOKIES_KEY, JSON.stringify({
+                    title: 'Bu site çerezleri kullanıyor',
+                    description: 'Deneyiminizi geliştirmek için temel çerezleri kullanıyoruz.',
+                    acceptText: 'ANLADIM',
+                    rejectText: 'İSTEMİYORUM'
+                }));
+            }
+
+            if (!localStorage.getItem(COOKIE_STATS_KEY)) {
+                localStorage.setItem(COOKIE_STATS_KEY, JSON.stringify({
+                    accepted: 0,
+                    rejected: 0
+                }));
             }
         }
 
@@ -825,12 +1107,29 @@
         // ===== PROJECTS MANAGEMENT =====
         function openProjectModal() {
             document.getElementById('projectModal').classList.add('active');
+
+            // Load categories in project form
+            const categories = JSON.parse(localStorage.getItem(CATEGORIES_KEY));
+            const categorySelect = document.getElementById('projectCategory');
+            categorySelect.innerHTML = '<option value="">Kategori Seç</option>';
+
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.name;
+                option.textContent = `${cat.icon} ${cat.name}`;
+                categorySelect.appendChild(option);
+            });
         }
 
         function closeProjectModal() {
             document.getElementById('projectModal').classList.remove('active');
             document.getElementById('projectName').value = '';
             document.getElementById('projectDescription').value = '';
+            document.getElementById('projectIcon').value = '';
+            document.getElementById('projectReleaseDate').value = '';
+            document.getElementById('projectVersion').value = '';
+            document.getElementById('projectLink').value = '';
+            document.getElementById('projectCategory').value = '';
         }
 
         function addProject() {
@@ -838,10 +1137,14 @@
             const description = document.getElementById('projectDescription').value;
             const type = document.getElementById('projectType').value;
             const status = document.getElementById('projectStatus').value;
+            const icon = document.getElementById('projectIcon').value;
+            const releaseDate = document.getElementById('projectReleaseDate').value;
+            const version = document.getElementById('projectVersion').value;
             const link = document.getElementById('projectLink').value;
+            const category = document.getElementById('projectCategory').value;
 
             if (!name || !description) {
-                alert('⚠️ Lütfen tüm alanları doldurun!');
+                alert('⚠️ Lütfen proje adı ve açıklamasını doldurun!');
                 return;
             }
 
@@ -852,7 +1155,11 @@
                 description,
                 type,
                 status,
+                icon: icon || '🚀',
+                releaseDate: releaseDate || 'TBA',
+                version: version || '1.0.0',
                 link,
+                category: category || 'Genel',
                 createdAt: new Date().toISOString()
             };
 
@@ -871,14 +1178,15 @@
             const tbody = document.getElementById('projectsList');
 
             if (projects.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500 py-8">Proje yok</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-8">Proje yok</td></tr>';
                 return;
             }
 
             tbody.innerHTML = projects.map(project => `
                 <tr>
-                    <td>${project.name}</td>
-                    <td>${project.type}</td>
+                    <td><strong>${project.name}</strong></td>
+                    <td>${project.version}</td>
+                    <td>${project.releaseDate}</td>
                     <td><span class="px-3 py-1 bg-purple-500/10 text-purple-400 rounded text-xs font-bold">${project.status}</span></td>
                     <td>
                         <button class="btn-secondary" onclick="editProject(${project.id})">✏️</button>
@@ -1066,6 +1374,198 @@
                 toast.style.animation = 'slideInRight 0.3s ease reverse';
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
+        }
+
+        // ===== CATEGORIES MANAGEMENT =====
+        function openCategoryModal() {
+            document.getElementById('categoryModal').classList.add('active');
+        }
+
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').classList.remove('active');
+            document.getElementById('categoryName').value = '';
+            document.getElementById('categoryIcon').value = '';
+            document.getElementById('categoryDescription').value = '';
+        }
+
+        function addCategory() {
+            const name = document.getElementById('categoryName').value;
+            const icon = document.getElementById('categoryIcon').value;
+            const description = document.getElementById('categoryDescription').value;
+
+            if (!name || !icon) {
+                alert('⚠️ Lütfen kategori adı ve simgesini doldurun!');
+                return;
+            }
+
+            const categories = JSON.parse(localStorage.getItem(CATEGORIES_KEY));
+            const category = {
+                id: Date.now(),
+                name,
+                icon: icon || '🏷️',
+                description: description || ''
+            };
+
+            categories.push(category);
+            localStorage.setItem(CATEGORIES_KEY, JSON.stringify(categories));
+
+            addActivity(`Yeni kategori eklendi: ${name}`);
+            loadCategories();
+            closeCategoryModal();
+            showToast('✅ Kategori başarıyla eklendi!', 'success');
+        }
+
+        function loadCategories() {
+            const categories = JSON.parse(localStorage.getItem(CATEGORIES_KEY));
+            const tbody = document.getElementById('categoriesList');
+
+            if (categories.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500 py-8">Kategori yok</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = categories.map(category => `
+                <tr>
+                    <td><strong>${category.name}</strong></td>
+                    <td class="text-2xl">${category.icon}</td>
+                    <td>${category.description}</td>
+                    <td>
+                        <button class="btn-danger" onclick="deleteCategory(${category.id})">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteCategory(id) {
+            if (confirm('Bu kategoriyi silmek istediğinize emin misiniz?')) {
+                let categories = JSON.parse(localStorage.getItem(CATEGORIES_KEY));
+                categories = categories.filter(c => c.id !== id);
+                localStorage.setItem(CATEGORIES_KEY, JSON.stringify(categories));
+
+                addActivity('Kategori silindi');
+                loadCategories();
+                showToast('✅ Kategori başarıyla silindi!', 'success');
+            }
+        }
+
+        // ===== CMS CONTENT MANAGEMENT =====
+        function loadCMSContent() {
+            const cms = JSON.parse(localStorage.getItem(CMS_KEY));
+
+            // Hero Content
+            document.getElementById('heroTitle').value = cms.hero?.title || 'Arcanth Project';
+            document.getElementById('heroSubtitle').value = cms.hero?.subtitle || 'Oyun Projeleri';
+            document.getElementById('heroDescription').value = cms.hero?.description || '';
+
+            // Announcements Section
+            document.getElementById('announcementsSectionTitle').value = cms.announcements?.title || 'Duyurular';
+            document.getElementById('announcementsSectionDesc').value = cms.announcements?.description || '';
+
+            // Projects Section
+            document.getElementById('projectsSectionTitle').value = cms.projects?.title || 'Projeler';
+            document.getElementById('projectsSectionDesc').value = cms.projects?.description || '';
+
+            // Footer
+            document.getElementById('footerCompanyName').value = cms.footer?.company || 'Arcanth Project';
+            document.getElementById('footerCopyright').value = cms.footer?.copyright || '';
+            document.getElementById('footerDescription').value = cms.footer?.description || '';
+        }
+
+        function saveHeroContent() {
+            const cms = JSON.parse(localStorage.getItem(CMS_KEY));
+            cms.hero = {
+                title: document.getElementById('heroTitle').value,
+                subtitle: document.getElementById('heroSubtitle').value,
+                description: document.getElementById('heroDescription').value
+            };
+            localStorage.setItem(CMS_KEY, JSON.stringify(cms));
+            addActivity('Hero içeriği güncellendi');
+            showToast('✅ Ana başlık başarıyla kaydedildi!', 'success');
+        }
+
+        function saveAnnouncementsSectionContent() {
+            const cms = JSON.parse(localStorage.getItem(CMS_KEY));
+            cms.announcements = {
+                title: document.getElementById('announcementsSectionTitle').value,
+                description: document.getElementById('announcementsSectionDesc').value
+            };
+            localStorage.setItem(CMS_KEY, JSON.stringify(cms));
+            addActivity('Duyurular başlığı güncellendi');
+            showToast('✅ Duyurular başlığı başarıyla kaydedildi!', 'success');
+        }
+
+        function saveProjectsSectionContent() {
+            const cms = JSON.parse(localStorage.getItem(CMS_KEY));
+            cms.projects = {
+                title: document.getElementById('projectsSectionTitle').value,
+                description: document.getElementById('projectsSectionDesc').value
+            };
+            localStorage.setItem(CMS_KEY, JSON.stringify(cms));
+            addActivity('Projeler başlığı güncellendi');
+            showToast('✅ Projeler başlığı başarıyla kaydedildi!', 'success');
+        }
+
+        function saveFooterContent() {
+            const cms = JSON.parse(localStorage.getItem(CMS_KEY));
+            cms.footer = {
+                company: document.getElementById('footerCompanyName').value,
+                copyright: document.getElementById('footerCopyright').value,
+                description: document.getElementById('footerDescription').value
+            };
+            localStorage.setItem(CMS_KEY, JSON.stringify(cms));
+            addActivity('Footer içeriği güncellendi');
+            showToast('✅ Footer başarıyla kaydedildi!', 'success');
+        }
+
+        // ===== COOKIES MANAGEMENT =====
+        function loadCookieSettings() {
+            const cookies = JSON.parse(localStorage.getItem(COOKIES_KEY));
+            const stats = JSON.parse(localStorage.getItem(COOKIE_STATS_KEY));
+
+            document.getElementById('cookieTitle').value = cookies.title || '';
+            document.getElementById('cookieDescription').value = cookies.description || '';
+            document.getElementById('cookieAcceptText').value = cookies.acceptText || '';
+            document.getElementById('cookieRejectText').value = cookies.rejectText || '';
+
+            document.getElementById('cookieAcceptedCount').textContent = stats.accepted || 0;
+            document.getElementById('cookieRejectedCount').textContent = stats.rejected || 0;
+        }
+
+        function saveCookieSettings() {
+            const cookies = {
+                title: document.getElementById('cookieTitle').value,
+                description: document.getElementById('cookieDescription').value,
+                acceptText: document.getElementById('cookieAcceptText').value,
+                rejectText: document.getElementById('cookieRejectText').value
+            };
+            localStorage.setItem(COOKIES_KEY, JSON.stringify(cookies));
+            addActivity('Çerez ayarları güncellendi');
+            showToast('✅ Çerez ayarları başarıyla kaydedildi!', 'success');
+        }
+
+        function recordCookieAccept() {
+            const stats = JSON.parse(localStorage.getItem(COOKIE_STATS_KEY));
+            stats.accepted++;
+            localStorage.setItem(COOKIE_STATS_KEY, JSON.stringify(stats));
+            loadCookieSettings();
+            addActivity('Çerez kabul edildi');
+        }
+
+        function recordCookieReject() {
+            const stats = JSON.parse(localStorage.getItem(COOKIE_STATS_KEY));
+            stats.rejected++;
+            localStorage.setItem(COOKIE_STATS_KEY, JSON.stringify(stats));
+            loadCookieSettings();
+            addActivity('Çerez reddedildi');
+        }
+
+        function resetCookieStats() {
+            if (confirm('Çerez istatistiklerini sıfırlamak istediğinize emin misiniz?')) {
+                localStorage.setItem(COOKIE_STATS_KEY, JSON.stringify({ accepted: 0, rejected: 0 }));
+                loadCookieSettings();
+                addActivity('Çerez istatistikleri sıfırlandı');
+                showToast('✅ İstatistikler sıfırlandı!', 'success');
+            }
         }
     </script>
 </body>
