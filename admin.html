@@ -4,25 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arcanth Admin Panel</title>
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
+
+    <script>tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: { 
-                        darkBg: '#020408', 
-                        lightBg: '#f8fafc', 
-                        accentBlue: '#3b82f6', 
-                        luaOrange: '#f97316' 
+                    colors: {
+                        darkBg: '#020408',
+                        lightBg: '#f8fafc',
+                        accentBlue: '#3b82f6',
+                        luaOrange: '#f97316'
                     }
                 }
             }
-        }
-    </script>
+        }</script>
 
     <style>
         :root {
@@ -48,10 +46,10 @@
             border-radius: 1rem;
         }
 
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(59, 130, 246, 0.3);
-        }
+            .glass-card:hover {
+                background: rgba(255, 255, 255, 0.05);
+                border-color: rgba(59, 130, 246, 0.3);
+            }
 
         .btn-primary {
             background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
@@ -67,10 +65,10 @@
             font-size: 0.875rem;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
-        }
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+            }
 
         .btn-secondary {
             background: rgba(255, 255, 255, 0.1);
@@ -89,9 +87,9 @@
             border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
-        .btn-danger:hover {
-            background: rgba(239, 68, 68, 0.2);
-        }
+            .btn-danger:hover {
+                background: rgba(239, 68, 68, 0.2);
+            }
 
         .input-field {
             background: rgba(255, 255, 255, 0.05);
@@ -104,15 +102,15 @@
             transition: all 0.3s;
         }
 
-        .input-field:focus {
-            outline: none;
-            border-color: var(--color-blue);
-            background: rgba(59, 130, 246, 0.15);
-        }
+            .input-field:focus {
+                outline: none;
+                border-color: var(--color-blue);
+                background: rgba(59, 130, 246, 0.15);
+            }
 
-        .input-field::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-        }
+            .input-field::placeholder {
+                color: rgba(255, 255, 255, 0.4);
+            }
 
         .sidebar {
             position: fixed;
@@ -145,17 +143,17 @@
             border-left: 3px solid transparent;
         }
 
-        .sidebar-item:hover {
-            background: rgba(59, 130, 246, 0.1);
-            color: white;
-            border-left-color: var(--color-blue);
-        }
+            .sidebar-item:hover {
+                background: rgba(59, 130, 246, 0.1);
+                color: white;
+                border-left-color: var(--color-blue);
+            }
 
-        .sidebar-item.active {
-            background: rgba(59, 130, 246, 0.15);
-            color: var(--color-blue);
-            border-left-color: var(--color-blue);
-        }
+            .sidebar-item.active {
+                background: rgba(59, 130, 246, 0.15);
+                color: var(--color-blue);
+                border-left-color: var(--color-blue);
+            }
 
         .main-content {
             margin-left: 250px;
@@ -167,16 +165,17 @@
             display: none;
         }
 
-        .page.active {
-            display: block;
-            animation: slideIn 0.3s ease;
-        }
+            .page.active {
+                display: block;
+                animation: slideIn 0.3s ease;
+            }
 
         @keyframes slideIn {
             from {
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -196,9 +195,9 @@
             justify-content: center;
         }
 
-        .modal.active {
-            display: flex;
-        }
+            .modal.active {
+                display: flex;
+            }
 
         .modal-content {
             background: #1a202c;
@@ -887,8 +886,7 @@
         </div>
     </div>
 
-    <script>
-        /**
+    <script>/**
          * ===== ADMIN PANEL DATA MANAGEMENT =====
          */
 
@@ -925,7 +923,7 @@
 
         function login(password) {
             const stored = JSON.parse(localStorage.getItem(ADMIN_KEY) || '{}');
-            const correctPassword = stored.password || '12345'; // Default password
+            const correctPassword = stored.password || '9PsO!J7qI4zSmmnfMdx4%wJqR3N85SYyvh'; // Updated password
 
             if (password === correctPassword) {
                 localStorage.setItem('adminToken', 'authenticated');
@@ -974,7 +972,7 @@
             if (!localStorage.getItem(ADMIN_KEY)) {
                 localStorage.setItem(ADMIN_KEY, JSON.stringify({
                     name: 'Admin',
-                    password: '12345'
+                    password: '9PsO!J7qI4zSmmnfMdx4%wJqR3N85SYyvh'
                 }));
             }
 
@@ -1566,7 +1564,6 @@
                 addActivity('Çerez istatistikleri sıfırlandı');
                 showToast('✅ İstatistikler sıfırlandı!', 'success');
             }
-        }
-    </script>
+        }</script>
 </body>
 </html>
