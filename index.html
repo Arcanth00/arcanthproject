@@ -362,6 +362,128 @@
             0%, 100% { transform: scale(1); opacity: 0.5; }
             50% { transform: scale(1.2); opacity: 1; }
         }
+
+        /* Enhanced Hover Effects */
+        .glass:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 30px 60px -20px rgba(15, 110, 255, 0.3);
+        }
+
+        /* Card entrance animations */
+        @keyframes cardEnter {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .glass {
+            animation: cardEnter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* Button glow enhancement */
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-primary:hover::after {
+            opacity: 1;
+        }
+
+        /* Text animation on reveal */
+        .reveal {
+            animation: slideUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Enhanced gradient animation */
+        .text-gradient {
+            animation: gradientShift 6s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        /* Smooth state transitions */
+        input:focus, textarea:focus, select:focus {
+            transform: translateY(-2px);
+        }
+
+        /* Navigation link hover */
+        .nav-link {
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #0f6eff, #9945ff);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Stat card pulse */
+        .glow-effect {
+            animation: pulseCard 4s ease-in-out infinite;
+        }
+
+        @keyframes pulseCard {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        /* Smooth color transitions */
+        html.light input:focus {
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 <body class="font-poppins">
