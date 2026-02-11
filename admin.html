@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcanth Admin Panel</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { 
+                        darkBg: '#020408', 
+                        lightBg: '#f8fafc', 
+                        accentBlue: '#3b82f6', 
+                        luaOrange: '#f97316' 
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --color-dark-bg: #020408;
+            --color-light-bg: #f8fafc;
+            --color-blue: #3b82f6;
+            --color-orange: #f97316;
+            --color-purple: #a855f7;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--color-dark-bg);
+            color: white;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+            border-radius: 1rem;
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .input-field {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            width: 100%;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--color-blue);
+            background: rgba(59, 130, 246, 0.15);
+        }
+
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: rgba(2, 4, 8, 0.9);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 1rem;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .sidebar-item {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: white;
+            border-left-color: var(--color-blue);
+        }
+
+        .sidebar-item.active {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--color-blue);
+            border-left-color: var(--color-blue);
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a202c;
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 600px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 700;
+            color: var(--color-blue);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .stat-card {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-blue);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .sidebar-menu {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .sidebar-item {
+                flex: 1;
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div>
+            <h1 class="text-2xl font-black italic uppercase">
+                <span class="text-blue-500">A</span>RCANTH
+            </h1>
+            <p class="text-xs text-blue-500 font-bold tracking-widest mt-1">ADMIN</p>
+        </div>
+
+        <div class="sidebar-menu">
+            <button class="sidebar-item active" onclick="showPage('dashboard')">
+                📊 Dashboard
+            </button>
+            <button class="sidebar-item" onclick="showPage('announcements')">
+                📢 Duyurular
+            </button>
+            <button class="sidebar-item" onclick="showPage('projects')">
+                🚀 Projeler
+            </button>
+            <button class="sidebar-item" onclick="showPage('downloads')">
+                📦 İndirmeler
+            </button>
+            <button class="sidebar-item" onclick="showPage('settings')">
+                ⚙️ Ayarlar
+            </button>
+            <button class="sidebar-item" onclick="logout()" style="border-left-color: #ef4444; color: #ef4444;">
+                🚪 Çıkış Yap
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-4xl font-black italic uppercase">Yönetim Paneli</h1>
+                <p class="text-gray-400 mt-1">Siteyi yönetmenize hoş geldiniz!</p>
+            </div>
+            <div class="text-right">
+                <p class="text-sm text-gray-500">Giriş yapan:</p>
+                <p class="font-bold" id="adminName">Admin</p>
+            </div>
+        </div>
+
+        <!-- DASHBOARD PAGE -->
+        <div id="dashboard" class="page active">
+            <div class="mb-12">
+                <h2 class="text-3xl font-black italic uppercase mb-8">
+                    <span class="text-blue-500">ÖZ</span>ET
+                </h2>
+
+                <div class="grid md:grid-cols-4 gap-6 mb-12">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalAnnouncements">0</div>
+                        <div class="stat-label">Duyuru</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalProjects">0</div>
+                        <div class="stat-label">Proje</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalDownloads">0</div>
+                        <div class="stat-label">İndirme</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalUsers">0</div>
+                        <div class="stat-label">Ziyaretçi</div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6">
+                    <h3 class="text-xl font-bold mb-4">Son Aktiviteler</h3>
+                    <div id="recentActivity" class="space-y-3">
+                        <p class="text-gray-400 text-sm">Henüz aktivite yok</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ANNOUNCEMENTS PAGE -->
+        <div id="announcements" class="page">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-black italic uppercase">
+                    <span class="text-blue-500">DUYURU</span>LAR
+                </h2>
+                <button class="btn-primary" onclick="openAnnouncementModal()">
+                    ➕ Yeni Duyuru
+                </button>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Başlık</th>
+                                <th>Tarihi</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="announcementsList">
+                            <tr>
+                                <td colspan="4" class="text-center text-gray-500 py-8">Duyuru yok</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROJECTS PAGE -->
+        <div id="projects" class="page">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-black italic uppercase">
+                    <span class="text-blue-500">PROJE</span>LER
+                </h2>
+                <button class="btn-primary" onclick="openProjectModal()">
+                    ➕ Yeni Proje
+                </button>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Adı</th>
+                                <th>Tür</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projectsList">
+                            <tr>
+                                <td colspan="4" class="text-center text-gray-500 py-8">Proje yok</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- DOWNLOADS PAGE -->
+        <div id="downloads" class="page">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-black italic uppercase">
+                    <span class="text-blue-500">İNDİRME</span>LER
+                </h2>
+                <button class="btn-primary" onclick="openDownloadModal()">
+                    ➕ Yeni İndirme
+                </button>
+            </div>
+
+            <div class="glass-card p-6">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Adı</th>
+                                <th>Versiyon</th>
+                                <th>Tür</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="downloadsList">
+                            <tr>
+                                <td colspan="4" class="text-center text-gray-500 py-8">İndirme yok</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS PAGE -->
+        <div id="settings" class="page">
+            <h2 class="text-3xl font-black italic uppercase mb-8">
+                <span class="text-blue-500">AYAR</span>LAR
+            </h2>
+
+            <div class="glass-card p-8 max-w-2xl">
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Admin Adı</label>
+                        <input type="text" id="adminNameInput" class="input-field" placeholder="Admin adını girin">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Admin Şifresi</label>
+                        <input type="password" id="adminPasswordInput" class="input-field" placeholder="Yeni şifre girin">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Site Başlığı</label>
+                        <input type="text" id="siteTitle" class="input-field" placeholder="Site başlığını girin" value="ArcanthProject">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Site Açıklaması</label>
+                        <textarea id="siteDescription" class="input-field" rows="4" placeholder="Site açıklamasını girin"></textarea>
+                    </div>
+
+                    <button class="btn-primary w-full" onclick="saveSettings()">
+                        💾 Ayarları Kaydet
+                    </button>
+
+                    <button class="btn-secondary w-full bg-red-500/10 text-red-500 border-red-500/30" onclick="clearAllData()">
+                        🗑️ Tüm Verileri Sil
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ANNOUNCEMENT MODAL -->
+    <div id="announcementModal" class="modal">
+        <div class="modal-content">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-bold">Duyuru Ekle</h3>
+                <button onclick="closeAnnouncementModal()" class="text-2xl">✕</button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-2">Başlık</label>
+                    <input type="text" id="announcementTitle" class="input-field" placeholder="Duyuru başlığını girin">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">İçerik</label>
+                    <textarea id="announcementContent" class="input-field" rows="5" placeholder="Duyuru içeriğini girin"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">Kategorisi</label>
+                    <select id="announcementCategory" class="input-field">
+                        <option value="update">Güncelleme</option>
+                        <option value="feature">Yeni Özellik</option>
+                        <option value="maintenance">Bakım</option>
+                        <option value="other">Diğer</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-4">
+                    <button class="btn-primary flex-1" onclick="addAnnouncement()">
+                        ➕ Ekle
+                    </button>
+                    <button class="btn-secondary flex-1" onclick="closeAnnouncementModal()">
+                        ✕ İptal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROJECT MODAL -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-bold">Proje Ekle</h3>
+                <button onclick="closeProjectModal()" class="text-2xl">✕</button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-2">Proje Adı</label>
+                    <input type="text" id="projectName" class="input-field" placeholder="Proje adını girin">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">Açıklaması</label>
+                    <textarea id="projectDescription" class="input-field" rows="4" placeholder="Proje açıklamasını girin"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">Tür</label>
+                    <select id="projectType" class="input-field">
+                        <option value="modpack">ModPack</option>
+                        <option value="mod">Mod</option>
+                        <option value="script">Script</option>
+                        <option value="other">Diğer</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">Durum</label>
+                    <select id="projectStatus" class="input-field">
+                        <option value="development">Geliştiriliyor</option>
+                        <option value="beta">Beta</option>
+                        <option value="release">Yayında</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">Link (CurseForge vb.)</label>
+                    <input type="url" id="projectLink" class="input-field" placeholder="https://...">
+                </div>
+
+                <div class="flex gap-4">
+                    <button class="btn-primary flex-1" onclick="addProject()">
+                        ➕ Ekle
+                    </button>
+                    <button class="btn-secondary flex-1" onclick="closeProjectModal()">
+                        ✕ İptal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DOWNLOAD MODAL -->
+    <div id="downloadModal" class="modal">
+        <div class="modal-content">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-bold">İndirme Ekle</h3>
+                <button onclick="closeDownloadModal()" class="text-2xl">✕</button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-2">Adı</label>
+                    <input type="text" id="downloadName" class="input-field" placeholder="İndirme adını girin">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">Versiyon</label>
+                    <input type="text" id="downloadVersion" class="input-field" placeholder="v1.0">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">Tür</label>
+                    <select id="downloadType" class="input-field">
+                        <option value="modpack">ModPack</option>
+                        <option value="mod">Mod</option>
+                        <option value="script">Script</option>
+                        <option value="tool">Tool</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">İndirme Linki</label>
+                    <input type="url" id="downloadLink" class="input-field" placeholder="https://...">
+                </div>
+
+                <div class="flex gap-4">
+                    <button class="btn-primary flex-1" onclick="addDownload()">
+                        ➕ Ekle
+                    </button>
+                    <button class="btn-secondary flex-1" onclick="closeDownloadModal()">
+                        ✕ İptal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * ===== ADMIN PANEL DATA MANAGEMENT =====
+         */
+
+        const ADMIN_KEY = 'admin_credentials';
+        const ANNOUNCEMENTS_KEY = 'admin_announcements';
+        const PROJECTS_KEY = 'admin_projects';
+        const DOWNLOADS_KEY = 'admin_downloads';
+        const ACTIVITY_KEY = 'admin_activity';
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            initializeData();
+            loadAnnouncements();
+            loadProjects();
+            loadDownloads();
+            updateDashboard();
+        });
+
+        // ===== AUTHENTICATION =====
+        function checkAuth() {
+            const token = localStorage.getItem('adminToken');
+            if (!token) {
+                showLoginModal();
+            }
+        }
+
+        function login(password) {
+            const stored = JSON.parse(localStorage.getItem(ADMIN_KEY) || '{}');
+            const correctPassword = stored.password || '12345'; // Default password
+
+            if (password === correctPassword) {
+                localStorage.setItem('adminToken', 'authenticated');
+                document.getElementById('adminName').textContent = stored.name || 'Admin';
+                window.location.reload();
+            } else {
+                alert('❌ Hatalı şifre!');
+            }
+        }
+
+        function logout() {
+            if (confirm('Çıkış yapmak istediğinize emin misiniz?')) {
+                localStorage.removeItem('adminToken');
+                window.location.href = 'index.html';
+            }
+        }
+
+        function showLoginModal() {
+            const password = prompt('🔐 Admin Şifresi Girin:');
+            if (password !== null) {
+                login(password);
+            }
+        }
+
+        // ===== PAGE NAVIGATION =====
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Remove active from all menu items
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+
+            // Set active menu item
+            event.target.closest('.sidebar-item')?.classList.add('active');
+        }
+
+        // ===== INITIALIZATION =====
+        function initializeData() {
+            if (!localStorage.getItem(ADMIN_KEY)) {
+                localStorage.setItem(ADMIN_KEY, JSON.stringify({
+                    name: 'Admin',
+                    password: '12345'
+                }));
+            }
+
+            if (!localStorage.getItem(ANNOUNCEMENTS_KEY)) {
+                localStorage.setItem(ANNOUNCEMENTS_KEY, JSON.stringify([]));
+            }
+
+            if (!localStorage.getItem(PROJECTS_KEY)) {
+                localStorage.setItem(PROJECTS_KEY, JSON.stringify([]));
+            }
+
+            if (!localStorage.getItem(DOWNLOADS_KEY)) {
+                localStorage.setItem(DOWNLOADS_KEY, JSON.stringify([]));
+            }
+
+            if (!localStorage.getItem(ACTIVITY_KEY)) {
+                localStorage.setItem(ACTIVITY_KEY, JSON.stringify([]));
+            }
+        }
+
+        // ===== ANNOUNCEMENTS MANAGEMENT =====
+        function openAnnouncementModal() {
+            document.getElementById('announcementModal').classList.add('active');
+        }
+
+        function closeAnnouncementModal() {
+            document.getElementById('announcementModal').classList.remove('active');
+            document.getElementById('announcementTitle').value = '';
+            document.getElementById('announcementContent').value = '';
+        }
+
+        function addAnnouncement() {
+            const title = document.getElementById('announcementTitle').value;
+            const content = document.getElementById('announcementContent').value;
+            const category = document.getElementById('announcementCategory').value;
+
+            if (!title || !content) {
+                alert('⚠️ Lütfen tüm alanları doldurun!');
+                return;
+            }
+
+            const announcements = JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY));
+            const announcement = {
+                id: Date.now(),
+                title,
+                content,
+                category,
+                date: new Date().toLocaleDateString('tr-TR'),
+                createdAt: new Date().toISOString()
+            };
+
+            announcements.push(announcement);
+            localStorage.setItem(ANNOUNCEMENTS_KEY, JSON.stringify(announcements));
+
+            addActivity(`Yeni duyuru eklendi: ${title}`);
+            loadAnnouncements();
+            updateDashboard();
+            closeAnnouncementModal();
+            showToast('✅ Duyuru başarıyla eklendi!', 'success');
+        }
+
+        function loadAnnouncements() {
+            const announcements = JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY));
+            const tbody = document.getElementById('announcementsList');
+
+            if (announcements.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500 py-8">Duyuru yok</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = announcements.map(announcement => `
+                <tr>
+                    <td>${announcement.title}</td>
+                    <td>${announcement.date}</td>
+                    <td><span class="px-3 py-1 bg-blue-500/10 text-blue-400 rounded text-xs font-bold">${announcement.category}</span></td>
+                    <td>
+                        <button class="btn-secondary" onclick="editAnnouncement(${announcement.id})">✏️</button>
+                        <button class="btn-danger" onclick="deleteAnnouncement(${announcement.id})">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteAnnouncement(id) {
+            if (confirm('Bu duyuruyu silmek istediğinize emin misiniz?')) {
+                let announcements = JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY));
+                announcements = announcements.filter(a => a.id !== id);
+                localStorage.setItem(ANNOUNCEMENTS_KEY, JSON.stringify(announcements));
+
+                addActivity('Duyuru silindi');
+                loadAnnouncements();
+                updateDashboard();
+                showToast('✅ Duyuru başarıyla silindi!', 'success');
+            }
+        }
+
+        // ===== PROJECTS MANAGEMENT =====
+        function openProjectModal() {
+            document.getElementById('projectModal').classList.add('active');
+        }
+
+        function closeProjectModal() {
+            document.getElementById('projectModal').classList.remove('active');
+            document.getElementById('projectName').value = '';
+            document.getElementById('projectDescription').value = '';
+        }
+
+        function addProject() {
+            const name = document.getElementById('projectName').value;
+            const description = document.getElementById('projectDescription').value;
+            const type = document.getElementById('projectType').value;
+            const status = document.getElementById('projectStatus').value;
+            const link = document.getElementById('projectLink').value;
+
+            if (!name || !description) {
+                alert('⚠️ Lütfen tüm alanları doldurun!');
+                return;
+            }
+
+            const projects = JSON.parse(localStorage.getItem(PROJECTS_KEY));
+            const project = {
+                id: Date.now(),
+                name,
+                description,
+                type,
+                status,
+                link,
+                createdAt: new Date().toISOString()
+            };
+
+            projects.push(project);
+            localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+
+            addActivity(`Yeni proje eklendi: ${name}`);
+            loadProjects();
+            updateDashboard();
+            closeProjectModal();
+            showToast('✅ Proje başarıyla eklendi!', 'success');
+        }
+
+        function loadProjects() {
+            const projects = JSON.parse(localStorage.getItem(PROJECTS_KEY));
+            const tbody = document.getElementById('projectsList');
+
+            if (projects.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500 py-8">Proje yok</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = projects.map(project => `
+                <tr>
+                    <td>${project.name}</td>
+                    <td>${project.type}</td>
+                    <td><span class="px-3 py-1 bg-purple-500/10 text-purple-400 rounded text-xs font-bold">${project.status}</span></td>
+                    <td>
+                        <button class="btn-secondary" onclick="editProject(${project.id})">✏️</button>
+                        <button class="btn-danger" onclick="deleteProject(${project.id})">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteProject(id) {
+            if (confirm('Bu projeyi silmek istediğinize emin misiniz?')) {
+                let projects = JSON.parse(localStorage.getItem(PROJECTS_KEY));
+                projects = projects.filter(p => p.id !== id);
+                localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+
+                addActivity('Proje silindi');
+                loadProjects();
+                updateDashboard();
+                showToast('✅ Proje başarıyla silindi!', 'success');
+            }
+        }
+
+        // ===== DOWNLOADS MANAGEMENT =====
+        function openDownloadModal() {
+            document.getElementById('downloadModal').classList.add('active');
+        }
+
+        function closeDownloadModal() {
+            document.getElementById('downloadModal').classList.remove('active');
+            document.getElementById('downloadName').value = '';
+            document.getElementById('downloadVersion').value = '';
+            document.getElementById('downloadLink').value = '';
+        }
+
+        function addDownload() {
+            const name = document.getElementById('downloadName').value;
+            const version = document.getElementById('downloadVersion').value;
+            const type = document.getElementById('downloadType').value;
+            const link = document.getElementById('downloadLink').value;
+
+            if (!name || !version || !link) {
+                alert('⚠️ Lütfen tüm alanları doldurun!');
+                return;
+            }
+
+            const downloads = JSON.parse(localStorage.getItem(DOWNLOADS_KEY));
+            const download = {
+                id: Date.now(),
+                name,
+                version,
+                type,
+                link,
+                createdAt: new Date().toISOString()
+            };
+
+            downloads.push(download);
+            localStorage.setItem(DOWNLOADS_KEY, JSON.stringify(downloads));
+
+            addActivity(`Yeni indirme eklendi: ${name}`);
+            loadDownloads();
+            updateDashboard();
+            closeDownloadModal();
+            showToast('✅ İndirme başarıyla eklendi!', 'success');
+        }
+
+        function loadDownloads() {
+            const downloads = JSON.parse(localStorage.getItem(DOWNLOADS_KEY));
+            const tbody = document.getElementById('downloadsList');
+
+            if (downloads.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500 py-8">İndirme yok</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = downloads.map(download => `
+                <tr>
+                    <td>${download.name}</td>
+                    <td>${download.version}</td>
+                    <td>${download.type}</td>
+                    <td>
+                        <button class="btn-secondary" onclick="editDownload(${download.id})">✏️</button>
+                        <button class="btn-danger" onclick="deleteDownload(${download.id})">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteDownload(id) {
+            if (confirm('Bu indirmeyi silmek istediğinize emin misiniz?')) {
+                let downloads = JSON.parse(localStorage.getItem(DOWNLOADS_KEY));
+                downloads = downloads.filter(d => d.id !== id);
+                localStorage.setItem(DOWNLOADS_KEY, JSON.stringify(downloads));
+
+                addActivity('İndirme silindi');
+                loadDownloads();
+                updateDashboard();
+                showToast('✅ İndirme başarıyla silindi!', 'success');
+            }
+        }
+
+        // ===== DASHBOARD =====
+        function updateDashboard() {
+            const announcements = JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY));
+            const projects = JSON.parse(localStorage.getItem(PROJECTS_KEY));
+            const downloads = JSON.parse(localStorage.getItem(DOWNLOADS_KEY));
+
+            document.getElementById('totalAnnouncements').textContent = announcements.length;
+            document.getElementById('totalProjects').textContent = projects.length;
+            document.getElementById('totalDownloads').textContent = downloads.length;
+            document.getElementById('totalUsers').textContent = Math.floor(Math.random() * 1000) + 100;
+
+            // Recent activity
+            const activity = JSON.parse(localStorage.getItem(ACTIVITY_KEY));
+            const recentActivity = document.getElementById('recentActivity');
+
+            if (activity.length === 0) {
+                recentActivity.innerHTML = '<p class="text-gray-400 text-sm">Henüz aktivite yok</p>';
+            } else {
+                recentActivity.innerHTML = activity.slice(-5).reverse().map(item => `
+                    <div class="flex items-center gap-3 p-3 bg-white/5 rounded border border-white/10">
+                        <div class="text-2xl">📝</div>
+                        <div>
+                            <p class="font-bold">${item.message}</p>
+                            <p class="text-xs text-gray-500">${item.timestamp}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // ===== ACTIVITY LOG =====
+        function addActivity(message) {
+            const activity = JSON.parse(localStorage.getItem(ACTIVITY_KEY));
+            activity.push({
+                message,
+                timestamp: new Date().toLocaleString('tr-TR')
+            });
+            localStorage.setItem(ACTIVITY_KEY, JSON.stringify(activity));
+        }
+
+        // ===== SETTINGS =====
+        function saveSettings() {
+            const adminName = document.getElementById('adminNameInput').value || 'Admin';
+            const adminPassword = document.getElementById('adminPasswordInput').value;
+
+            const admin = {
+                name: adminName,
+                password: adminPassword || '12345'
+            };
+
+            localStorage.setItem(ADMIN_KEY, JSON.stringify(admin));
+            document.getElementById('adminName').textContent = adminName;
+
+            addActivity('Ayarlar güncellendi');
+            showToast('✅ Ayarlar başarıyla kaydedildi!', 'success');
+        }
+
+        function clearAllData() {
+            if (confirm('⚠️ TÜM VERİLER SİLİNECEK! Emin misiniz?')) {
+                localStorage.clear();
+                window.location.reload();
+            }
+        }
+
+        // ===== TOAST NOTIFICATION =====
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'rgba(34,197,94,0.2)' : 'rgba(59,130,246,0.2)'};
+                border: 1px solid ${type === 'success' ? 'rgba(34,197,94,0.5)' : 'rgba(59,130,246,0.5)'};
+                color: ${type === 'success' ? '#22c55e' : '#3b82f6'};
+                padding: 1rem 1.5rem;
+                border-radius: 0.5rem;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideInRight 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideInRight 0.3s ease reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
