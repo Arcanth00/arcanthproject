@@ -1,0 +1,30 @@
+{
+  "announcements": [],
+  "projects": [],
+  "downloads": [],
+  "cms_content": {
+    "hero": {
+      "badge": "Carbonium Beta Yayında!",
+      "title": "YENİ BİR VİZYON",
+      "subtitle": "Sıradanlığı sorgulayan, geleceği bugünden inşa edenlerin kalesi."
+    },
+    "announcements_section": {
+      "title": "DUYURULAR",
+      "description": "Son haberler ve güncellemeleri takip edin"
+    },
+    "projects_section": {
+      "title": "PROJELER",
+      "description": "Tüm projelerimizi keşfedin"
+    },
+    "footer": {
+      "company": "Arcanth Project",
+      "copyright": "© 2026 Arcanth Project. Tüm hakları saklıdır.",
+      "description": "Kaliteli oyun projeleri geliştiren topluluk"
+    }
+  },
+  "cookie_settings": {
+    "title": "Bu site temel çerezler kullanır",
+    "description": "Deneyiminizi geliştirmek için temel çerezleri kullanıyoruz.",
+    "acceptText": "ANLADIM"
+  }
+}
