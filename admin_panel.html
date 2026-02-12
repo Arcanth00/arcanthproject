@@ -286,6 +286,39 @@
     </style>
 </head>
 <body>
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="fixed inset-0 z-[9999] flex items-center justify-center p-6" style="background: #020408;">
+        <div class="glass-card p-12 max-w-md w-full">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-black italic uppercase mb-2">
+                    <span class="text-blue-500">ARCANTH</span> ADMIN
+                </h1>
+                <p class="text-gray-400 text-sm">Güvenli Giriş</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-2">Kullanıcı Adı</label>
+                    <input type="text" id="loginUsername" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-blue-500 transition-all text-white" placeholder="arcprlua">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">Şifre</label>
+                    <input type="password" id="loginPassword" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-blue-500 transition-all text-white" placeholder="••••••••">
+                </div>
+
+                <button onclick="attemptLogin()" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-black uppercase tracking-widest hover:opacity-90 transition-all">
+                    GİRİŞ YAP
+                </button>
+
+                <p id="loginError" class="text-red-500 text-sm text-center hidden"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN ADMIN PANEL (Hidden until login) -->
+    <div id="adminPanel" style="display: none;">
+    
     <!-- Sidebar Navigation -->
     <div class="sidebar">
         <div>
@@ -937,7 +970,8 @@
         function logout() {
             if (confirm('Çıkış yapmak istediğinize emin misiniz?')) {
                 localStorage.removeItem('adminToken');
-                window.location.href = 'index.html';
+                localStorage.removeItem('adminLoginTime');
+                window.location.reload();
             }
         }
 
@@ -1562,8 +1596,47 @@
                 localStorage.setItem(COOKIE_STATS_KEY, JSON.stringify({ accepted: 0, rejected: 0 }));
                 loadCookieSettings();
                 addActivity('Çerez istatistikleri sıfırlandı');
-                showToast('✅ İstatistikler sıfırlandı!', 'success');
+                showToast('İstatistikler sıfırlandı!', 'success');
             }
-        }</script>
+        }
+
+        // ===== LOGIN SYSTEM =====
+        const CORRECT_USERNAME = 'arcprlua';
+        const CORRECT_PASSWORD = '9PsO!J7qI4zSmmnfMdx4%wJqR3N85SYyvh';
+
+        function attemptLogin() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const error = document.getElementById('loginError');
+
+            if (username !== CORRECT_USERNAME || password !== CORRECT_PASSWORD) {
+                error.textContent = 'Hatalı kullanıcı adı veya şifre!';
+                error.classList.remove('hidden');
+                return;
+            }
+
+            // Successful login
+            localStorage.setItem('adminToken', 'authenticated');
+            localStorage.setItem('adminLoginTime', Date.now());
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+        }
+
+        // Check if already logged in
+        function checkAuth() {
+            const token = localStorage.getItem('adminToken');
+            const loginTime = localStorage.getItem('adminLoginTime');
+            
+            // Session expires after 4 hours
+            if (token && loginTime && (Date.now() - parseInt(loginTime)) < 14400000) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+            }
+        }
+
+        // Run auth check on page load
+        checkAuth();
+    </script>
+</div> <!-- Close adminPanel div -->
 </body>
 </html>
