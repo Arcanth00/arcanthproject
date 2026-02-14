@@ -56,12 +56,12 @@
                     <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                 </div>
                 <h1 class="text-2xl font-black uppercase tracking-tight"><span class="text-blue-500">Arcanth</span> Admin</h1>
-                <p class="text-gray-500 text-xs mt-1">Guvenli giris yapiniz</p>
+                <p class="text-gray-500 text-xs mt-1">Lütfen Google hesabınızla giriş yapın</p>
             </div>
             <div class="space-y-3">
                 <button onclick="doGoogleLogin()" class="btn-p w-full py-3 flex items-center justify-center gap-2">
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/></svg>
-                    Google ile Giriş Yap
+                    Google ile Devam Et
                 </button>
                 <p id="loginErr" class="text-red-500 text-xs text-center hidden font-bold"></p>
             </div>
@@ -83,379 +83,237 @@
                 <div class="nav-item active" onclick="go('dashboard',this)"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>Dashboard</div>
                 <div class="nav-item" onclick="go('announcements',this)"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>Duyurular</div>
                 <div class="nav-item" onclick="go('projects',this)"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>Projeler</div>
-                <div class="nav-item" onclick="go('downloads',this)"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>Indirmeler</div>
+                <div class="nav-item" onclick="go('downloads',this)"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>İndirmeler</div>
                 <div class="nav-item" onclick="go('cms',this)"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>CMS</div>
-                <div class="nav-item" onclick="go('cookies',this)"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Cerezler</div>
                 <div class="nav-item" onclick="go('activity',this)"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Aktivite</div>
             </nav>
             <div class="p-4 border-t border-white/5">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="sync-dot" id="sync-dot"></span>
-                    <span class="text-xs text-gray-500" id="sync-text">Hazir</span>
+                    <span class="text-xs text-gray-500" id="sync-text">Sistem Aktif</span>
                 </div>
-                <div class="mb-2 px-1 text-[10px] text-gray-500 font-mono overflow-hidden text-ellipsis whitespace-nowrap" id="current-user-uid"></div>
-                <button onclick="doLogout()" class="w-full text-left nav-item text-red-400 hover:text-red-300 hover:bg-red-500/10">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>Cikis Yap
+                <div class="mb-3 px-1 text-[10px] text-blue-400 font-mono overflow-hidden text-ellipsis whitespace-nowrap" id="current-user-uid" title="Sizin Benzersiz UID'niz"></div>
+                <button onclick="doLogout()" class="w-full text-left nav-item text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-transparent hover:border-red-500/20">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>Güvenli Çıkış
                 </button>
             </div>
         </aside>
 
-        <div class="mobile-nav hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0a0f1a] border-t border-white/5 px-2 py-2 gap-1 overflow-x-auto">
-            <button onclick="go('dashboard')" class="flex-shrink-0 px-3 py-2 rounded-lg text-[10px] font-bold uppercase text-gray-400 hover:bg-white/5">Dash</button>
-            <button onclick="go('announcements')" class="flex-shrink-0 px-3 py-2 rounded-lg text-[10px] font-bold uppercase text-gray-400 hover:bg-white/5">Duyuru</button>
-            <button onclick="go('projects')" class="flex-shrink-0 px-3 py-2 rounded-lg text-[10px] font-bold uppercase text-gray-400 hover:bg-white/5">Proje</button>
-            <button onclick="go('downloads')" class="flex-shrink-0 px-3 py-2 rounded-lg text-[10px] font-bold uppercase text-gray-400 hover:bg-white/5">Indir</button>
-            <button onclick="go('cms')" class="flex-shrink-0 px-3 py-2 rounded-lg text-[10px] font-bold uppercase text-gray-400 hover:bg-white/5">CMS</button>
-        </div>
-
         <div class="flex-1 lg:ml-64 p-6 pb-20 lg:pb-6">
             <div id="t-dashboard" class="tab-c active space-y-6">
-                <h2 class="text-2xl font-black">Dashboard</h2>
+                <h2 class="text-2xl font-black">Genel Durum</h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="stat"><p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Duyurular</p><p class="text-3xl font-black mt-1" id="s-ann">0</p></div>
                     <div class="stat"><p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Projeler</p><p class="text-3xl font-black mt-1" id="s-proj">0</p></div>
-                    <div class="stat"><p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Indirmeler</p><p class="text-3xl font-black mt-1" id="s-dl">0</p></div>
-                    <div class="stat"><p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Cerez Kabul</p><p class="text-3xl font-black mt-1" id="s-ck">0</p></div>
+                    <div class="stat"><p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">İndirmeler</p><p class="text-3xl font-black mt-1" id="s-dl">0</p></div>
+                    <div class="stat"><p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Aktif Oturum</p><p class="text-xs font-bold mt-2 text-green-500">YETKİLİ</p></div>
                 </div>
                 <div class="glass p-6">
-                    <h3 class="font-bold mb-2">Hos Geldiniz</h3>
-                    <p class="text-gray-400 text-sm">Admin panelden icerik yonetebilir, degisiklikleri aninda yayinlayabilirsiniz. Tum degisiklikler Cloudflare uzerinden herkesin gorebilecegi sekilde kaydedilir.</p>
-                </div>
-                <div class="glass p-6">
-                    <h3 class="font-bold mb-3">Nasil Calisiyor?</h3>
-                    <div class="space-y-2 text-sm text-gray-400">
-                        <p>1. Buradan icerik ekle/duzenle/sil</p>
-                        <p>2. "Kaydet" tiklandiginda otomatik olarak Cloudflare'a gonderilir</p>
-                        <p>3. Siteni ziyaret eden herkes guncel icerigi gorur</p>
-                    </div>
+                    <h3 class="font-bold mb-2 text-blue-400">Hoş Geldiniz Efendim</h3>
+                    <p class="text-gray-400 text-sm">Arcanth yönetim merkezi şu an kontrolünüz altında. Firebase üzerinden kimlik doğrulamanız başarıyla tamamlandı.</p>
                 </div>
             </div>
 
             <div id="t-announcements" class="tab-c space-y-6">
-                <div class="flex items-center justify-between"><h2 class="text-2xl font-black">Duyurular</h2><button onclick="openModal('ann')" class="btn-p">+ Yeni</button></div>
-                <div class="glass p-4 overflow-x-auto"><table><thead><tr><th>Baslik</th><th>Kategori</th><th>Tarih</th><th>Islem</th></tr></thead><tbody id="annList"></tbody></table></div>
+                <div class="flex items-center justify-between"><h2 class="text-2xl font-black">Duyurular</h2><button onclick="openModal('ann')" class="btn-p">+ Yeni Ekle</button></div>
+                <div class="glass p-4 overflow-x-auto"><table><thead><tr><th>Başlık</th><th>Kategori</th><th>Tarih</th><th>İşlem</th></tr></thead><tbody id="annList"></tbody></table></div>
             </div>
 
             <div id="t-projects" class="tab-c space-y-6">
-                <div class="flex items-center justify-between"><h2 class="text-2xl font-black">Projeler</h2><button onclick="openModal('proj')" class="btn-p">+ Yeni</button></div>
-                <div class="glass p-4 overflow-x-auto"><table><thead><tr><th>Ad</th><th>Versiyon</th><th>Durum</th><th>Kategori</th><th>Islem</th></tr></thead><tbody id="projList"></tbody></table></div>
+                <div class="flex items-center justify-between"><h2 class="text-2xl font-black">Projeler</h2><button onclick="openModal('proj')" class="btn-p">+ Yeni Ekle</button></div>
+                <div class="glass p-4 overflow-x-auto"><table><thead><tr><th>Ad</th><th>Versiyon</th><th>Durum</th><th>Kategori</th><th>İşlem</th></tr></thead><tbody id="projList"></tbody></table></div>
             </div>
 
             <div id="t-downloads" class="tab-c space-y-6">
-                <div class="flex items-center justify-between"><h2 class="text-2xl font-black">Indirmeler</h2><button onclick="openModal('dl')" class="btn-p">+ Yeni</button></div>
-                <div class="glass p-4 overflow-x-auto"><table><thead><tr><th>Isim</th><th>Versiyon</th><th>Tip</th><th>Link</th><th>Islem</th></tr></thead><tbody id="dlList"></tbody></table></div>
+                <div class="flex items-center justify-between"><h2 class="text-2xl font-black">İndirmeler</h2><button onclick="openModal('dl')" class="btn-p">+ Yeni Ekle</button></div>
+                <div class="glass p-4 overflow-x-auto"><table><thead><tr><th>İsim</th><th>Versiyon</th><th>Tip</th><th>Link</th><th>İşlem</th></tr></thead><tbody id="dlList"></tbody></table></div>
             </div>
 
             <div id="t-cms" class="tab-c space-y-6">
-                <h2 class="text-2xl font-black">CMS Icerik</h2>
+                <h2 class="text-2xl font-black">CMS İçerik</h2>
                 <div class="glass p-6 space-y-4">
-                    <h3 class="font-bold text-sm uppercase tracking-wider text-gray-500">Hero Bolumu</h3>
+                    <h3 class="font-bold text-sm uppercase tracking-wider text-gray-500">Ana Sayfa (Hero)</h3>
                     <input type="text" id="cmsBadge" class="input-f" placeholder="Badge metni">
-                    <input type="text" id="cmsTitle" class="input-f" placeholder="Baslik">
-                    <textarea id="cmsSub" class="input-f" rows="2" placeholder="Alt baslik"></textarea>
-                    <button onclick="saveCMS()" class="btn-p">Kaydet</button>
-                </div>
-            </div>
-
-            <div id="t-cookies" class="tab-c space-y-6">
-                <h2 class="text-2xl font-black">Cerez Ayarlari</h2>
-                <div class="glass p-6 space-y-4">
-                    <input type="text" id="ckTitle" class="input-f" placeholder="Baslik">
-                    <textarea id="ckDesc" class="input-f" rows="2" placeholder="Aciklama"></textarea>
-                    <input type="text" id="ckBtn" class="input-f" placeholder="Buton metni">
-                    <button onclick="saveCK()" class="btn-p">Kaydet</button>
+                    <input type="text" id="cmsTitle" class="input-f" placeholder="Ana Başlık">
+                    <textarea id="cmsSub" class="input-f" rows="2" placeholder="Alt Başlık"></textarea>
+                    <button onclick="saveCMS()" class="btn-p">İçeriği Güncelle</button>
                 </div>
             </div>
 
             <div id="t-activity" class="tab-c space-y-6">
-                <div class="flex items-center justify-between"><h2 class="text-2xl font-black">Aktivite</h2><button onclick="clearAct()" class="btn-d">Temizle</button></div>
+                <div class="flex items-center justify-between"><h2 class="text-2xl font-black">Aktivite Günlüğü</h2><button onclick="clearAct()" class="btn-d">Temizle</button></div>
                 <div id="actList" class="space-y-2"></div>
             </div>
         </div>
     </div>
 
-    <div id="m-ann" class="modal">
-        <div class="modal-box">
-            <h3 class="text-xl font-black mb-4" id="m-ann-title">Yeni Duyuru</h3>
-            <div class="space-y-3">
-                <input type="text" id="annTitle" class="input-f" placeholder="Baslik">
-                <textarea id="annContent" class="input-f" rows="4" placeholder="Icerik"></textarea>
-                <select id="annCat" class="input-f"><option value="bilgi">Bilgi</option><option value="guncelleme">Guncelleme</option><option value="onemli">Onemli</option></select>
-                <div class="flex gap-3"><button onclick="saveAnn()" class="btn-p flex-1">Kaydet</button><button onclick="closeModal('ann')" class="btn-s flex-1">Iptal</button></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="m-proj" class="modal">
-        <div class="modal-box">
-            <h3 class="text-xl font-black mb-4" id="m-proj-title">Yeni Proje</h3>
-            <div class="space-y-3">
-                <input type="text" id="projName" class="input-f" placeholder="Proje adi">
-                <textarea id="projDesc" class="input-f" rows="2" placeholder="Aciklama"></textarea>
-                <div class="grid grid-cols-2 gap-3">
-                    <input type="text" id="projVer" class="input-f" placeholder="v1.0">
-                    <input type="text" id="projCat" class="input-f" placeholder="Kategori">
-                </div>
-                <select id="projStatus" class="input-f"><option value="release">Release</option><option value="beta">Beta</option><option value="alpha">Alpha</option><option value="development">Dev</option></select>
-                <input type="url" id="projLink" class="input-f" placeholder="https://...">
-                <input type="text" id="projIcon" class="input-f" placeholder="Ikon (emoji veya URL)">
-                <div class="flex gap-3"><button onclick="saveProj()" class="btn-p flex-1">Kaydet</button><button onclick="closeModal('proj')" class="btn-s flex-1">Iptal</button></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="m-dl" class="modal">
-        <div class="modal-box">
-            <h3 class="text-xl font-black mb-4" id="m-dl-title">Yeni Indirme</h3>
-            <div class="space-y-3">
-                <input type="text" id="dlName" class="input-f" placeholder="Isim">
-                <div class="grid grid-cols-2 gap-3">
-                    <input type="text" id="dlVer" class="input-f" placeholder="1.0">
-                    <select id="dlType" class="input-f"><option value="modpack">ModPack</option><option value="mod">Mod</option><option value="other">Diger</option></select>
-                </div>
-                <input type="url" id="dlLink" class="input-f" placeholder="https://...">
-                <div class="flex gap-3"><button onclick="saveDl()" class="btn-p flex-1">Kaydet</button><button onclick="closeModal('dl')" class="btn-s flex-1">Iptal</button></div>
-            </div>
-        </div>
-    </div>
+    <div id="m-ann" class="modal"><div class="modal-box"><h3 class="text-xl font-black mb-4" id="m-ann-title">Duyuru</h3><div class="space-y-3"><input type="text" id="annTitle" class="input-f" placeholder="Baslik"><textarea id="annContent" class="input-f" rows="4" placeholder="Icerik"></textarea><select id="annCat" class="input-f"><option value="bilgi">Bilgi</option><option value="guncelleme">Guncelleme</option><option value="onemli">Onemli</option></select><div class="flex gap-3"><button onclick="saveAnn()" class="btn-p flex-1">Kaydet</button><button onclick="closeModal('ann')" class="btn-s flex-1">Iptal</button></div></div></div></div>
+    <div id="m-proj" class="modal"><div class="modal-box"><h3 class="text-xl font-black mb-4" id="m-proj-title">Proje</h3><div class="space-y-3"><input type="text" id="projName" class="input-f" placeholder="Proje adi"><textarea id="projDesc" class="input-f" rows="2" placeholder="Aciklama"></textarea><div class="grid grid-cols-2 gap-3"><input type="text" id="projVer" class="input-f" placeholder="v1.0"><input type="text" id="projCat" class="input-f" placeholder="Kategori"></div><select id="projStatus" class="input-f"><option value="release">Release</option><option value="beta">Beta</option><option value="alpha">Alpha</option><option value="development">Dev</option></select><input type="url" id="projLink" class="input-f" placeholder="https://..."><input type="text" id="projIcon" class="input-f" placeholder="Ikon"><div class="flex gap-3"><button onclick="saveProj()" class="btn-p flex-1">Kaydet</button><button onclick="closeModal('proj')" class="btn-s flex-1">Iptal</button></div></div></div></div>
+    <div id="m-dl" class="modal"><div class="modal-box"><h3 class="text-xl font-black mb-4" id="m-dl-title">Indirme</h3><div class="space-y-3"><input type="text" id="dlName" class="input-f" placeholder="Isim"><div class="grid grid-cols-2 gap-3"><input type="text" id="dlVer" class="input-f" placeholder="1.0"><select id="dlType" class="input-f"><option value="modpack">ModPack</option><option value="mod">Mod</option><option value="other">Diger</option></select></div><input type="url" id="dlLink" class="input-f" placeholder="https://..."><div class="flex gap-3"><button onclick="saveDl()" class="btn-p flex-1">Kaydet</button><button onclick="closeModal('dl')" class="btn-s flex-1">Iptal</button></div></div></div></div>
 
     <script>
-        // --- FIREBASE CONFIGURATION START ---
-        // Lutfen kendi Firebase Konsolunuzdan aldiginiz config degerlerini buraya girin.
+        // --- FIREBASE CONFIGURATION ---
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyCnkk6j1CGsi4sNXJ8FA9Gd2B6_VDptVDg",
+            authDomain: "arcanthproject.firebaseapp.com",
+            databaseURL: "https://arcanthproject-default-rtdb.firebaseio.com",
+            projectId: "arcanthproject",
+            storageBucket: "arcanthproject.firebasestorage.app",
+            messagingSenderId: "826341954149",
+            appId: "1:826341954149:web:6429d61a5b40810009ac8c",
+            measurementId: "G-3YY7R7XB2R"
         };
         
-        // --- ADMIN UID LIST ---
-        // Sadece buradaki UID'lere sahip hesaplar giris yapabilir.
+        // --- BURAYI GÜNCELLEYİN ---
         const allowedAdmins = ["PUT_UID_HERE"]; 
-        // --- CONFIG END ---
 
-        // Initialize Firebase
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
+        // Initialize
+        firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const provider = new firebase.auth.GoogleAuthProvider();
 
-        var K = { ann: 'admin_announcements', proj: 'admin_projects', dl: 'admin_downloads', cms: 'admin_cms_content', ck: 'admin_cookie_settings', stats: 'admin_cookie_stats', act: 'admin_activity' };
+        var K = { ann: 'admin_announcements', proj: 'admin_projects', dl: 'admin_downloads', cms: 'admin_cms_content', act: 'admin_activity' };
         var API = 'https://sweet-resonance-7779.omerhaktan5454.workers.dev/api/data';
         var AUTH_TOKEN = 'Bearer arcprlua_secret_key_2026';
         var editId = { ann: null, proj: null, dl: null };
 
         function g(id) { return document.getElementById(id); }
-        function ls(k, v) { if (v !== undefined) { localStorage.setItem(k, JSON.stringify(v)); return v; } return JSON.parse(localStorage.getItem(k) || (k === K.cms ? '{"hero":{},"footer":{}}' : k === K.ck ? '{}' : k === K.stats ? '{"accepted":0,"rejected":0}' : '[]')); }
+        function ls(k, v) { if (v !== undefined) { localStorage.setItem(k, JSON.stringify(v)); return v; } return JSON.parse(localStorage.getItem(k) || (k === K.cms ? '{"hero":{}}' : '[]')); }
 
-        // --- AUTH LOGIC ---
+        // Auth Logic
         auth.onAuthStateChanged((user) => {
             if (user) {
-                // User is signed in, check if allowed
                 if (allowedAdmins.includes(user.uid)) {
-                    // Authorized
                     g('login').style.display = 'none';
                     g('admin').style.display = 'flex';
-                    g('loginErr').classList.add('hidden');
-                    
-                    var uidDisplay = g('current-user-uid');
-                    if(uidDisplay) uidDisplay.textContent = user.uid;
-
-                    log('Admin girisi: ' + user.email);
-                    
-                    // Initialize Data Only When Logged In
-                    init(); 
-                    stats(); 
-                    loadAnn(); 
-                    loadProj(); 
-                    loadDl(); 
-                    loadCMS(); 
-                    loadCK(); 
-                    loadAct();
+                    g('current-user-uid').textContent = "UID: " + user.uid;
+                    initApp();
                 } else {
-                    // User exists but NOT allowed
-                    console.warn("Unauthorized UID:", user.uid);
                     auth.signOut().then(() => {
-                        g('loginErr').textContent = "Yetkisiz hesap (" + user.email + "). Erişim reddedildi.";
+                        g('loginErr').textContent = "Yetkisiz UID: " + user.uid;
                         g('loginErr').classList.remove('hidden');
-                        g('login').style.display = 'flex';
-                        g('admin').style.display = 'none';
                     });
                 }
             } else {
-                // No user
                 g('login').style.display = 'flex';
                 g('admin').style.display = 'none';
             }
         });
 
         function doGoogleLogin() {
-            g('loginErr').classList.add('hidden');
-            auth.signInWithPopup(provider).catch((error) => {
-                console.error("Login Error:", error);
-                g('loginErr').textContent = "Hata: " + error.message;
+            auth.signInWithPopup(provider).catch(e => {
+                g('loginErr').textContent = "Hata: " + e.message;
                 g('loginErr').classList.remove('hidden');
             });
         }
 
         function doLogout() {
-            if (!confirm('Cikis?')) return;
-            auth.signOut().then(() => {
-                location.reload();
-            });
+            if(confirm('Oturumu kapatmak istediğinize emin misiniz?')) auth.signOut();
         }
 
-        // --- APP LOGIC ---
-
-        function init() {
-            [K.ann, K.proj, K.dl].forEach(function(k) { if (!localStorage.getItem(k)) ls(k, []); });
-            if (!localStorage.getItem(K.cms)) ls(K.cms, { hero: { badge: 'Carbonium Beta Yayinda!', title: 'YENI BIR VIZYON', subtitle: 'Siradanligi sorgulayan, gelecegi bugunden insa edenlerin kalesi.' }, footer: {} });
-            if (!localStorage.getItem(K.ck)) ls(K.ck, { title: 'Bu site cerezler kullanir', description: 'Deneyiminizi gelistirmek icin temel cerezleri kullaniyoruz.', acceptText: 'ANLADIM' });
-            if (!localStorage.getItem(K.stats)) ls(K.stats, { accepted: 0, rejected: 0 });
-            if (!localStorage.getItem(K.act)) ls(K.act, []);
+        function initApp() {
+            [K.ann, K.proj, K.dl].forEach(k => { if(!localStorage.getItem(k)) ls(k, []); });
+            loadAnn(); loadProj(); loadDl(); loadCMS(); loadAct(); stats();
         }
 
+        // --- Core Functions ---
         async function sync() {
-            var dot = g('sync-dot'), txt = g('sync-text');
-            if (dot) { dot.className = 'sync-dot sync-loading'; } if (txt) txt.textContent = 'Kaydediliyor...';
-            var data = { announcements: ls(K.ann), projects: ls(K.proj), downloads: ls(K.dl), cms_content: ls(K.cms), cookie_settings: ls(K.ck) };
+            g('sync-dot').className = 'sync-dot sync-loading';
+            g('sync-text').textContent = 'Eşitleniyor...';
+            var data = { announcements: ls(K.ann), projects: ls(K.proj), downloads: ls(K.dl), cms_content: ls(K.cms) };
             try {
                 var r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': AUTH_TOKEN }, body: JSON.stringify(data) });
-                if (!r.ok) throw new Error();
-                if (dot) dot.className = 'sync-dot sync-ok'; if (txt) txt.textContent = 'Kaydedildi';
-                toast('Kaydedildi! Herkes gorebilir.', 'ok');
+                if (!r.ok) throw 0;
+                g('sync-dot').className = 'sync-dot sync-ok';
+                g('sync-text').textContent = 'Bulutla Eşitlendi';
             } catch (e) {
-                if (dot) dot.className = 'sync-dot sync-err'; if (txt) txt.textContent = 'Hata!';
-                toast('Kaydetme hatasi!', 'err');
+                g('sync-dot').className = 'sync-dot sync-err';
+                g('sync-text').textContent = 'Hata!';
             }
         }
 
         function go(tab, el) {
-            document.querySelectorAll('.tab-c').forEach(function(t) { t.classList.remove('active'); });
-            document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
-            var t = g('t-' + tab); if (t) t.classList.add('active');
+            document.querySelectorAll('.tab-c').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            g('t-' + tab).classList.add('active');
             if (el) el.classList.add('active');
         }
 
-        function openModal(type, id) {
-            editId[type] = id || null;
-            var m = g('m-' + type); if (m) m.classList.add('active');
-            var title = g('m-' + type + '-title');
-            if (id) {
-                if (title) title.textContent = 'Duzenle';
-                if (type === 'ann') { var d = ls(K.ann).find(function(x) { return x.id === id; }); if (d) { g('annTitle').value = d.title; g('annContent').value = d.content; g('annCat').value = d.category; } }
-                if (type === 'proj') { var d = ls(K.proj).find(function(x) { return x.id === id; }); if (d) { g('projName').value = d.name; g('projDesc').value = d.description; g('projVer').value = d.version; g('projCat').value = d.category; g('projStatus').value = d.status; g('projLink').value = d.link || ''; g('projIcon').value = d.icon || ''; } }
-                if (type === 'dl') { var d = ls(K.dl).find(function(x) { return x.id === id; }); if (d) { g('dlName').value = d.name; g('dlVer').value = d.version; g('dlType').value = d.type; g('dlLink').value = d.link || ''; } }
-            } else { if (title) title.textContent = type === 'ann' ? 'Yeni Duyuru' : type === 'proj' ? 'Yeni Proje' : 'Yeni Indirme'; }
+        // Logic (Announcements, Projects, etc.)
+        function loadAnn() {
+            var arr = ls(K.ann), el = g('annList');
+            el.innerHTML = arr.map(a => `<tr><td class="font-semibold">${a.title}</td><td><span class="px-2 py-0.5 bg-blue-500/15 text-blue-400 rounded text-[10px] font-bold">${a.category}</span></td><td class="text-gray-500 text-xs">${a.date}</td><td class="flex gap-1"><button onclick="openModal('ann',${a.id})" class="btn-s">Düzenle</button><button onclick="delAnn(${a.id})" class="btn-d">Sil</button></td></tr>`).join('');
         }
-        function closeModal(type) {
-            var m = g('m-' + type); if (m) m.classList.remove('active');
-            editId[type] = null;
-            if (type === 'ann') { g('annTitle').value = ''; g('annContent').value = ''; g('annCat').value = 'bilgi'; }
-            if (type === 'proj') { g('projName').value = ''; g('projDesc').value = ''; g('projVer').value = ''; g('projCat').value = ''; g('projStatus').value = 'release'; g('projLink').value = ''; g('projIcon').value = ''; }
-            if (type === 'dl') { g('dlName').value = ''; g('dlVer').value = ''; g('dlType').value = 'modpack'; g('dlLink').value = ''; }
-        }
-
         function saveAnn() {
             var t = g('annTitle').value, c = g('annContent').value, cat = g('annCat').value;
-            if (!t || !c) { alert('Alanlari doldurun!'); return; }
+            if(!t || !c) return;
             var arr = ls(K.ann);
-            if (editId.ann) { var i = arr.findIndex(function(x) { return x.id === editId.ann; }); if (i > -1) { arr[i].title = t; arr[i].content = c; arr[i].category = cat; log('Duyuru duzenlendi: ' + t); } }
-            else { arr.push({ id: Date.now(), title: t, content: c, category: cat, date: new Date().toLocaleDateString('tr-TR'), createdAt: new Date().toISOString() }); log('Duyuru eklendi: ' + t); }
-            ls(K.ann, arr); loadAnn(); stats(); closeModal('ann'); sync();
+            if(editId.ann) { var i = arr.findIndex(x => x.id === editId.ann); arr[i] = {...arr[i], title:t, content:c, category:cat}; }
+            else { arr.push({id:Date.now(), title:t, content:c, category:cat, date:new Date().toLocaleDateString('tr-TR')}); }
+            ls(K.ann, arr); loadAnn(); closeModal('ann'); sync(); log('Duyuru güncellendi');
         }
-        function delAnn(id) { if (!confirm('Sil?')) return; ls(K.ann, ls(K.ann).filter(function(x) { return x.id !== id; })); log('Duyuru silindi'); loadAnn(); stats(); sync(); }
-        function loadAnn() {
-            var arr = ls(K.ann), el = g('annList'); if (!el) return;
-            if (!arr.length) { el.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500 py-6">Bos</td></tr>'; return; }
-            el.innerHTML = arr.map(function(a) { return '<tr><td class="font-semibold">' + a.title + '</td><td><span class="px-2 py-0.5 bg-blue-500/15 text-blue-400 rounded text-[10px] font-bold">' + a.category + '</span></td><td class="text-gray-500 text-xs">' + a.date + '</td><td class="flex gap-1"><button onclick="openModal(\'ann\',' + a.id + ')" class="btn-s">Duzenle</button><button onclick="delAnn(' + a.id + ')" class="btn-d">Sil</button></td></tr>'; }).join('');
-        }
+        function delAnn(id) { if(confirm('Silinsin mi?')) { ls(K.ann, ls(K.ann).filter(x => x.id !== id)); loadAnn(); sync(); } }
 
-        function saveProj() {
-            var n = g('projName').value, d = g('projDesc').value, v = g('projVer').value, c = g('projCat').value, s = g('projStatus').value, l = g('projLink').value, ic = g('projIcon').value;
-            if (!n || !d) { alert('Ad ve aciklama girin!'); return; }
-            var arr = ls(K.proj);
-            if (editId.proj) { var i = arr.findIndex(function(x) { return x.id === editId.proj; }); if (i > -1) { arr[i] = Object.assign(arr[i], { name: n, description: d, version: v || 'v1.0', category: c || 'Genel', status: s, link: l, icon: ic || '' }); log('Proje duzenlendi: ' + n); } }
-            else { arr.push({ id: Date.now(), name: n, description: d, version: v || 'v1.0', category: c || 'Genel', status: s, link: l, icon: ic || '', type: 'project', createdAt: new Date().toISOString() }); log('Proje eklendi: ' + n); }
-            ls(K.proj, arr); loadProj(); stats(); closeModal('proj'); sync();
-        }
-        function delProj(id) { if (!confirm('Sil?')) return; ls(K.proj, ls(K.proj).filter(function(x) { return x.id !== id; })); log('Proje silindi'); loadProj(); stats(); sync(); }
         function loadProj() {
-            var arr = ls(K.proj), el = g('projList'); if (!el) return;
-            if (!arr.length) { el.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-6">Bos</td></tr>'; return; }
-            el.innerHTML = arr.map(function(p) {
-                var sc = p.status === 'release' ? 'text-green-400 bg-green-500/15' : p.status === 'beta' ? 'text-yellow-400 bg-yellow-500/15' : 'text-purple-400 bg-purple-500/15';
-                return '<tr><td class="font-semibold">' + p.name + '</td><td class="text-gray-500">' + p.version + '</td><td><span class="px-2 py-0.5 rounded text-[10px] font-bold ' + sc + '">' + p.status + '</span></td><td class="text-gray-500">' + p.category + '</td><td class="flex gap-1"><button onclick="openModal(\'proj\',' + p.id + ')" class="btn-s">Duzenle</button><button onclick="delProj(' + p.id + ')" class="btn-d">Sil</button></td></tr>';
-            }).join('');
+            var arr = ls(K.proj), el = g('projList');
+            el.innerHTML = arr.map(p => `<tr><td class="font-semibold">${p.name}</td><td class="text-gray-500">${p.version}</td><td><span class="px-2 py-0.5 rounded text-[10px] font-bold ${p.status==='release'?'text-green-400 bg-green-500/15':'text-yellow-400 bg-yellow-500/15'}">${p.status}</span></td><td class="text-gray-500">${p.category}</td><td class="flex gap-1"><button onclick="openModal('proj',${p.id})" class="btn-s">Düzenle</button><button onclick="delProj(${p.id})" class="btn-d">Sil</button></td></tr>`).join('');
         }
+        function saveProj() {
+            var n = g('projName').value, d = g('projDesc').value;
+            if(!n) return;
+            var arr = ls(K.proj);
+            var obj = {name:n, description:d, version:g('projVer').value||'v1.0', category:g('projCat').value||'Genel', status:g('projStatus').value, link:g('projLink').value, icon:g('projIcon').value};
+            if(editId.proj) { var i = arr.findIndex(x => x.id === editId.proj); arr[i] = {...arr[i], ...obj}; }
+            else { arr.push({id:Date.now(), ...obj}); }
+            ls(K.proj, arr); loadProj(); closeModal('proj'); sync(); log('Proje güncellendi');
+        }
+        function delProj(id) { if(confirm('Silinsin mi?')) { ls(K.proj, ls(K.proj).filter(x => x.id !== id)); loadProj(); sync(); } }
 
-        function saveDl() {
-            var n = g('dlName').value, v = g('dlVer').value, t = g('dlType').value, l = g('dlLink').value;
-            if (!n || !l) { alert('Isim ve link girin!'); return; }
-            var arr = ls(K.dl);
-            if (editId.dl) { var i = arr.findIndex(function(x) { return x.id === editId.dl; }); if (i > -1) { arr[i] = Object.assign(arr[i], { name: n, version: v || '1.0', type: t, link: l }); log('Indirme duzenlendi: ' + n); } }
-            else { arr.push({ id: Date.now(), name: n, version: v || '1.0', type: t, link: l, createdAt: new Date().toISOString() }); log('Indirme eklendi: ' + n); }
-            ls(K.dl, arr); loadDl(); stats(); closeModal('dl'); sync();
-        }
-        function delDl(id) { if (!confirm('Sil?')) return; ls(K.dl, ls(K.dl).filter(function(x) { return x.id !== id; })); log('Indirme silindi'); loadDl(); stats(); sync(); }
         function loadDl() {
-            var arr = ls(K.dl), el = g('dlList'); if (!el) return;
-            if (!arr.length) { el.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-6">Bos</td></tr>'; return; }
-            el.innerHTML = arr.map(function(d) { return '<tr><td class="font-semibold">' + d.name + '</td><td class="text-gray-500">' + d.version + '</td><td class="text-gray-500">' + d.type + '</td><td><a href="' + d.link + '" target="_blank" class="text-blue-400 hover:underline text-xs">Ac</a></td><td class="flex gap-1"><button onclick="openModal(\'dl\',' + d.id + ')" class="btn-s">Duzenle</button><button onclick="delDl(' + d.id + ')" class="btn-d">Sil</button></td></tr>'; }).join('');
+            var arr = ls(K.dl), el = g('dlList');
+            el.innerHTML = arr.map(d => `<tr><td class="font-semibold">${d.name}</td><td class="text-gray-500">${d.version}</td><td class="text-gray-500">${d.type}</td><td><a href="${d.link}" target="_blank" class="text-blue-400 hover:underline text-xs">Aç</a></td><td class="flex gap-1"><button onclick="openModal('dl',${d.id})" class="btn-s">Düzenle</button><button onclick="delDl(${d.id})" class="btn-d">Sil</button></td></tr>`).join('');
         }
+        function saveDl() {
+            var n = g('dlName').value, l = g('dlLink').value;
+            if(!n || !l) return;
+            var arr = ls(K.dl);
+            var obj = {name:n, version:g('dlVer').value||'1.0', type:g('dlType').value, link:l};
+            if(editId.dl) { var i = arr.findIndex(x => x.id === editId.dl); arr[i] = {...arr[i], ...obj}; }
+            else { arr.push({id:Date.now(), ...obj}); }
+            ls(K.dl, arr); loadDl(); closeModal('dl'); sync(); log('İndirme güncellendi');
+        }
+        function delDl(id) { if(confirm('Silinsin mi?')) { ls(K.dl, ls(K.dl).filter(x => x.id !== id)); loadDl(); sync(); } }
 
         function loadCMS() {
             var d = ls(K.cms);
-            if (d.hero) { g('cmsBadge').value = d.hero.badge || ''; g('cmsTitle').value = d.hero.title || ''; g('cmsSub').value = d.hero.subtitle || ''; }
+            if(d.hero) { g('cmsBadge').value = d.hero.badge||''; g('cmsTitle').value = d.hero.title||''; g('cmsSub').value = d.hero.subtitle||''; }
         }
         function saveCMS() {
             var d = ls(K.cms);
             d.hero = { badge: g('cmsBadge').value, title: g('cmsTitle').value, subtitle: g('cmsSub').value };
-            ls(K.cms, d); log('CMS guncellendi'); toast('Kaydedildi!', 'ok'); sync();
+            ls(K.cms, d); sync(); log('CMS güncellendi');
         }
 
-        function loadCK() {
-            var d = ls(K.ck);
-            g('ckTitle').value = d.title || ''; g('ckDesc').value = d.description || ''; g('ckBtn').value = d.acceptText || '';
-        }
-        function saveCK() {
-            ls(K.ck, { title: g('ckTitle').value, description: g('ckDesc').value, acceptText: g('ckBtn').value });
-            log('Cerez ayarlari guncellendi'); toast('Kaydedildi!', 'ok'); sync();
-        }
-
-        function log(msg) {
-            var arr = ls(K.act); arr.unshift({ message: msg, time: new Date().toLocaleString('tr-TR') });
-            if (arr.length > 50) arr.pop(); ls(K.act, arr); loadAct();
+        function log(m) {
+            var arr = ls(K.act); arr.unshift({message:m, time:new Date().toLocaleTimeString('tr-TR')});
+            if(arr.length>20) arr.pop(); ls(K.act, arr); loadAct();
         }
         function loadAct() {
-            var arr = ls(K.act), el = g('actList'); if (!el) return;
-            if (!arr.length) { el.innerHTML = '<p class="text-gray-500 text-center py-6 text-sm">Aktivite yok</p>'; return; }
-            el.innerHTML = arr.map(function(a) { return '<div class="glass p-3 flex items-center justify-between"><span class="text-sm font-semibold">' + a.message + '</span><span class="text-[10px] text-gray-500 flex-shrink-0 ml-4">' + a.time + '</span></div>'; }).join('');
+            g('actList').innerHTML = ls(K.act).map(a => `<div class="glass p-3 flex items-center justify-between text-xs"><span class="font-semibold">${a.message}</span><span class="text-gray-500">${a.time}</span></div>`).join('');
         }
-        function clearAct() { if (!confirm('Temizle?')) return; ls(K.act, []); loadAct(); }
+        function clearAct() { ls(K.act, []); loadAct(); }
+        function stats() { g('s-ann').textContent = ls(K.ann).length; g('s-proj').textContent = ls(K.proj).length; g('s-dl').textContent = ls(K.dl).length; }
 
-        function stats() {
-            var sa = g('s-ann'), sp = g('s-proj'), sd = g('s-dl'), sc = g('s-ck');
-            if (sa) sa.textContent = ls(K.ann).length;
-            if (sp) sp.textContent = ls(K.proj).length;
-            if (sd) sd.textContent = ls(K.dl).length;
-            if (sc) sc.textContent = (ls(K.stats).accepted || 0);
+        function openModal(t, id) {
+            editId[t] = id || null; g('m-'+t).classList.add('active');
+            if(id) {
+                var d = ls(K[t]).find(x => x.id === id);
+                if(t==='ann') { g('annTitle').value=d.title; g('annContent').value=d.content; g('annCat').value=d.category; }
+                if(t==='proj') { g('projName').value=d.name; g('projDesc').value=d.description; g('projVer').value=d.version; g('projCat').value=d.category; g('projStatus').value=d.status; g('projLink').value=d.link; g('projIcon').value=d.icon; }
+                if(t==='dl') { g('dlName').value=d.name; g('dlVer').value=d.version; g('dlType').value=d.type; g('dlLink').value=d.link; }
+            }
         }
-
-        function toast(msg, type) {
-            var t = document.createElement('div');
-            t.style.cssText = 'position:fixed;top:1.5rem;right:1.5rem;z-index:9999;padding:0.75rem 1.25rem;border-radius:0.75rem;font-size:0.8rem;font-weight:700;transition:all 0.3s;';
-            t.style.background = type === 'ok' ? '#22c55e' : type === 'err' ? '#ef4444' : '#3b82f6';
-            t.style.color = 'white';
-            t.textContent = msg;
-            document.body.appendChild(t);
-            setTimeout(function() { t.style.opacity = '0'; t.style.transform = 'translateY(-10px)'; setTimeout(function() { t.remove(); }, 300); }, 3000);
-        }
-
-        // Removed manual init and checkAuth calls since auth.onAuthStateChanged handles everything
+        function closeModal(t) { g('m-'+t).classList.remove('active'); editId[t]=null; }
     </script>
 </body>
 </html>
