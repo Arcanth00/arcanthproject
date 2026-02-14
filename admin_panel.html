@@ -1,1 +1,1127 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcanth Admin Panel</title>
 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <script>tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#020408',
+                        lightBg: '#f8fafc',
+                        accentBlue: '#3b82f6',
+                        luaOrange: '#f97316'
+                    }
+                }
+            }
+        }</script>
+
+    <style>
+        :root {
+            --color-dark-bg: #020408;
+            --color-light-bg: #f8fafc;
+            --color-blue: #3b82f6;
+            --color-orange: #f97316;
+            --color-purple: #a855f7;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--color-dark-bg);
+            color: white;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+            border-radius: 1rem;
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .input-field {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            width: 100%;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: #3b82f6;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .tab-button {
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.75rem;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--color-dark-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            color: #9ca3af;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="fixed inset-0 z-[9999] flex items-center justify-center p-6" style="background: #020408;">
+        <div class="glass-card p-12 max-w-md w-full">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-black italic uppercase mb-2">
+                    <span class="text-blue-500">ARCANTH</span> ADMIN
+                </h1>
+                <p class="text-gray-400 text-sm">Güvenli Giriş</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-2">Kullanıcı Adı</label>
+                    <input type="text" id="loginUsername" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-blue-500 transition-all text-white" placeholder="arcprlua">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">Şifre</label>
+                    <input type="password" id="loginPassword" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-blue-500 transition-all text-white" placeholder="••••••••">
+                </div>
+
+                <button onclick="attemptLogin()" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-black uppercase tracking-widest hover:opacity-90 transition-all">
+                    GİRİŞ YAP
+                </button>
+
+                <p id="loginError" class="text-red-500 text-sm text-center hidden"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN ADMIN PANEL (Hidden until login) -->
+    <div id="adminPanel" style="display: none;">
+
+    <!-- Header -->
+    <header class="glass-card m-6 p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-black italic uppercase">
+                    <span class="text-blue-500">ARCANTH</span> ADMIN
+                </h1>
+                <p class="text-gray-400 text-sm mt-1">Yönetim Paneli</p>
+            </div>
+            <button onclick="logout()" class="btn-secondary">
+                Çıkış Yap
+            </button>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="m-6">
+        <div class="flex gap-4 overflow-x-auto pb-4">
+            <button class="tab-button active" onclick="switchTab('dashboard')">Dashboard</button>
+            <button class="tab-button" onclick="switchTab('announcements')">Duyurular</button>
+            <button class="tab-button" onclick="switchTab('projects')">Projeler</button>
+            <button class="tab-button" onclick="switchTab('downloads')">İndirmeler</button>
+            <button class="tab-button" onclick="switchTab('cms')">CMS İçerik</button>
+            <button class="tab-button" onclick="switchTab('cookies')">Çerezler</button>
+            <button class="tab-button" onclick="switchTab('activity')">Aktivite</button>
+        </div>
+    </div>
+
+    <!-- Dashboard Tab -->
+    <div id="tab-dashboard" class="tab-content active m-6">
+        <div class="grid md:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card">
+                <div class="text-gray-400 text-sm font-bold uppercase mb-2">Toplam Duyuru</div>
+                <div class="text-4xl font-black" id="stat-announcements">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="text-gray-400 text-sm font-bold uppercase mb-2">Toplam Proje</div>
+                <div class="text-4xl font-black" id="stat-projects">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="text-gray-400 text-sm font-bold uppercase mb-2">İndirmeler</div>
+                <div class="text-4xl font-black" id="stat-downloads">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="text-gray-400 text-sm font-bold uppercase mb-2">Çerez Kabul</div>
+                <div class="text-4xl font-black" id="stat-cookies">0</div>
+            </div>
+        </div>
+
+        <div class="glass-card p-8">
+            <h2 class="text-2xl font-black mb-6">Hoş Geldiniz</h2>
+            <p class="text-gray-400 leading-relaxed">
+                Admin paneline hoş geldiniz. Sol taraftaki menüden istediğiniz bölümü yönetebilirsiniz.
+            </p>
+        </div>
+    </div>
+
+    <!-- Announcements Tab -->
+    <div id="tab-announcements" class="tab-content m-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-black">Duyurular</h2>
+            <button onclick="openAnnouncementModal()" class="btn-primary">Yeni Duyuru</button>
+        </div>
+        
+        <div class="glass-card p-6">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Başlık</th>
+                        <th>Kategori</th>
+                        <th>Tarih</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody id="announcementsList"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Projects Tab -->
+    <div id="tab-projects" class="tab-content m-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-black">Projeler</h2>
+            <button onclick="openProjectModal()" class="btn-primary">Yeni Proje</button>
+        </div>
+        
+        <div class="glass-card p-6">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Proje Adı</th>
+                        <th>Versiyon</th>
+                        <th>Durum</th>
+                        <th>Kategori</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody id="projectsList"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Downloads Tab -->
+    <div id="tab-downloads" class="tab-content m-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-black">İndirmeler</h2>
+            <button onclick="openDownloadModal()" class="btn-primary">Yeni İndirme</button>
+        </div>
+        
+        <div class="glass-card p-6">
+            <table>
+                <thead>
+                    <tr>
+                        <th>İsim</th>
+                        <th>Versiyon</th>
+                        <th>Tip</th>
+                        <th>Link</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody id="downloadsList"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- CMS Content Tab -->
+    <div id="tab-cms" class="tab-content m-6">
+        <h2 class="text-2xl font-black mb-6">CMS İçerik Yönetimi</h2>
+        
+        <div class="glass-card p-8 mb-6">
+            <h3 class="text-xl font-bold mb-4">Hero Bölümü</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-2">Badge Metni</label>
+                    <input type="text" id="heroBadge" class="input-field" placeholder="Carbonium Beta Yayında!">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">Başlık</label>
+                    <input type="text" id="heroTitle" class="input-field" placeholder="YENİ BİR VİZYON">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">Alt Başlık</label>
+                    <textarea id="heroSubtitle" class="input-field" rows="3" placeholder="Açıklama..."></textarea>
+                </div>
+                <button onclick="saveCMSHero()" class="btn-primary">Kaydet</button>
+            </div>
+        </div>
+
+        <div class="glass-card p-8">
+            <h3 class="text-xl font-bold mb-4">Footer</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-2">Şirket Adı</label>
+                    <input type="text" id="footerCompany" class="input-field" placeholder="Arcanth Project">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">Copyright</label>
+                    <input type="text" id="footerCopyright" class="input-field" placeholder="© 2026 Arcanth Project">
+                </div>
+                <button onclick="saveCMSFooter()" class="btn-primary">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookies Tab -->
+    <div id="tab-cookies" class="tab-content m-6">
+        <h2 class="text-2xl font-black mb-6">Çerez Yönetimi</h2>
+        
+        <div class="glass-card p-8 mb-6">
+            <h3 class="text-xl font-bold mb-4">Çerez Bildirimi Ayarları</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-2">Başlık</label>
+                    <input type="text" id="cookieTitle" class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">Açıklama</label>
+                    <textarea id="cookieDescription" class="input-field" rows="3"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">Buton Metni</label>
+                    <input type="text" id="cookieAcceptText" class="input-field">
+                </div>
+                <button onclick="saveCookieSettings()" class="btn-primary">Kaydet</button>
+            </div>
+        </div>
+
+        <div class="glass-card p-8">
+            <h3 class="text-xl font-bold mb-4">Çerez İstatistikleri</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="stat-card">
+                    <div class="text-gray-400 text-sm font-bold uppercase mb-2">Kabul Edildi</div>
+                    <div class="text-4xl font-black text-green-500" id="cookie-accepted">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-gray-400 text-sm font-bold uppercase mb-2">Reddedildi</div>
+                    <div class="text-4xl font-black text-red-500" id="cookie-rejected">0</div>
+                </div>
+            </div>
+            <button onclick="resetCookieStats()" class="btn-danger mt-6">İstatistikleri Sıfırla</button>
+        </div>
+    </div>
+
+    <!-- Activity Tab -->
+    <div id="tab-activity" class="tab-content m-6">
+        <h2 class="text-2xl font-black mb-6">Son Aktiviteler</h2>
+        <div class="glass-card p-6">
+            <div id="activityLog" class="space-y-4"></div>
+        </div>
+    </div>
+
+    <!-- Announcement Modal -->
+    <div id="announcementModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-black mb-6">Yeni Duyuru</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-2">Başlık</label>
+                    <input type="text" id="announcementTitle" class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">İçerik</label>
+                    <textarea id="announcementContent" class="input-field" rows="5"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">Kategori</label>
+                    <select id="announcementCategory" class="input-field">
+                        <option value="bilgi">Bilgi</option>
+                        <option value="guncelleme">Güncelleme</option>
+                        <option value="onemli">Önemli</option>
+                    </select>
+                </div>
+                <div class="flex gap-4">
+                    <button onclick="addAnnouncement()" class="btn-primary flex-1">Ekle</button>
+                    <button onclick="closeAnnouncementModal()" class="btn-secondary flex-1">İptal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-black mb-6">Yeni Proje</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-2">Proje Adı</label>
+                    <input type="text" id="projectName" class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">Açıklama</label>
+                    <textarea id="projectDescription" class="input-field" rows="3"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">Versiyon</label>
+                    <input type="text" id="projectVersion" class="input-field" placeholder="v1.0">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">Kategori</label>
+                    <input type="text" id="projectCategory" class="input-field" placeholder="ModPack">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">Durum</label>
+                    <select id="projectStatus" class="input-field">
+                        <option value="release">Release</option>
+                        <option value="beta">Beta</option>
+                        <option value="alpha">Alpha</option>
+                        <option value="development">Geliştiriliyor</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">Link</label>
+                    <input type="url" id="projectLink" class="input-field" placeholder="https://...">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">İkon (Emoji veya URL)</label>
+                    <input type="text" id="projectIcon" class="input-field" placeholder="📦 veya https://...">
+                </div>
+                <div class="flex gap-4">
+                    <button onclick="addProject()" class="btn-primary flex-1">Ekle</button>
+                    <button onclick="closeProjectModal()" class="btn-secondary flex-1">İptal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Download Modal -->
+    <div id="downloadModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-black mb-6">Yeni İndirme</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-2">İsim</label>
+                    <input type="text" id="downloadName" class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">Versiyon</label>
+                    <input type="text" id="downloadVersion" class="input-field" placeholder="1.0">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">Tip</label>
+                    <select id="downloadType" class="input-field">
+                        <option value="modpack">ModPack</option>
+                        <option value="mod">Mod</option>
+                        <option value="other">Diğer</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2">Link</label>
+                    <input type="url" id="downloadLink" class="input-field" placeholder="https://...">
+                </div>
+                <div class="flex gap-4">
+                    <button onclick="addDownload()" class="btn-primary flex-1">Ekle</button>
+                    <button onclick="closeDownloadModal()" class="btn-secondary flex-1">İptal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div> <!-- Close adminPanel div -->
+
+    <script>
+        // ===== LOCALSTORAGE KEYS =====
+        const ANNOUNCEMENTS_KEY = 'admin_announcements';
+        const PROJECTS_KEY = 'admin_projects';
+        const DOWNLOADS_KEY = 'admin_downloads';
+        const CATEGORIES_KEY = 'admin_categories';
+        const CMS_KEY = 'admin_cms_content';
+        const COOKIES_KEY = 'admin_cookie_settings';
+        const COOKIE_STATS_KEY = 'admin_cookie_stats';
+        const ACTIVITY_KEY = 'admin_activity';
+
+        // ===== INITIALIZATION =====
+        function initializeData() {
+            if (!localStorage.getItem(ANNOUNCEMENTS_KEY)) {
+                localStorage.setItem(ANNOUNCEMENTS_KEY, JSON.stringify([]));
+            }
+            if (!localStorage.getItem(PROJECTS_KEY)) {
+                localStorage.setItem(PROJECTS_KEY, JSON.stringify([]));
+            }
+            if (!localStorage.getItem(DOWNLOADS_KEY)) {
+                localStorage.setItem(DOWNLOADS_KEY, JSON.stringify([]));
+            }
+            if (!localStorage.getItem(CATEGORIES_KEY)) {
+                localStorage.setItem(CATEGORIES_KEY, JSON.stringify([]));
+            }
+            if (!localStorage.getItem(CMS_KEY)) {
+                localStorage.setItem(CMS_KEY, JSON.stringify({
+                    hero: {
+                        badge: 'Carbonium Beta Yayında!',
+                        title: 'YENİ BİR VİZYON',
+                        subtitle: 'Sıradanlığı sorgulayan, geleceği bugünden inşa edenlerin kalesi.'
+                    },
+                    footer: {
+                        company: 'Arcanth Project',
+                        copyright: '© 2026 Arcanth Project. Tüm hakları saklıdır.'
+                    }
+                }));
+            }
+            if (!localStorage.getItem(COOKIES_KEY)) {
+                localStorage.setItem(COOKIES_KEY, JSON.stringify({
+                    title: 'Bu site temel çerezler kullanır',
+                    description: 'Deneyiminizi geliştirmek için temel çerezleri kullanıyoruz.',
+                    acceptText: 'ANLADIM'
+                }));
+            }
+            if (!localStorage.getItem(COOKIE_STATS_KEY)) {
+                localStorage.setItem(COOKIE_STATS_KEY, JSON.stringify({
+                    accepted: 0,
+                    rejected: 0
+                }));
+            }
+            if (!localStorage.getItem(ACTIVITY_KEY)) {
+                localStorage.setItem(ACTIVITY_KEY, JSON.stringify([]));
+            }
+        }
+
+        // ===== CLOUDFLARE SYNC =====
+        const CLOUDFLARE_API = 'https://sweet-resonance-7779.omerhaktan5454.workers.dev/api/data';
+        const API_AUTH = 'Bearer arcprlua_secret_key_2026';
+
+        async function syncToCloudflare() {
+            const data = {
+                announcements: JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY) || '[]'),
+                projects: JSON.parse(localStorage.getItem(PROJECTS_KEY) || '[]'),
+                downloads: JSON.parse(localStorage.getItem(DOWNLOADS_KEY) || '[]'),
+                cms_content: JSON.parse(localStorage.getItem(CMS_KEY) || '{}'),
+                cookie_settings: JSON.parse(localStorage.getItem(COOKIES_KEY) || '{}')
+            };
+
+            try {
+                const response = await fetch(CLOUDFLARE_API, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': API_AUTH
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) throw new Error('Sync failed');
+                console.log('✅ Synced to Cloudflare!');
+                showToast('Değişiklikler kaydedildi! Herkes görebilir.', 'success');
+                return true;
+            } catch (error) {
+                console.error('Cloudflare sync error:', error);
+                showToast('Cloudflare kaydetme hatası!', 'error');
+                return false;
+            }
+        }
+
+        function addAnnouncement() {
+            const title = document.getElementById('announcementTitle').value;
+            const content = document.getElementById('announcementContent').value;
+            const category = document.getElementById('announcementCategory').value;
+
+            if (!title || !content) {
+                alert('Lütfen tüm alanları doldurun!');
+                return;
+            }
+
+            const announcements = JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY));
+            const announcement = {
+                id: Date.now(),
+                title,
+                content,
+                category,
+                date: new Date().toLocaleDateString('tr-TR'),
+                createdAt: new Date().toISOString()
+            };
+
+            announcements.push(announcement);
+            localStorage.setItem(ANNOUNCEMENTS_KEY, JSON.stringify(announcements));
+
+            addActivity(`Yeni duyuru eklendi: ${title}`);
+            loadAnnouncements();
+            updateDashboard();
+            closeAnnouncementModal();
+            showToast('Duyuru eklendi!', 'success');
+            
+            // Sync to Cloudflare
+            syncToCloudflare();
+        }
+
+        function loadAnnouncements() {
+            const announcements = JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY));
+            const tbody = document.getElementById('announcementsList');
+
+            if (announcements.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500 py-8">Duyuru yok</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = announcements.map(ann => `
+                <tr>
+                    <td><strong>${ann.title}</strong></td>
+                    <td><span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs">${ann.category}</span></td>
+                    <td>${ann.date}</td>
+                    <td>
+                        <button onclick="deleteAnnouncement(${ann.id})" class="btn-danger">Sil</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteAnnouncement(id) {
+            if (confirm('Bu duyuruyu silmek istediğinize emin misiniz?')) {
+                let announcements = JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY));
+                announcements = announcements.filter(a => a.id !== id);
+                localStorage.setItem(ANNOUNCEMENTS_KEY, JSON.stringify(announcements));
+
+                addActivity('Duyuru silindi');
+                loadAnnouncements();
+                updateDashboard();
+                showToast('Duyuru silindi!', 'success');
+                syncToCloudflare();
+            }
+        }
+
+        // ===== PROJECTS MANAGEMENT =====
+        function openProjectModal() {
+            document.getElementById('projectModal').classList.add('active');
+        }
+
+        function closeProjectModal() {
+            document.getElementById('projectModal').classList.remove('active');
+            document.getElementById('projectName').value = '';
+            document.getElementById('projectDescription').value = '';
+            document.getElementById('projectVersion').value = '';
+            document.getElementById('projectCategory').value = '';
+            document.getElementById('projectStatus').value = 'release';
+            document.getElementById('projectLink').value = '';
+            document.getElementById('projectIcon').value = '';
+        }
+
+        function addProject() {
+            const name = document.getElementById('projectName').value;
+            const description = document.getElementById('projectDescription').value;
+            const version = document.getElementById('projectVersion').value;
+            const category = document.getElementById('projectCategory').value;
+            const status = document.getElementById('projectStatus').value;
+            const link = document.getElementById('projectLink').value;
+            const icon = document.getElementById('projectIcon').value;
+
+            if (!name || !description) {
+                alert('Lütfen en az proje adı ve açıklama girin!');
+                return;
+            }
+
+            const projects = JSON.parse(localStorage.getItem(PROJECTS_KEY));
+            const project = {
+                id: Date.now(),
+                name,
+                description,
+                version: version || 'v1.0',
+                category: category || 'Genel',
+                status,
+                link: link || '',
+                icon: icon || '📦',
+                type: 'project',
+                createdAt: new Date().toISOString()
+            };
+
+            projects.push(project);
+            localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+
+            addActivity(`Yeni proje eklendi: ${name}`);
+            loadProjects();
+            updateDashboard();
+            closeProjectModal();
+            showToast('Proje eklendi!', 'success');
+            
+            // Sync to Cloudflare
+            syncToCloudflare();
+        }
+
+        function loadProjects() {
+            const projects = JSON.parse(localStorage.getItem(PROJECTS_KEY));
+            const tbody = document.getElementById('projectsList');
+
+            if (projects.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-8">Proje yok</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = projects.map(project => `
+                <tr>
+                    <td><strong>${project.name}</strong></td>
+                    <td>${project.version}</td>
+                    <td><span class="px-3 py-1 bg-${project.status === 'release' ? 'green' : project.status === 'beta' ? 'yellow' : 'purple'}-500/20 text-${project.status === 'release' ? 'green' : project.status === 'beta' ? 'yellow' : 'purple'}-400 rounded-full text-xs">${project.status}</span></td>
+                    <td>${project.category}</td>
+                    <td>
+                        <button onclick="deleteProject(${project.id})" class="btn-danger">Sil</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteProject(id) {
+            if (confirm('Bu projeyi silmek istediğinize emin misiniz?')) {
+                let projects = JSON.parse(localStorage.getItem(PROJECTS_KEY));
+                projects = projects.filter(p => p.id !== id);
+                localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+
+                addActivity('Proje silindi');
+                loadProjects();
+                updateDashboard();
+                showToast('Proje silindi!', 'success');
+                syncToCloudflare();
+            }
+        }
+
+        // ===== DOWNLOADS MANAGEMENT =====
+        function openDownloadModal() {
+            document.getElementById('downloadModal').classList.add('active');
+        }
+
+        function closeDownloadModal() {
+            document.getElementById('downloadModal').classList.remove('active');
+            document.getElementById('downloadName').value = '';
+            document.getElementById('downloadVersion').value = '';
+            document.getElementById('downloadType').value = 'modpack';
+            document.getElementById('downloadLink').value = '';
+        }
+
+        function addDownload() {
+            const name = document.getElementById('downloadName').value;
+            const version = document.getElementById('downloadVersion').value;
+            const type = document.getElementById('downloadType').value;
+            const link = document.getElementById('downloadLink').value;
+
+            if (!name || !link) {
+                alert('Lütfen en az isim ve link girin!');
+                return;
+            }
+
+            const downloads = JSON.parse(localStorage.getItem(DOWNLOADS_KEY));
+            const download = {
+                id: Date.now(),
+                name,
+                version: version || '1.0',
+                type,
+                link,
+                createdAt: new Date().toISOString()
+            };
+
+            downloads.push(download);
+            localStorage.setItem(DOWNLOADS_KEY, JSON.stringify(downloads));
+
+            addActivity(`Yeni indirme eklendi: ${name}`);
+            loadDownloads();
+            updateDashboard();
+            closeDownloadModal();
+            showToast('İndirme eklendi!', 'success');
+            syncToCloudflare();
+        }
+
+        function loadDownloads() {
+            const downloads = JSON.parse(localStorage.getItem(DOWNLOADS_KEY));
+            const tbody = document.getElementById('downloadsList');
+
+            if (downloads.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-8">İndirme yok</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = downloads.map(dl => `
+                <tr>
+                    <td><strong>${dl.name}</strong></td>
+                    <td>${dl.version}</td>
+                    <td>${dl.type}</td>
+                    <td><a href="${dl.link}" target="_blank" class="text-blue-400 hover:underline">Link</a></td>
+                    <td>
+                        <button onclick="deleteDownload(${dl.id})" class="btn-danger">Sil</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteDownload(id) {
+            if (confirm('Bu indirmeyi silmek istediğinize emin misiniz?')) {
+                let downloads = JSON.parse(localStorage.getItem(DOWNLOADS_KEY));
+                downloads = downloads.filter(d => d.id !== id);
+                localStorage.setItem(DOWNLOADS_KEY, JSON.stringify(downloads));
+
+                addActivity('İndirme silindi');
+                loadDownloads();
+                updateDashboard();
+                showToast('İndirme silindi!', 'success');
+                syncToCloudflare();
+            }
+        }
+
+        // ===== CMS MANAGEMENT =====
+        function loadCMSContent() {
+            const cms = JSON.parse(localStorage.getItem(CMS_KEY));
+            
+            if (cms.hero) {
+                document.getElementById('heroBadge').value = cms.hero.badge || '';
+                document.getElementById('heroTitle').value = cms.hero.title || '';
+                document.getElementById('heroSubtitle').value = cms.hero.subtitle || '';
+            }
+            
+            if (cms.footer) {
+                document.getElementById('footerCompany').value = cms.footer.company || '';
+                document.getElementById('footerCopyright').value = cms.footer.copyright || '';
+            }
+        }
+
+        function saveCMSHero() {
+            const cms = JSON.parse(localStorage.getItem(CMS_KEY));
+            cms.hero = {
+                badge: document.getElementById('heroBadge').value,
+                title: document.getElementById('heroTitle').value,
+                subtitle: document.getElementById('heroSubtitle').value
+            };
+            localStorage.setItem(CMS_KEY, JSON.stringify(cms));
+            addActivity('Hero bölümü güncellendi');
+            showToast('Hero kaydedildi!', 'success');
+            syncToCloudflare();
+        }
+
+        function saveCMSFooter() {
+            const cms = JSON.parse(localStorage.getItem(CMS_KEY));
+            cms.footer = {
+                company: document.getElementById('footerCompany').value,
+                copyright: document.getElementById('footerCopyright').value
+            };
+            localStorage.setItem(CMS_KEY, JSON.stringify(cms));
+            addActivity('Footer güncellendi');
+            showToast('Footer kaydedildi!', 'success');
+            syncToCloudflare();
+        }
+
+        // ===== COOKIE MANAGEMENT =====
+        function loadCookieSettings() {
+            const settings = JSON.parse(localStorage.getItem(COOKIES_KEY));
+            document.getElementById('cookieTitle').value = settings.title || '';
+            document.getElementById('cookieDescription').value = settings.description || '';
+            document.getElementById('cookieAcceptText').value = settings.acceptText || '';
+
+            const stats = JSON.parse(localStorage.getItem(COOKIE_STATS_KEY));
+            document.getElementById('cookie-accepted').textContent = stats.accepted;
+            document.getElementById('cookie-rejected').textContent = stats.rejected;
+        }
+
+        function saveCookieSettings() {
+            const settings = {
+                title: document.getElementById('cookieTitle').value,
+                description: document.getElementById('cookieDescription').value,
+                acceptText: document.getElementById('cookieAcceptText').value
+            };
+            localStorage.setItem(COOKIES_KEY, JSON.stringify(settings));
+            addActivity('Çerez ayarları güncellendi');
+            showToast('Çerez ayarları kaydedildi!', 'success');
+            syncToCloudflare();
+        }
+
+        function recordCookieAccept() {
+            const stats = JSON.parse(localStorage.getItem(COOKIE_STATS_KEY));
+            stats.accepted++;
+            localStorage.setItem(COOKIE_STATS_KEY, JSON.stringify(stats));
+            loadCookieSettings();
+            addActivity('Çerez kabul edildi');
+        }
+
+        function recordCookieReject() {
+            const stats = JSON.parse(localStorage.getItem(COOKIE_STATS_KEY));
+            stats.rejected++;
+            localStorage.setItem(COOKIE_STATS_KEY, JSON.stringify(stats));
+            loadCookieSettings();
+            addActivity('Çerez reddedildi');
+        }
+
+        function resetCookieStats() {
+            if (confirm('Çerez istatistiklerini sıfırlamak istediğinize emin misiniz?')) {
+                localStorage.setItem(COOKIE_STATS_KEY, JSON.stringify({ accepted: 0, rejected: 0 }));
+                loadCookieSettings();
+                addActivity('Çerez istatistikleri sıfırlandı');
+                showToast('İstatistikler sıfırlandı!', 'success');
+            }
+        }
+
+        // ===== LOGIN SYSTEM =====
+        const CORRECT_USERNAME = 'arcprlua';
+        const CORRECT_PASSWORD = '9PsO!J7qI4zSmmnfMdx4%wJqR3N85SYyvh';
+
+        function attemptLogin() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const error = document.getElementById('loginError');
+
+            if (username !== CORRECT_USERNAME || password !== CORRECT_PASSWORD) {
+                error.textContent = 'Hatalı kullanıcı adı veya şifre!';
+                error.classList.remove('hidden');
+                return;
+            }
+
+            // Successful login
+            localStorage.setItem('adminToken', 'authenticated');
+            localStorage.setItem('adminLoginTime', Date.now());
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+        }
+
+        // Check if already logged in
+        function checkAuth() {
+            const token = localStorage.getItem('adminToken');
+            const loginTime = localStorage.getItem('adminLoginTime');
+            
+            // Session expires after 4 hours
+            if (token && loginTime && (Date.now() - parseInt(loginTime)) < 14400000) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+            }
+        }
+
+        // Run auth check on page load
+        checkAuth();
+
+        // ===== TAB SWITCHING =====
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // ===== MODAL FUNCTIONS =====
+        function openAnnouncementModal() {
+            document.getElementById('announcementModal').classList.add('active');
+        }
+
+        function closeAnnouncementModal() {
+            document.getElementById('announcementModal').classList.remove('active');
+            document.getElementById('announcementTitle').value = '';
+            document.getElementById('announcementContent').value = '';
+            document.getElementById('announcementCategory').value = 'bilgi';
+        }
+
+        // ===== ACTIVITY LOG =====
+        function addActivity(message) {
+            const activities = JSON.parse(localStorage.getItem(ACTIVITY_KEY));
+            activities.unshift({
+                message,
+                timestamp: new Date().toLocaleString('tr-TR')
+            });
+            
+            if (activities.length > 50) activities.pop();
+            
+            localStorage.setItem(ACTIVITY_KEY, JSON.stringify(activities));
+            loadActivity();
+        }
+
+        function loadActivity() {
+            const activities = JSON.parse(localStorage.getItem(ACTIVITY_KEY));
+            const container = document.getElementById('activityLog');
+
+            if (activities.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-8">Aktivite yok</p>';
+                return;
+            }
+
+            container.innerHTML = activities.map(act => `
+                <div class="glass-card p-4">
+                    <p class="font-bold">${act.message}</p>
+                    <p class="text-xs text-gray-500 mt-1">${act.timestamp}</p>
+                </div>
+            `).join('');
+        }
+
+        // ===== DASHBOARD UPDATE =====
+        function updateDashboard() {
+            const announcements = JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY));
+            const projects = JSON.parse(localStorage.getItem(PROJECTS_KEY));
+            const downloads = JSON.parse(localStorage.getItem(DOWNLOADS_KEY));
+            const cookieStats = JSON.parse(localStorage.getItem(COOKIE_STATS_KEY));
+
+            document.getElementById('stat-announcements').textContent = announcements.length;
+            document.getElementById('stat-projects').textContent = projects.length;
+            document.getElementById('stat-downloads').textContent = downloads.length;
+            document.getElementById('stat-cookies').textContent = cookieStats.accepted;
+        }
+
+        // ===== TOAST NOTIFICATIONS =====
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-6 right-6 z-50 px-6 py-4 rounded-xl font-bold ${
+                type === 'success' ? 'bg-green-500' : 
+                type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+            } text-white shadow-2xl`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-20px)';
+                toast.style.transition = 'all 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // ===== LOGOUT =====
+        function logout() {
+            if (confirm('Çıkış yapmak istediğinize emin misiniz?')) {
+                localStorage.removeItem('adminToken');
+                localStorage.removeItem('adminLoginTime');
+                window.location.reload();
+            }
+        }
+
+        // ===== INIT ON LOAD =====
+        window.addEventListener('DOMContentLoaded', () => {
+            initializeData();
+            updateDashboard();
+            loadAnnouncements();
+            loadProjects();
+            loadDownloads();
+            loadCMSContent();
+            loadCookieSettings();
+            loadActivity();
+        });
+    </script>
+</body>
+</html>
