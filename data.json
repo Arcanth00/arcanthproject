@@ -1,25 +1,51 @@
 {
-  "announcements": [],
-  "projects": [],
-  "downloads": [],
+  "announcements": [
+    {
+      "id": 1738660800000,
+      "title": "Hoş Geldiniz!",
+      "content": "Arcanth Project'e hoş geldiniz. Admin panelden içerik ekleyebilirsiniz.",
+      "category": "bilgi",
+      "date": "14 Şubat 2026"
+    }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "name": "OptiFlow",
+      "description": "Fabric için optimize edilmiş modpack. %40+ FPS artışı.",
+      "type": "modpack",
+      "status": "release",
+      "icon": "📦",
+      "version": "v1.3",
+      "link": "https://www.curseforge.com/minecraft/modpacks/optiflow",
+      "category": "ModPack"
+    },
+    {
+      "id": 2,
+      "name": "Carbonium",
+      "description": "Karbon temalı materyaller, aletler, silahlar ekleyen mod.",
+      "type": "mod",
+      "status": "beta",
+      "icon": "⚔️",
+      "version": "v1.0",
+      "link": "https://www.curseforge.com/minecraft/mc-mods/carbonium",
+      "category": "Forge Mod"
+    }
+  ],
+  "downloads": [
+    {
+      "id": 1,
+      "name": "OptiFlow v1.3",
+      "version": "1.3",
+      "type": "modpack",
+      "link": "https://www.curseforge.com/minecraft/modpacks/optiflow"
+    }
+  ],
   "cms_content": {
     "hero": {
       "badge": "Carbonium Beta Yayında!",
       "title": "YENİ BİR VİZYON",
       "subtitle": "Sıradanlığı sorgulayan, geleceği bugünden inşa edenlerin kalesi."
-    },
-    "announcements_section": {
-      "title": "DUYURULAR",
-      "description": "Son haberler ve güncellemeleri takip edin"
-    },
-    "projects_section": {
-      "title": "PROJELER",
-      "description": "Tüm projelerimizi keşfedin"
-    },
-    "footer": {
-      "company": "Arcanth Project",
-      "copyright": "© 2026 Arcanth Project. Tüm hakları saklıdır.",
-      "description": "Kaliteli oyun projeleri geliştiren topluluk"
     }
   },
   "cookie_settings": {
