@@ -287,9 +287,14 @@
                         <p class="text-xs text-gray-500 mt-1" id="cookie-description">Deneyiminizi gelistirmek icin temel cerezleri kullaniyoruz.</p>
                     </div>
                 </div>
-                <button onclick="acceptCookies()" id="cookie-accept-btn" class="px-8 py-3 bg-blue-600 text-white font-black rounded-xl text-xs uppercase tracking-widest hover:bg-blue-500 transition-all whitespace-nowrap">
-                    Anladim
-                </button>
+                <div class="flex gap-3">
+                    <button onclick="rejectCookies()" id="cookie-reject-btn" class="px-6 py-3 bg-white/5 border border-white/10 text-gray-400 font-black rounded-xl text-xs uppercase tracking-widest hover:bg-white/10 transition-all whitespace-nowrap">
+                        Reddet
+                    </button>
+                    <button onclick="acceptCookies()" id="cookie-accept-btn" class="px-8 py-3 bg-blue-600 text-white font-black rounded-xl text-xs uppercase tracking-widest hover:bg-blue-500 transition-all whitespace-nowrap">
+                        Anladim
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -304,7 +309,7 @@
         <button onclick="mobileNav('duyurular')" class="text-4xl font-black uppercase italic tracking-tighter hover:text-blue-500 transition-all hover:scale-110" style="animation: slideUp 0.5s ease forwards; animation-delay: 0.2s; opacity: 0;">Duyurular</button>
         <button onclick="mobileNav('projeler')" class="text-4xl font-black uppercase italic tracking-tighter hover:text-blue-500 transition-all hover:scale-110" style="animation: slideUp 0.5s ease forwards; animation-delay: 0.3s; opacity: 0;">Projeler</button>
         <button onclick="mobileNav('indirmeler')" class="text-4xl font-black uppercase italic tracking-tighter hover:text-blue-500 transition-all hover:scale-110" style="animation: slideUp 0.5s ease forwards; animation-delay: 0.4s; opacity: 0;">Indirmeler</button>
-        <button onclick="mobileNav('partner')" class="text-4xl font-black uppercase italic tracking-tighter text-orange-500 hover:scale-110 transition-all" style="animation: slideUp 0.5s ease forwards; animation-delay: 0.5s; opacity: 0;">Partner</button>
+        <button onclick="mobileNav('sponsor')" class="text-4xl font-black uppercase italic tracking-tighter text-orange-500 hover:scale-110 transition-all" style="animation: slideUp 0.5s ease forwards; animation-delay: 0.5s; opacity: 0;">Sponsor</button>
         <button onclick="mobileNav('discord')" class="text-4xl font-black uppercase italic tracking-tighter text-blue-500 hover:scale-110 transition-all" style="animation: slideUp 0.5s ease forwards; animation-delay: 0.6s; opacity: 0;">Discord</button>
         <button onclick="mobileNav('iletisim')" class="text-4xl font-black uppercase italic tracking-tighter hover:text-blue-500 transition-all hover:scale-110" style="animation: slideUp 0.5s ease forwards; animation-delay: 0.7s; opacity: 0;">Iletisim</button>
     </div>
@@ -327,7 +332,7 @@
                 <button onclick="showTab('duyurular')" class="nav-btn hover:text-white transition-all" id="btn-duyurular">Duyurular</button>
                 <button onclick="showTab('projeler')" class="nav-btn hover:text-white transition-all" id="btn-projeler">Projeler</button>
                 <button onclick="showTab('indirmeler')" class="nav-btn hover:text-white transition-all" id="btn-indirmeler">Indirmeler</button>
-                <button onclick="showTab('partner')" class="nav-btn text-orange-500 hover:scale-110 transition-transform font-black" id="btn-partner">Partner</button>
+                <button onclick="showTab('sponsor')" class="nav-btn text-orange-500 hover:scale-110 transition-transform font-black" id="btn-sponsor">Sponsor</button>
                 <button onclick="showTab('discord')" class="nav-btn text-blue-500 hover:scale-110 transition-transform font-black" id="btn-discord">Discord</button>
                 <button onclick="showTab('iletisim')" class="nav-btn hover:text-white transition-all" id="btn-iletisim">Iletisim</button>
             </div>
@@ -377,8 +382,8 @@
                     <button onclick="showTab('projeler')" class="btn-shine px-10 md:px-16 py-5 md:py-6 bg-blue-600 text-white font-black rounded-2xl md:rounded-3xl text-xs tracking-[0.2em] md:tracking-[0.3em] uppercase hover:bg-blue-500 shadow-2xl transform hover:-translate-y-1 active:scale-95 w-full sm:w-auto transition-all">
                         PROJELERI KESFET
                     </button>
-                    <button onclick="showTab('partner')" class="px-10 md:px-16 py-5 md:py-6 glass-card border-orange-500/30 text-orange-500 font-black rounded-2xl md:rounded-3xl text-xs tracking-[0.2em] md:tracking-[0.3em] uppercase shadow-2xl hover:bg-white/10 transition-all transform hover:-translate-y-1 active:scale-95 w-full sm:w-auto">
-                        PARTNERIMIZE GOZ AT
+                    <button onclick="showTab('sponsor')" class="px-10 md:px-16 py-5 md:py-6 glass-card border-orange-500/30 text-orange-500 font-black rounded-2xl md:rounded-3xl text-xs tracking-[0.2em] md:tracking-[0.3em] uppercase shadow-2xl hover:bg-white/10 transition-all transform hover:-translate-y-1 active:scale-95 w-full sm:w-auto">
+                        SPONSORIMIZE GOZ AT
                     </button>
                 </div>
             </div>
@@ -431,92 +436,18 @@
             </div>
         </section>
 
-        <!-- ========== PARTNER ========== -->
-        <section id="partner" class="tab-content space-y-20">
+        <!-- ========== SPONSOR ========== -->
+        <section id="sponsor" class="tab-content space-y-20">
             <div class="text-center space-y-8 reveal">
                 <div class="inline-block px-8 py-3 bg-orange-500/10 border border-orange-500/30 rounded-full">
                     <span class="text-orange-500 font-black text-xs uppercase tracking-[0.3em]">Resmi Isbirligi</span>
                 </div>
                 <h2 class="text-4xl md:text-6xl lg:text-8xl font-black italic uppercase tracking-tighter">
-                    <span class="text-orange-500">PARTNER</span> SUNUCU
+                    <span class="text-orange-500">SPONSOR</span>
                 </h2>
             </div>
 
-            <div class="glass-card p-6 md:p-12 lg:p-20 rounded-[3rem] border-orange-500/20 group relative overflow-hidden reveal">
-                <div class="absolute inset-0 bg-gradient-to-br from-orange-600/5 via-transparent to-yellow-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-
-                <div class="flex flex-col lg:flex-row gap-16 items-center relative z-10">
-                    <div class="relative flex-shrink-0">
-                        <div class="absolute inset-0 bg-orange-500 blur-3xl opacity-30"></div>
-                        <div class="relative w-44 h-44 md:w-56 md:h-56 bg-gradient-to-br from-orange-600 to-yellow-500 rounded-[3rem] flex items-center justify-center shadow-2xl animate-float overflow-hidden border-4 border-orange-500/30">
-                            <img src="luanetwork.jpg" class="w-full h-full object-cover" alt="LuaNetwork Logo" onerror="this.parentElement.innerHTML='<span class=\"text-7xl font-black\">L</span>'">
-                        </div>
-                    </div>
-
-                    <div class="flex-1 space-y-10 text-center lg:text-left">
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-center lg:justify-start gap-4 flex-wrap">
-                                <h3 class="text-4xl md:text-5xl lg:text-7xl font-black uppercase italic tracking-tighter text-orange-500">LuaNetwork</h3>
-                                <span class="px-5 py-2 bg-blue-500/10 text-blue-400 text-xs font-black rounded-full uppercase border border-blue-500/30">Partner</span>
-                            </div>
-                            <p class="text-2xl text-gray-400 italic font-bold">SkyBlock Edition</p>
-                        </div>
-
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div class="glass-card p-7 rounded-[2rem] space-y-5 border border-orange-500/10 hover:border-orange-500/30 transition-all">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center">
-                                        <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-                                    </div>
-                                    <h4 class="font-black uppercase tracking-wider text-sm">Sunucu Bilgileri</h4>
-                                </div>
-                                <div class="space-y-3">
-                                    <div>
-                                        <p class="text-xs text-orange-500 uppercase font-black tracking-wider mb-1">IP Adresi</p>
-                                        <p class="text-xl font-black tracking-tight">mc.luanetwork.com.tr</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs text-orange-500 uppercase font-black tracking-wider mb-1">Surum Destegi</p>
-                                        <p class="text-base font-bold">1.16.5 - 1.21.10</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="glass-card p-7 rounded-[2rem] space-y-5 border border-orange-500/10 hover:border-orange-500/30 transition-all">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center">
-                                        <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                    </div>
-                                    <h4 class="font-black uppercase tracking-wider text-sm">Ozellikler</h4>
-                                </div>
-                                <ul class="text-gray-400 space-y-3 text-base">
-                                    <li class="flex items-start gap-3">
-                                        <span class="text-orange-500 mt-0.5">&#9670;</span>
-                                        <span>Ozgun SkyBlock sistemi</span>
-                                    </li>
-                                    <li class="flex items-start gap-3">
-                                        <span class="text-orange-500 mt-0.5">&#9670;</span>
-                                        <span>Ozel spawner sistemi</span>
-                                    </li>
-                                    <li class="flex items-start gap-3">
-                                        <span class="text-orange-500 mt-0.5">&#9670;</span>
-                                        <span>Aktif topluluk</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-wrap gap-5 pt-4 justify-center lg:justify-start">
-                            <a href="https://luanetwork.com.tr/" target="_blank" class="btn-shine px-10 py-5 bg-orange-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:bg-orange-500 transition-all shadow-2xl">
-                                Web Sitesi
-                            </a>
-                            <a href="https://discord.gg/yfpqrY68tM" target="_blank" class="px-10 py-5 bg-[#5865F2] text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:opacity-90 transition-all shadow-2xl">
-                                Discord
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div id="sponsors-container"></div>
         </section>
 
         <!-- ========== PROJECTS ========== -->
@@ -593,7 +524,7 @@
                             <svg class="w-10 h-10 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
                         </div>
                         <h3 class="text-4xl font-black uppercase italic tracking-tighter text-orange-500">LuaNetwork</h3>
-                        <p class="text-gray-400">Partner sunucumuzun Discord'una katil.</p>
+                        <p class="text-gray-400">Sponsorumuzun Discord Sunucusuna katil.</p>
                         <a href="https://discord.gg/yfpqrY68tM" target="_blank" class="btn-shine inline-block w-full px-8 py-5 bg-orange-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:bg-orange-500 transition-all shadow-2xl">
                             LUANETWORK'E KATIL
                         </a>
@@ -620,8 +551,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <p class="text-xs font-black uppercase text-blue-500 tracking-widest mb-1">E-POSTA</p>
-                                <p class="text-lg font-black"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="87e8f7f3eee1ebe8f0bfbeb5c7e0eae6eeeba9e4e8ea">[email&#160;protected]</a></p>
+                                <p class="text-xs font-black uppercase text-blue-500 tracking-widest mb-1">MESAJ GONDER</p>
+                                <p class="text-sm text-gray-400">Yandaki formu kullanarak bizimle iletisime gecebilirsiniz</p>
                             </div>
                         </div>
                     </div>
@@ -750,6 +681,7 @@
         var DOWNLOADS_KEY = 'admin_downloads';
         var CMS_KEY = 'admin_cms_content';
         var COOKIES_KEY = 'admin_cookie_settings';
+        var SPONSORS_KEY = 'admin_sponsors';
 
         var GITHUB_DATA = 'https://raw.githubusercontent.com/arcanth00/arcanthproject/main/data.json';
 
@@ -759,6 +691,7 @@
             if (data.announcements) localStorage.setItem(ANNOUNCEMENTS_KEY, JSON.stringify(data.announcements));
             if (data.projects) localStorage.setItem(PROJECTS_KEY, JSON.stringify(data.projects));
             if (data.downloads) localStorage.setItem(DOWNLOADS_KEY, JSON.stringify(data.downloads));
+            if (data.sponsors) localStorage.setItem(SPONSORS_KEY, JSON.stringify(data.sponsors));
             if (data.cms_content) localStorage.setItem(CMS_KEY, JSON.stringify(data.cms_content));
             if (data.cookie_settings) localStorage.setItem(COOKIES_KEY, JSON.stringify(data.cookie_settings));
         }
@@ -911,11 +844,73 @@
             }).join('');
         }
 
+        function loadSponsors() {
+            var sponsors = JSON.parse(localStorage.getItem(SPONSORS_KEY) || '[]');
+            var container = document.getElementById('sponsors-container');
+            if (!container) return;
+            
+            if (!sponsors.length) {
+                container.innerHTML = '<div class="glass-card p-10 text-center rounded-[2rem]"><p class="text-gray-500 text-lg">Henuz sponsor yok</p></div>';
+                return;
+            }
+            
+            container.innerHTML = sponsors.map(function(s) {
+                var featuresHTML = (s.features || []).map(function(f) {
+                    return '<li class="flex items-start gap-3"><span class="text-orange-500 mt-0.5">&#9670;</span><span>' + f + '</span></li>';
+                }).join('');
+                
+                return '<div class="glass-card p-6 md:p-12 lg:p-20 rounded-[3rem] border-orange-500/20 group relative overflow-hidden reveal">' +
+                    '<div class="absolute inset-0 bg-gradient-to-br from-orange-600/5 via-transparent to-yellow-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>' +
+                    '<div class="flex flex-col lg:flex-row gap-16 items-center relative z-10">' +
+                        '<div class="relative flex-shrink-0">' +
+                            '<div class="absolute inset-0 bg-orange-500 blur-3xl opacity-30"></div>' +
+                            '<div class="relative w-44 h-44 md:w-56 md:h-56 bg-gradient-to-br from-orange-600 to-yellow-500 rounded-[3rem] flex items-center justify-center shadow-2xl animate-float overflow-hidden border-4 border-orange-500/30">' +
+                                '<img src="' + (s.logo || '') + '" class="w-full h-full object-cover" alt="' + s.name + ' Logo" onerror="this.parentElement.innerHTML=\'<span class=\\"text-7xl font-black\\">' + (s.name[0] || 'S') + '</span>\'">' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="flex-1 space-y-10 text-center lg:text-left">' +
+                            '<div class="space-y-4">' +
+                                '<div class="flex items-center justify-center lg:justify-start gap-4 flex-wrap">' +
+                                    '<h3 class="text-4xl md:text-5xl lg:text-7xl font-black uppercase italic tracking-tighter text-orange-500">' + s.name + '</h3>' +
+                                    '<span class="px-5 py-2 bg-blue-500/10 text-blue-400 text-xs font-black rounded-full uppercase border border-blue-500/30">Sponsor</span>' +
+                                '</div>' +
+                                (s.tagline ? '<p class="text-2xl text-gray-400 italic font-bold">' + s.tagline + '</p>' : '') +
+                            '</div>' +
+                            (s.ip ? '<div class="glass-card p-7 rounded-[2rem] space-y-5 border border-orange-500/10 hover:border-orange-500/30 transition-all">' +
+                                '<div class="flex items-center gap-3">' +
+                                    '<div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center">' +
+                                        '<svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>' +
+                                    '</div>' +
+                                    '<h4 class="font-black uppercase tracking-wider text-sm">Sunucu Bilgileri</h4>' +
+                                '</div>' +
+                                '<div><p class="text-xs text-orange-500 uppercase font-black tracking-wider mb-1">IP Adresi</p>' +
+                                '<p class="text-xl font-black tracking-tight">' + s.ip + '</p></div>' +
+                            '</div>' : '') +
+                            (featuresHTML ? '<div class="glass-card p-7 rounded-[2rem] space-y-5 border border-orange-500/10 hover:border-orange-500/30 transition-all">' +
+                                '<div class="flex items-center gap-3">' +
+                                    '<div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center">' +
+                                        '<svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>' +
+                                    '</div>' +
+                                    '<h4 class="font-black uppercase tracking-wider text-sm">Ozellikler</h4>' +
+                                '</div>' +
+                                '<ul class="text-gray-400 space-y-3 text-base">' + featuresHTML + '</ul>' +
+                            '</div>' : '') +
+                            '<div class="flex flex-wrap gap-5 pt-4 justify-center lg:justify-start">' +
+                                (s.website ? '<a href="' + s.website + '" target="_blank" class="btn-shine px-10 py-5 bg-orange-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:bg-orange-500 transition-all shadow-2xl">Web Sitesi</a>' : '') +
+                                (s.discord ? '<a href="' + s.discord + '" target="_blank" class="px-10 py-5 bg-[#5865F2] text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:opacity-90 transition-all shadow-2xl">Discord</a>' : '') +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
         function loadCookieNotice() {
             var c = JSON.parse(localStorage.getItem(COOKIES_KEY) || '{}');
             if (c.title) { var e = document.getElementById('cookie-title'); if (e) e.textContent = c.title; }
             if (c.description) { var e = document.getElementById('cookie-description'); if (e) e.textContent = c.description; }
             if (c.acceptText) { var e = document.getElementById('cookie-accept-btn'); if (e) e.textContent = c.acceptText; }
+            if (c.rejectText) { var e = document.getElementById('cookie-reject-btn'); if (e) e.textContent = c.rejectText; }
             if (!localStorage.getItem('cookies-accepted')) {
                 setTimeout(function() { var n = document.getElementById('cookie-notice'); if (n) n.classList.add('show'); }, 2500);
             }
@@ -987,6 +982,11 @@
 
         function acceptCookies() {
             localStorage.setItem('cookies-accepted', 'true');
+            var n = document.getElementById('cookie-notice'); if (n) n.classList.remove('show');
+        }
+
+        function rejectCookies() {
+            localStorage.setItem('cookies-accepted', 'false');
             var n = document.getElementById('cookie-notice'); if (n) n.classList.remove('show');
         }
 
@@ -1108,6 +1108,7 @@
             loadAnnouncements();
             loadProjects();
             loadDownloads();
+            loadSponsors();
             loadCookieNotice();
             initParticles();
             initScrollAnimations();
