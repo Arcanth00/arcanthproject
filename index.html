@@ -1102,10 +1102,24 @@
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
-    await syncWithFirebase();
+            await syncWithFirebase();
 
             loadCMSContent();
             loadAnnouncements();
             loadProjects();
             loadDownloads();
-            loadCooki
+            loadCookieNotice();
+            initParticles();
+            initScrollAnimations();
+
+            setTimeout(function() {
+                var ls = document.getElementById('loading-screen');
+                if (ls) { 
+                    ls.classList.add('hidden'); 
+                    setTimeout(function() { ls.remove(); }, 800); 
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>
