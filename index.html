@@ -919,9 +919,27 @@
         }
 
         // ===== CLOUDFLARE API =====
-        const CLOUDFLARE_API = 'https://sweet-resonance-7779.omerhaktan5454.workers.dev/api/data';
+        const GITHUB_DATA = 'https://raw.githubusercontent.com/arcanth00/arcanthproject/main/data.json';
 
-        async function syncWithCloudflare() {
+        async function syncWithGitHub() {
+    try {
+        const response = await fetch(GITHUB_DATA + '?t=' + Date.now());
+        if (!response.ok) throw new Error('Failed');
+        const data = await response.json();
+        
+        if (data.announcements) localStorage.setItem('admin_announcements', JSON.stringify(data.announcements));
+        if (data.projects) localStorage.setItem('admin_projects', JSON.stringify(data.projects));
+        if (data.downloads) localStorage.setItem('admin_downloads', JSON.stringify(data.downloads));
+        if (data.cms_content) localStorage.setItem('admin_cms_content', JSON.stringify(data.cms_content));
+        if (data.cookie_settings) localStorage.setItem('admin_cookie_settings', JSON.stringify(data.cookie_settings));
+        
+        console.log('✅ GitHub senkronize!');
+        return true;
+    } catch (error) {
+        console.error('GitHub error:', error);
+        return false;
+    }
+}
             try {
                 const response = await fetch(CLOUDFLARE_API);
                 if (!response.ok) throw new Error('API failed');
