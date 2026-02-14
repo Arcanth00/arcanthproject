@@ -10,6 +10,7 @@
     
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{dark:{900:'#020408',800:'#0a0f1a',700:'#111827',600:'#1f2937'}}}}}</script>
@@ -171,6 +172,7 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const provider = new firebase.auth.GoogleAuthProvider();
+		const db = firebase.database();
 
         var K = { ann: 'admin_announcements', proj: 'admin_projects', dl: 'admin_downloads', cms: 'admin_cms_content', act: 'admin_activity' };
         var API = 'https://sweet-resonance-7779.omerhaktan5454.workers.dev/api/data';
@@ -218,19 +220,26 @@
 
         // --- Core Functions ---
         async function sync() {
-            g('sync-dot').className = 'sync-dot sync-loading';
-            g('sync-text').textContent = 'Eşitleniyor...';
-            var data = { announcements: ls(K.ann), projects: ls(K.proj), downloads: ls(K.dl), cms_content: ls(K.cms) };
-            try {
-                var r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': AUTH_TOKEN }, body: JSON.stringify(data) });
-                if (!r.ok) throw 0;
-                g('sync-dot').className = 'sync-dot sync-ok';
-                g('sync-text').textContent = 'Bulutla Eşitlendi';
-            } catch (e) {
-                g('sync-dot').className = 'sync-dot sync-err';
-                g('sync-text').textContent = 'Hata!';
-            }
-        }
+    g('sync-dot').className = 'sync-dot sync-loading';
+    g('sync-text').textContent = 'Firebase\'e kaydediliyor...';
+    
+    var data = { 
+        announcements: ls(K.ann), 
+        projects: ls(K.proj), 
+        downloads: ls(K.dl), 
+        cms_content: ls(K.cms) 
+    };
+    
+    try {
+        await db.ref('site_data').set(data);
+        g('sync-dot').className = 'sync-dot sync-ok';
+        g('sync-text').textContent = 'Firebase\'de kayıtlı ✓';
+    } catch (e) {
+        g('sync-dot').className = 'sync-dot sync-err';
+        g('sync-text').textContent = 'Hata: ' + e.message;
+        console.error('Firebase sync error:', e);
+    }
+}
 
         function go(tab, el) {
             document.querySelectorAll('.tab-c').forEach(t => t.classList.remove('active'));
