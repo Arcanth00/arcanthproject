@@ -1,1127 +1,402 @@
 <!DOCTYPE html>
-<html lang="tr" class="scroll-smooth dark">
+<html lang="tr" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arcanth Admin Panel</title>
-
+    <link rel="icon" type="image/png" href="logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-
-    <script>tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkBg: '#020408',
-                        lightBg: '#f8fafc',
-                        accentBlue: '#3b82f6',
-                        luaOrange: '#f97316'
-                    }
-                }
-            }
-        }</script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{dark:{900:'#020408',800:'#0a0f1a',700:'#111827',600:'#1f2937'}}}}}</script>
     <style>
-        :root {
-            --color-dark-bg: #020408;
-            --color-light-bg: #f8fafc;
-            --color-blue: #3b82f6;
-            --color-orange: #f97316;
-            --color-purple: #a855f7;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--color-dark-bg);
-            color: white;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.035);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(12px);
-            border-radius: 1rem;
-        }
-
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: none;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-size: 0.875rem;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s;
-        }
-
-        .btn-danger {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-
-        .btn-danger:hover {
-            background: rgba(239, 68, 68, 0.2);
-        }
-
-        .input-field {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            width: 100%;
-            outline: none;
-            transition: all 0.3s;
-        }
-
-        .input-field:focus {
-            border-color: #3b82f6;
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .tab-button {
-            padding: 1rem 2rem;
-            border-radius: 0.75rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid transparent;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-size: 0.75rem;
-        }
-
-        .tab-button.active {
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-            border-color: rgba(59, 130, 246, 0.5);
-        }
-
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--color-dark-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1.5rem;
-            padding: 2rem;
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        th {
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-            color: #9ca3af;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            transition: all 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(59, 130, 246, 0.4);
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020408; color: #e2e8f0; }
+        .sidebar { background: rgba(10,15,26,0.95); border-right: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(20px); }
+        .glass { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 1rem; }
+        .glass:hover { border-color: rgba(59,130,246,0.2); }
+        .input-f { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: white; padding: 0.75rem 1rem; border-radius: 0.75rem; width: 100%; outline: none; transition: border-color 0.2s; font-size: 0.875rem; }
+        .input-f:focus { border-color: #3b82f6; }
+        .btn-p { background: linear-gradient(135deg,#3b82f6,#6366f1); color: white; padding: 0.625rem 1.25rem; border-radius: 0.625rem; font-weight: 700; font-size: 0.75rem; cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s; }
+        .btn-p:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(59,130,246,0.3); }
+        .btn-d { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2); padding: 0.375rem 0.75rem; border-radius: 0.5rem; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .btn-d:hover { background: rgba(239,68,68,0.2); }
+        .btn-s { background: rgba(255,255,255,0.06); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 0.375rem 0.75rem; border-radius: 0.5rem; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .btn-s:hover { background: rgba(255,255,255,0.1); }
+        .tab-c { display: none; animation: fadeIn 0.3s ease; }
+        .tab-c.active { display: block; }
+        .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: 0.625rem; font-size: 0.8rem; font-weight: 600; color: #9ca3af; cursor: pointer; transition: all 0.2s; }
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .nav-item.active { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
+        .stat { background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(99,102,241,0.08)); border: 1px solid rgba(59,130,246,0.15); border-radius: 1rem; padding: 1.25rem; transition: all 0.2s; }
+        .stat:hover { transform: translateY(-3px); border-color: rgba(59,130,246,0.3); }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 1000; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-box { background: #0a0f1a; border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; padding: 2rem; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th { padding: 0.75rem; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        td { padding: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.8rem; }
+        .sync-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .sync-ok { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.5); }
+        .sync-err { background: #ef4444; box-shadow: 0 0 6px rgba(239,68,68,0.5); }
+        .sync-loading { background: #eab308; animation: pulse 1s infinite; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+        @media (max-width: 1023px) { .sidebar { display: none; } .mobile-nav { display: flex !important; } }
     </style>
 </head>
 <body>
-    <!-- LOGIN SCREEN -->
-    <div id="loginScreen" class="fixed inset-0 z-[9999] flex items-center justify-center p-6" style="background: #020408;">
-        <div class="glass-card p-12 max-w-md w-full">
+    <!-- LOGIN -->
+    <div id="login" class="fixed inset-0 z-[9999] flex items-center justify-center" style="background:#020408">
+        <div class="glass p-10 max-w-sm w-full mx-4">
             <div class="text-center mb-8">
-                <h1 class="text-4xl font-black italic uppercase mb-2">
-                    <span class="text-blue-500">ARCANTH</span> ADMIN
-                </h1>
-                <p class="text-gray-400 text-sm">Güvenli Giriş</p>
+                <div class="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                </div>
+                <h1 class="text-2xl font-black uppercase tracking-tight"><span class="text-blue-500">Arcanth</span> Admin</h1>
+                <p class="text-gray-500 text-xs mt-1">Guvenli giris yapiniz</p>
             </div>
+            <div class="space-y-3">
+                <input type="text" id="loginUser" class="input-f" placeholder="Kullanici adi">
+                <input type="password" id="loginPass" class="input-f" placeholder="Sifre" onkeydown="if(event.key==='Enter')doLogin()">
+                <button onclick="doLogin()" class="btn-p w-full py-3">Giris Yap</button>
+                <p id="loginErr" class="text-red-500 text-xs text-center hidden"></p>
+            </div>
+        </div>
+    </div>
 
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold mb-2">Kullanıcı Adı</label>
-                    <input type="text" id="loginUsername" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-blue-500 transition-all text-white" placeholder="arcprlua">
+    <!-- ADMIN -->
+    <div id="admin" style="display:none" class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="sidebar w-64 fixed inset-y-0 left-0 flex flex-col z-50">
+            <div class="p-6 border-b border-white/5">
+                <div class="flex items-center gap-3">
+                    <img src="logo.png" class="w-9 h-9 rounded-lg" onerror="this.style.display='none'">
+                    <div>
+                        <p class="font-black text-sm uppercase tracking-tight">Arcanth</p>
+                        <p class="text-[10px] text-gray-500 font-semibold">Admin Panel</p>
+                    </div>
                 </div>
-
-                <div>
-                    <label class="block text-sm font-bold mb-2">Şifre</label>
-                    <input type="password" id="loginPassword" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-blue-500 transition-all text-white" placeholder="••••••••">
+            </div>
+            <nav class="flex-1 p-4 space-y-1" id="sidebar-nav">
+                <div class="nav-item active" onclick="go('dashboard',this)"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>Dashboard</div>
+                <div class="nav-item" onclick="go('announcements',this)"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>Duyurular</div>
+                <div class="nav-item" onclick="go('projects',this)"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>Projeler</div>
+                <div class="nav-item" onclick="go('downloads',this)"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>Indirmeler</div>
+                <div class="nav-item" onclick="go('cms',this)"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>CMS</div>
+                <div class="nav-item" onclick="go('cookies',this)"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Cerezler</div>
+                <div class="nav-item" onclick="go('activity',this)"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Aktivite</div>
+            </nav>
+            <div class="p-4 border-t border-white/5">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="sync-dot" id="sync-dot"></span>
+                    <span class="text-xs text-gray-500" id="sync-text">Hazir</span>
                 </div>
-
-                <button onclick="attemptLogin()" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-black uppercase tracking-widest hover:opacity-90 transition-all">
-                    GİRİŞ YAP
+                <button onclick="doLogout()" class="w-full text-left nav-item text-red-400 hover:text-red-300 hover:bg-red-500/10">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>Cikis Yap
                 </button>
-
-                <p id="loginError" class="text-red-500 text-sm text-center hidden"></p>
             </div>
-        </div>
-    </div>
+        </aside>
 
-    <!-- MAIN ADMIN PANEL (Hidden until login) -->
-    <div id="adminPanel" style="display: none;">
-
-    <!-- Header -->
-    <header class="glass-card m-6 p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-3xl font-black italic uppercase">
-                    <span class="text-blue-500">ARCANTH</span> ADMIN
-                </h1>
-                <p class="text-gray-400 text-sm mt-1">Yönetim Paneli</p>
-            </div>
-            <button onclick="logout()" class="btn-secondary">
-                Çıkış Yap
-            </button>
-        </div>
-    </header>
-
-    <!-- Navigation Tabs -->
-    <div class="m-6">
-        <div class="flex gap-4 overflow-x-auto pb-4">
-            <button class="tab-button active" onclick="switchTab('dashboard')">Dashboard</button>
-            <button class="tab-button" onclick="switchTab('announcements')">Duyurular</button>
-            <button class="tab-button" onclick="switchTab('projects')">Projeler</button>
-            <button class="tab-button" onclick="switchTab('downloads')">İndirmeler</button>
-            <button class="tab-button" onclick="switchTab('cms')">CMS İçerik</button>
-            <button class="tab-button" onclick="switchTab('cookies')">Çerezler</button>
-            <button class="tab-button" onclick="switchTab('activity')">Aktivite</button>
-        </div>
-    </div>
-
-    <!-- Dashboard Tab -->
-    <div id="tab-dashboard" class="tab-content active m-6">
-        <div class="grid md:grid-cols-4 gap-6 mb-8">
-            <div class="stat-card">
-                <div class="text-gray-400 text-sm font-bold uppercase mb-2">Toplam Duyuru</div>
-                <div class="text-4xl font-black" id="stat-announcements">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="text-gray-400 text-sm font-bold uppercase mb-2">Toplam Proje</div>
-                <div class="text-4xl font-black" id="stat-projects">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="text-gray-400 text-sm font-bold uppercase mb-2">İndirmeler</div>
-                <div class="text-4xl font-black" id="stat-downloads">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="text-gray-400 text-sm font-bold uppercase mb-2">Çerez Kabul</div>
-                <div class="text-4xl font-black" id="stat-cookies">0</div>
-            </div>
+        <!-- Mobile Nav -->
+        <div class="mobile-nav hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0a0f1a] border-t border-white/5 px-2 py-2 gap-1 overflow-x-auto">
+            <button onclick="go('dashboard')" class="flex-shrink-0 px-3 py-2 rounded-lg text-[10px] font-bold uppercase text-gray-400 hover:bg-white/5">Dash</button>
+            <button onclick="go('announcements')" class="flex-shrink-0 px-3 py-2 rounded-lg text-[10px] font-bold uppercase text-gray-400 hover:bg-white/5">Duyuru</button>
+            <button onclick="go('projects')" class="flex-shrink-0 px-3 py-2 rounded-lg text-[10px] font-bold uppercase text-gray-400 hover:bg-white/5">Proje</button>
+            <button onclick="go('downloads')" class="flex-shrink-0 px-3 py-2 rounded-lg text-[10px] font-bold uppercase text-gray-400 hover:bg-white/5">Indir</button>
+            <button onclick="go('cms')" class="flex-shrink-0 px-3 py-2 rounded-lg text-[10px] font-bold uppercase text-gray-400 hover:bg-white/5">CMS</button>
         </div>
 
-        <div class="glass-card p-8">
-            <h2 class="text-2xl font-black mb-6">Hoş Geldiniz</h2>
-            <p class="text-gray-400 leading-relaxed">
-                Admin paneline hoş geldiniz. Sol taraftaki menüden istediğiniz bölümü yönetebilirsiniz.
-            </p>
-        </div>
-    </div>
-
-    <!-- Announcements Tab -->
-    <div id="tab-announcements" class="tab-content m-6">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-black">Duyurular</h2>
-            <button onclick="openAnnouncementModal()" class="btn-primary">Yeni Duyuru</button>
-        </div>
-        
-        <div class="glass-card p-6">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Başlık</th>
-                        <th>Kategori</th>
-                        <th>Tarih</th>
-                        <th>İşlemler</th>
-                    </tr>
-                </thead>
-                <tbody id="announcementsList"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Projects Tab -->
-    <div id="tab-projects" class="tab-content m-6">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-black">Projeler</h2>
-            <button onclick="openProjectModal()" class="btn-primary">Yeni Proje</button>
-        </div>
-        
-        <div class="glass-card p-6">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Proje Adı</th>
-                        <th>Versiyon</th>
-                        <th>Durum</th>
-                        <th>Kategori</th>
-                        <th>İşlemler</th>
-                    </tr>
-                </thead>
-                <tbody id="projectsList"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Downloads Tab -->
-    <div id="tab-downloads" class="tab-content m-6">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-black">İndirmeler</h2>
-            <button onclick="openDownloadModal()" class="btn-primary">Yeni İndirme</button>
-        </div>
-        
-        <div class="glass-card p-6">
-            <table>
-                <thead>
-                    <tr>
-                        <th>İsim</th>
-                        <th>Versiyon</th>
-                        <th>Tip</th>
-                        <th>Link</th>
-                        <th>İşlemler</th>
-                    </tr>
-                </thead>
-                <tbody id="downloadsList"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- CMS Content Tab -->
-    <div id="tab-cms" class="tab-content m-6">
-        <h2 class="text-2xl font-black mb-6">CMS İçerik Yönetimi</h2>
-        
-        <div class="glass-card p-8 mb-6">
-            <h3 class="text-xl font-bold mb-4">Hero Bölümü</h3>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold mb-2">Badge Metni</label>
-                    <input type="text" id="heroBadge" class="input-field" placeholder="Carbonium Beta Yayında!">
+        <!-- Content -->
+        <div class="flex-1 lg:ml-64 p-6 pb-20 lg:pb-6">
+            <!-- Dashboard -->
+            <div id="t-dashboard" class="tab-c active space-y-6">
+                <h2 class="text-2xl font-black">Dashboard</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="stat"><p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Duyurular</p><p class="text-3xl font-black mt-1" id="s-ann">0</p></div>
+                    <div class="stat"><p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Projeler</p><p class="text-3xl font-black mt-1" id="s-proj">0</p></div>
+                    <div class="stat"><p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Indirmeler</p><p class="text-3xl font-black mt-1" id="s-dl">0</p></div>
+                    <div class="stat"><p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Cerez Kabul</p><p class="text-3xl font-black mt-1" id="s-ck">0</p></div>
                 </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2">Başlık</label>
-                    <input type="text" id="heroTitle" class="input-field" placeholder="YENİ BİR VİZYON">
+                <div class="glass p-6">
+                    <h3 class="font-bold mb-2">Hos Geldiniz</h3>
+                    <p class="text-gray-400 text-sm">Admin panelden icerik yonetebilir, degisiklikleri aninda yayinlayabilirsiniz. Tum degisiklikler Cloudflare uzerinden herkesin gorebilecegi sekilde kaydedilir.</p>
                 </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2">Alt Başlık</label>
-                    <textarea id="heroSubtitle" class="input-field" rows="3" placeholder="Açıklama..."></textarea>
-                </div>
-                <button onclick="saveCMSHero()" class="btn-primary">Kaydet</button>
-            </div>
-        </div>
-
-        <div class="glass-card p-8">
-            <h3 class="text-xl font-bold mb-4">Footer</h3>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold mb-2">Şirket Adı</label>
-                    <input type="text" id="footerCompany" class="input-field" placeholder="Arcanth Project">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2">Copyright</label>
-                    <input type="text" id="footerCopyright" class="input-field" placeholder="© 2026 Arcanth Project">
-                </div>
-                <button onclick="saveCMSFooter()" class="btn-primary">Kaydet</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Cookies Tab -->
-    <div id="tab-cookies" class="tab-content m-6">
-        <h2 class="text-2xl font-black mb-6">Çerez Yönetimi</h2>
-        
-        <div class="glass-card p-8 mb-6">
-            <h3 class="text-xl font-bold mb-4">Çerez Bildirimi Ayarları</h3>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold mb-2">Başlık</label>
-                    <input type="text" id="cookieTitle" class="input-field">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2">Açıklama</label>
-                    <textarea id="cookieDescription" class="input-field" rows="3"></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2">Buton Metni</label>
-                    <input type="text" id="cookieAcceptText" class="input-field">
-                </div>
-                <button onclick="saveCookieSettings()" class="btn-primary">Kaydet</button>
-            </div>
-        </div>
-
-        <div class="glass-card p-8">
-            <h3 class="text-xl font-bold mb-4">Çerez İstatistikleri</h3>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="stat-card">
-                    <div class="text-gray-400 text-sm font-bold uppercase mb-2">Kabul Edildi</div>
-                    <div class="text-4xl font-black text-green-500" id="cookie-accepted">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="text-gray-400 text-sm font-bold uppercase mb-2">Reddedildi</div>
-                    <div class="text-4xl font-black text-red-500" id="cookie-rejected">0</div>
+                <div class="glass p-6">
+                    <h3 class="font-bold mb-3">Nasil Calisiyor?</h3>
+                    <div class="space-y-2 text-sm text-gray-400">
+                        <p>1. Buradan icerik ekle/duzenle/sil</p>
+                        <p>2. "Kaydet" tiklandiginda otomatik olarak Cloudflare'a gonderilir</p>
+                        <p>3. Siteni ziyaret eden herkes guncel icerigi gorur</p>
+                    </div>
                 </div>
             </div>
-            <button onclick="resetCookieStats()" class="btn-danger mt-6">İstatistikleri Sıfırla</button>
-        </div>
-    </div>
 
-    <!-- Activity Tab -->
-    <div id="tab-activity" class="tab-content m-6">
-        <h2 class="text-2xl font-black mb-6">Son Aktiviteler</h2>
-        <div class="glass-card p-6">
-            <div id="activityLog" class="space-y-4"></div>
+            <!-- Announcements -->
+            <div id="t-announcements" class="tab-c space-y-6">
+                <div class="flex items-center justify-between"><h2 class="text-2xl font-black">Duyurular</h2><button onclick="openModal('ann')" class="btn-p">+ Yeni</button></div>
+                <div class="glass p-4 overflow-x-auto"><table><thead><tr><th>Baslik</th><th>Kategori</th><th>Tarih</th><th>Islem</th></tr></thead><tbody id="annList"></tbody></table></div>
+            </div>
+
+            <!-- Projects -->
+            <div id="t-projects" class="tab-c space-y-6">
+                <div class="flex items-center justify-between"><h2 class="text-2xl font-black">Projeler</h2><button onclick="openModal('proj')" class="btn-p">+ Yeni</button></div>
+                <div class="glass p-4 overflow-x-auto"><table><thead><tr><th>Ad</th><th>Versiyon</th><th>Durum</th><th>Kategori</th><th>Islem</th></tr></thead><tbody id="projList"></tbody></table></div>
+            </div>
+
+            <!-- Downloads -->
+            <div id="t-downloads" class="tab-c space-y-6">
+                <div class="flex items-center justify-between"><h2 class="text-2xl font-black">Indirmeler</h2><button onclick="openModal('dl')" class="btn-p">+ Yeni</button></div>
+                <div class="glass p-4 overflow-x-auto"><table><thead><tr><th>Isim</th><th>Versiyon</th><th>Tip</th><th>Link</th><th>Islem</th></tr></thead><tbody id="dlList"></tbody></table></div>
+            </div>
+
+            <!-- CMS -->
+            <div id="t-cms" class="tab-c space-y-6">
+                <h2 class="text-2xl font-black">CMS Icerik</h2>
+                <div class="glass p-6 space-y-4">
+                    <h3 class="font-bold text-sm uppercase tracking-wider text-gray-500">Hero Bolumu</h3>
+                    <input type="text" id="cmsBadge" class="input-f" placeholder="Badge metni">
+                    <input type="text" id="cmsTitle" class="input-f" placeholder="Baslik">
+                    <textarea id="cmsSub" class="input-f" rows="2" placeholder="Alt baslik"></textarea>
+                    <button onclick="saveCMS()" class="btn-p">Kaydet</button>
+                </div>
+            </div>
+
+            <!-- Cookies -->
+            <div id="t-cookies" class="tab-c space-y-6">
+                <h2 class="text-2xl font-black">Cerez Ayarlari</h2>
+                <div class="glass p-6 space-y-4">
+                    <input type="text" id="ckTitle" class="input-f" placeholder="Baslik">
+                    <textarea id="ckDesc" class="input-f" rows="2" placeholder="Aciklama"></textarea>
+                    <input type="text" id="ckBtn" class="input-f" placeholder="Buton metni">
+                    <button onclick="saveCK()" class="btn-p">Kaydet</button>
+                </div>
+            </div>
+
+            <!-- Activity -->
+            <div id="t-activity" class="tab-c space-y-6">
+                <div class="flex items-center justify-between"><h2 class="text-2xl font-black">Aktivite</h2><button onclick="clearAct()" class="btn-d">Temizle</button></div>
+                <div id="actList" class="space-y-2"></div>
+            </div>
         </div>
     </div>
 
     <!-- Announcement Modal -->
-    <div id="announcementModal" class="modal">
-        <div class="modal-content">
-            <h2 class="text-2xl font-black mb-6">Yeni Duyuru</h2>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold mb-2">Başlık</label>
-                    <input type="text" id="announcementTitle" class="input-field">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2">İçerik</label>
-                    <textarea id="announcementContent" class="input-field" rows="5"></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2">Kategori</label>
-                    <select id="announcementCategory" class="input-field">
-                        <option value="bilgi">Bilgi</option>
-                        <option value="guncelleme">Güncelleme</option>
-                        <option value="onemli">Önemli</option>
-                    </select>
-                </div>
-                <div class="flex gap-4">
-                    <button onclick="addAnnouncement()" class="btn-primary flex-1">Ekle</button>
-                    <button onclick="closeAnnouncementModal()" class="btn-secondary flex-1">İptal</button>
-                </div>
+    <div id="m-ann" class="modal">
+        <div class="modal-box">
+            <h3 class="text-xl font-black mb-4" id="m-ann-title">Yeni Duyuru</h3>
+            <div class="space-y-3">
+                <input type="text" id="annTitle" class="input-f" placeholder="Baslik">
+                <textarea id="annContent" class="input-f" rows="4" placeholder="Icerik"></textarea>
+                <select id="annCat" class="input-f"><option value="bilgi">Bilgi</option><option value="guncelleme">Guncelleme</option><option value="onemli">Onemli</option></select>
+                <div class="flex gap-3"><button onclick="saveAnn()" class="btn-p flex-1">Kaydet</button><button onclick="closeModal('ann')" class="btn-s flex-1">Iptal</button></div>
             </div>
         </div>
     </div>
 
     <!-- Project Modal -->
-    <div id="projectModal" class="modal">
-        <div class="modal-content">
-            <h2 class="text-2xl font-black mb-6">Yeni Proje</h2>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold mb-2">Proje Adı</label>
-                    <input type="text" id="projectName" class="input-field">
+    <div id="m-proj" class="modal">
+        <div class="modal-box">
+            <h3 class="text-xl font-black mb-4" id="m-proj-title">Yeni Proje</h3>
+            <div class="space-y-3">
+                <input type="text" id="projName" class="input-f" placeholder="Proje adi">
+                <textarea id="projDesc" class="input-f" rows="2" placeholder="Aciklama"></textarea>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="text" id="projVer" class="input-f" placeholder="v1.0">
+                    <input type="text" id="projCat" class="input-f" placeholder="Kategori">
                 </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2">Açıklama</label>
-                    <textarea id="projectDescription" class="input-field" rows="3"></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2">Versiyon</label>
-                    <input type="text" id="projectVersion" class="input-field" placeholder="v1.0">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2">Kategori</label>
-                    <input type="text" id="projectCategory" class="input-field" placeholder="ModPack">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2">Durum</label>
-                    <select id="projectStatus" class="input-field">
-                        <option value="release">Release</option>
-                        <option value="beta">Beta</option>
-                        <option value="alpha">Alpha</option>
-                        <option value="development">Geliştiriliyor</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2">Link</label>
-                    <input type="url" id="projectLink" class="input-field" placeholder="https://...">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2">İkon (Emoji veya URL)</label>
-                    <input type="text" id="projectIcon" class="input-field" placeholder="📦 veya https://...">
-                </div>
-                <div class="flex gap-4">
-                    <button onclick="addProject()" class="btn-primary flex-1">Ekle</button>
-                    <button onclick="closeProjectModal()" class="btn-secondary flex-1">İptal</button>
-                </div>
+                <select id="projStatus" class="input-f"><option value="release">Release</option><option value="beta">Beta</option><option value="alpha">Alpha</option><option value="development">Dev</option></select>
+                <input type="url" id="projLink" class="input-f" placeholder="https://...">
+                <input type="text" id="projIcon" class="input-f" placeholder="Ikon (emoji veya URL)">
+                <div class="flex gap-3"><button onclick="saveProj()" class="btn-p flex-1">Kaydet</button><button onclick="closeModal('proj')" class="btn-s flex-1">Iptal</button></div>
             </div>
         </div>
     </div>
 
     <!-- Download Modal -->
-    <div id="downloadModal" class="modal">
-        <div class="modal-content">
-            <h2 class="text-2xl font-black mb-6">Yeni İndirme</h2>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold mb-2">İsim</label>
-                    <input type="text" id="downloadName" class="input-field">
+    <div id="m-dl" class="modal">
+        <div class="modal-box">
+            <h3 class="text-xl font-black mb-4" id="m-dl-title">Yeni Indirme</h3>
+            <div class="space-y-3">
+                <input type="text" id="dlName" class="input-f" placeholder="Isim">
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="text" id="dlVer" class="input-f" placeholder="1.0">
+                    <select id="dlType" class="input-f"><option value="modpack">ModPack</option><option value="mod">Mod</option><option value="other">Diger</option></select>
                 </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2">Versiyon</label>
-                    <input type="text" id="downloadVersion" class="input-field" placeholder="1.0">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2">Tip</label>
-                    <select id="downloadType" class="input-field">
-                        <option value="modpack">ModPack</option>
-                        <option value="mod">Mod</option>
-                        <option value="other">Diğer</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2">Link</label>
-                    <input type="url" id="downloadLink" class="input-field" placeholder="https://...">
-                </div>
-                <div class="flex gap-4">
-                    <button onclick="addDownload()" class="btn-primary flex-1">Ekle</button>
-                    <button onclick="closeDownloadModal()" class="btn-secondary flex-1">İptal</button>
-                </div>
+                <input type="url" id="dlLink" class="input-f" placeholder="https://...">
+                <div class="flex gap-3"><button onclick="saveDl()" class="btn-p flex-1">Kaydet</button><button onclick="closeModal('dl')" class="btn-s flex-1">Iptal</button></div>
             </div>
         </div>
     </div>
 
-    </div> <!-- Close adminPanel div -->
-
     <script>
-        // ===== LOCALSTORAGE KEYS =====
-        const ANNOUNCEMENTS_KEY = 'admin_announcements';
-        const PROJECTS_KEY = 'admin_projects';
-        const DOWNLOADS_KEY = 'admin_downloads';
-        const CATEGORIES_KEY = 'admin_categories';
-        const CMS_KEY = 'admin_cms_content';
-        const COOKIES_KEY = 'admin_cookie_settings';
-        const COOKIE_STATS_KEY = 'admin_cookie_stats';
-        const ACTIVITY_KEY = 'admin_activity';
+        var K = { ann: 'admin_announcements', proj: 'admin_projects', dl: 'admin_downloads', cms: 'admin_cms_content', ck: 'admin_cookie_settings', stats: 'admin_cookie_stats', act: 'admin_activity' };
+        var API = 'https://sweet-resonance-7779.omerhaktan5454.workers.dev/api/data';
+        var AUTH = 'Bearer arcprlua_secret_key_2026';
+        var USER = 'arcprlua', PASS = '9PsO!J7qI4zSmmnfMdx4%wJqR3N85SYyvh';
+        var editId = { ann: null, proj: null, dl: null };
 
-        // ===== INITIALIZATION =====
-        function initializeData() {
-            if (!localStorage.getItem(ANNOUNCEMENTS_KEY)) {
-                localStorage.setItem(ANNOUNCEMENTS_KEY, JSON.stringify([]));
-            }
-            if (!localStorage.getItem(PROJECTS_KEY)) {
-                localStorage.setItem(PROJECTS_KEY, JSON.stringify([]));
-            }
-            if (!localStorage.getItem(DOWNLOADS_KEY)) {
-                localStorage.setItem(DOWNLOADS_KEY, JSON.stringify([]));
-            }
-            if (!localStorage.getItem(CATEGORIES_KEY)) {
-                localStorage.setItem(CATEGORIES_KEY, JSON.stringify([]));
-            }
-            if (!localStorage.getItem(CMS_KEY)) {
-                localStorage.setItem(CMS_KEY, JSON.stringify({
-                    hero: {
-                        badge: 'Carbonium Beta Yayında!',
-                        title: 'YENİ BİR VİZYON',
-                        subtitle: 'Sıradanlığı sorgulayan, geleceği bugünden inşa edenlerin kalesi.'
-                    },
-                    footer: {
-                        company: 'Arcanth Project',
-                        copyright: '© 2026 Arcanth Project. Tüm hakları saklıdır.'
-                    }
-                }));
-            }
-            if (!localStorage.getItem(COOKIES_KEY)) {
-                localStorage.setItem(COOKIES_KEY, JSON.stringify({
-                    title: 'Bu site temel çerezler kullanır',
-                    description: 'Deneyiminizi geliştirmek için temel çerezleri kullanıyoruz.',
-                    acceptText: 'ANLADIM'
-                }));
-            }
-            if (!localStorage.getItem(COOKIE_STATS_KEY)) {
-                localStorage.setItem(COOKIE_STATS_KEY, JSON.stringify({
-                    accepted: 0,
-                    rejected: 0
-                }));
-            }
-            if (!localStorage.getItem(ACTIVITY_KEY)) {
-                localStorage.setItem(ACTIVITY_KEY, JSON.stringify([]));
-            }
+        function g(id) { return document.getElementById(id); }
+        function ls(k, v) { if (v !== undefined) { localStorage.setItem(k, JSON.stringify(v)); return v; } return JSON.parse(localStorage.getItem(k) || (k === K.cms ? '{"hero":{},"footer":{}}' : k === K.ck ? '{}' : k === K.stats ? '{"accepted":0,"rejected":0}' : '[]')); }
+
+        function init() {
+            [K.ann, K.proj, K.dl].forEach(function(k) { if (!localStorage.getItem(k)) ls(k, []); });
+            if (!localStorage.getItem(K.cms)) ls(K.cms, { hero: { badge: 'Carbonium Beta Yayinda!', title: 'YENI BIR VIZYON', subtitle: 'Siradanligi sorgulayan, gelecegi bugunden insa edenlerin kalesi.' }, footer: {} });
+            if (!localStorage.getItem(K.ck)) ls(K.ck, { title: 'Bu site cerezler kullanir', description: 'Deneyiminizi gelistirmek icin temel cerezleri kullaniyoruz.', acceptText: 'ANLADIM' });
+            if (!localStorage.getItem(K.stats)) ls(K.stats, { accepted: 0, rejected: 0 });
+            if (!localStorage.getItem(K.act)) ls(K.act, []);
         }
 
-        // ===== CLOUDFLARE SYNC =====
-        const CLOUDFLARE_API = 'https://sweet-resonance-7779.omerhaktan5454.workers.dev/api/data';
-        const API_AUTH = 'Bearer arcprlua_secret_key_2026';
-
-        async function syncToCloudflare() {
-            const data = {
-                announcements: JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY) || '[]'),
-                projects: JSON.parse(localStorage.getItem(PROJECTS_KEY) || '[]'),
-                downloads: JSON.parse(localStorage.getItem(DOWNLOADS_KEY) || '[]'),
-                cms_content: JSON.parse(localStorage.getItem(CMS_KEY) || '{}'),
-                cookie_settings: JSON.parse(localStorage.getItem(COOKIES_KEY) || '{}')
-            };
-
+        async function sync() {
+            var dot = g('sync-dot'), txt = g('sync-text');
+            if (dot) { dot.className = 'sync-dot sync-loading'; } if (txt) txt.textContent = 'Kaydediliyor...';
+            var data = { announcements: ls(K.ann), projects: ls(K.proj), downloads: ls(K.dl), cms_content: ls(K.cms), cookie_settings: ls(K.ck) };
             try {
-                const response = await fetch(CLOUDFLARE_API, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': API_AUTH
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (!response.ok) throw new Error('Sync failed');
-                console.log('✅ Synced to Cloudflare!');
-                showToast('Değişiklikler kaydedildi! Herkes görebilir.', 'success');
-                return true;
-            } catch (error) {
-                console.error('Cloudflare sync error:', error);
-                showToast('Cloudflare kaydetme hatası!', 'error');
-                return false;
+                var r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': AUTH }, body: JSON.stringify(data) });
+                if (!r.ok) throw new Error();
+                if (dot) dot.className = 'sync-dot sync-ok'; if (txt) txt.textContent = 'Kaydedildi';
+                toast('Kaydedildi! Herkes gorebilir.', 'ok');
+            } catch (e) {
+                if (dot) dot.className = 'sync-dot sync-err'; if (txt) txt.textContent = 'Hata!';
+                toast('Kaydetme hatasi!', 'err');
             }
         }
 
-        function addAnnouncement() {
-            const title = document.getElementById('announcementTitle').value;
-            const content = document.getElementById('announcementContent').value;
-            const category = document.getElementById('announcementCategory').value;
-
-            if (!title || !content) {
-                alert('Lütfen tüm alanları doldurun!');
-                return;
-            }
-
-            const announcements = JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY));
-            const announcement = {
-                id: Date.now(),
-                title,
-                content,
-                category,
-                date: new Date().toLocaleDateString('tr-TR'),
-                createdAt: new Date().toISOString()
-            };
-
-            announcements.push(announcement);
-            localStorage.setItem(ANNOUNCEMENTS_KEY, JSON.stringify(announcements));
-
-            addActivity(`Yeni duyuru eklendi: ${title}`);
-            loadAnnouncements();
-            updateDashboard();
-            closeAnnouncementModal();
-            showToast('Duyuru eklendi!', 'success');
-            
-            // Sync to Cloudflare
-            syncToCloudflare();
+        function doLogin() {
+            var u = g('loginUser').value, p = g('loginPass').value, e = g('loginErr');
+            if (u !== USER || p !== PASS) { e.textContent = 'Hatali giris!'; e.classList.remove('hidden'); return; }
+            localStorage.setItem('adminToken', 'ok'); localStorage.setItem('adminTime', Date.now().toString());
+            g('login').style.display = 'none'; g('admin').style.display = 'flex';
+            log('Admin girisi yapildi');
         }
-
-        function loadAnnouncements() {
-            const announcements = JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY));
-            const tbody = document.getElementById('announcementsList');
-
-            if (announcements.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500 py-8">Duyuru yok</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = announcements.map(ann => `
-                <tr>
-                    <td><strong>${ann.title}</strong></td>
-                    <td><span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs">${ann.category}</span></td>
-                    <td>${ann.date}</td>
-                    <td>
-                        <button onclick="deleteAnnouncement(${ann.id})" class="btn-danger">Sil</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function deleteAnnouncement(id) {
-            if (confirm('Bu duyuruyu silmek istediğinize emin misiniz?')) {
-                let announcements = JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY));
-                announcements = announcements.filter(a => a.id !== id);
-                localStorage.setItem(ANNOUNCEMENTS_KEY, JSON.stringify(announcements));
-
-                addActivity('Duyuru silindi');
-                loadAnnouncements();
-                updateDashboard();
-                showToast('Duyuru silindi!', 'success');
-                syncToCloudflare();
-            }
-        }
-
-        // ===== PROJECTS MANAGEMENT =====
-        function openProjectModal() {
-            document.getElementById('projectModal').classList.add('active');
-        }
-
-        function closeProjectModal() {
-            document.getElementById('projectModal').classList.remove('active');
-            document.getElementById('projectName').value = '';
-            document.getElementById('projectDescription').value = '';
-            document.getElementById('projectVersion').value = '';
-            document.getElementById('projectCategory').value = '';
-            document.getElementById('projectStatus').value = 'release';
-            document.getElementById('projectLink').value = '';
-            document.getElementById('projectIcon').value = '';
-        }
-
-        function addProject() {
-            const name = document.getElementById('projectName').value;
-            const description = document.getElementById('projectDescription').value;
-            const version = document.getElementById('projectVersion').value;
-            const category = document.getElementById('projectCategory').value;
-            const status = document.getElementById('projectStatus').value;
-            const link = document.getElementById('projectLink').value;
-            const icon = document.getElementById('projectIcon').value;
-
-            if (!name || !description) {
-                alert('Lütfen en az proje adı ve açıklama girin!');
-                return;
-            }
-
-            const projects = JSON.parse(localStorage.getItem(PROJECTS_KEY));
-            const project = {
-                id: Date.now(),
-                name,
-                description,
-                version: version || 'v1.0',
-                category: category || 'Genel',
-                status,
-                link: link || '',
-                icon: icon || '📦',
-                type: 'project',
-                createdAt: new Date().toISOString()
-            };
-
-            projects.push(project);
-            localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
-
-            addActivity(`Yeni proje eklendi: ${name}`);
-            loadProjects();
-            updateDashboard();
-            closeProjectModal();
-            showToast('Proje eklendi!', 'success');
-            
-            // Sync to Cloudflare
-            syncToCloudflare();
-        }
-
-        function loadProjects() {
-            const projects = JSON.parse(localStorage.getItem(PROJECTS_KEY));
-            const tbody = document.getElementById('projectsList');
-
-            if (projects.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-8">Proje yok</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = projects.map(project => `
-                <tr>
-                    <td><strong>${project.name}</strong></td>
-                    <td>${project.version}</td>
-                    <td><span class="px-3 py-1 bg-${project.status === 'release' ? 'green' : project.status === 'beta' ? 'yellow' : 'purple'}-500/20 text-${project.status === 'release' ? 'green' : project.status === 'beta' ? 'yellow' : 'purple'}-400 rounded-full text-xs">${project.status}</span></td>
-                    <td>${project.category}</td>
-                    <td>
-                        <button onclick="deleteProject(${project.id})" class="btn-danger">Sil</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function deleteProject(id) {
-            if (confirm('Bu projeyi silmek istediğinize emin misiniz?')) {
-                let projects = JSON.parse(localStorage.getItem(PROJECTS_KEY));
-                projects = projects.filter(p => p.id !== id);
-                localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
-
-                addActivity('Proje silindi');
-                loadProjects();
-                updateDashboard();
-                showToast('Proje silindi!', 'success');
-                syncToCloudflare();
-            }
-        }
-
-        // ===== DOWNLOADS MANAGEMENT =====
-        function openDownloadModal() {
-            document.getElementById('downloadModal').classList.add('active');
-        }
-
-        function closeDownloadModal() {
-            document.getElementById('downloadModal').classList.remove('active');
-            document.getElementById('downloadName').value = '';
-            document.getElementById('downloadVersion').value = '';
-            document.getElementById('downloadType').value = 'modpack';
-            document.getElementById('downloadLink').value = '';
-        }
-
-        function addDownload() {
-            const name = document.getElementById('downloadName').value;
-            const version = document.getElementById('downloadVersion').value;
-            const type = document.getElementById('downloadType').value;
-            const link = document.getElementById('downloadLink').value;
-
-            if (!name || !link) {
-                alert('Lütfen en az isim ve link girin!');
-                return;
-            }
-
-            const downloads = JSON.parse(localStorage.getItem(DOWNLOADS_KEY));
-            const download = {
-                id: Date.now(),
-                name,
-                version: version || '1.0',
-                type,
-                link,
-                createdAt: new Date().toISOString()
-            };
-
-            downloads.push(download);
-            localStorage.setItem(DOWNLOADS_KEY, JSON.stringify(downloads));
-
-            addActivity(`Yeni indirme eklendi: ${name}`);
-            loadDownloads();
-            updateDashboard();
-            closeDownloadModal();
-            showToast('İndirme eklendi!', 'success');
-            syncToCloudflare();
-        }
-
-        function loadDownloads() {
-            const downloads = JSON.parse(localStorage.getItem(DOWNLOADS_KEY));
-            const tbody = document.getElementById('downloadsList');
-
-            if (downloads.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-8">İndirme yok</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = downloads.map(dl => `
-                <tr>
-                    <td><strong>${dl.name}</strong></td>
-                    <td>${dl.version}</td>
-                    <td>${dl.type}</td>
-                    <td><a href="${dl.link}" target="_blank" class="text-blue-400 hover:underline">Link</a></td>
-                    <td>
-                        <button onclick="deleteDownload(${dl.id})" class="btn-danger">Sil</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function deleteDownload(id) {
-            if (confirm('Bu indirmeyi silmek istediğinize emin misiniz?')) {
-                let downloads = JSON.parse(localStorage.getItem(DOWNLOADS_KEY));
-                downloads = downloads.filter(d => d.id !== id);
-                localStorage.setItem(DOWNLOADS_KEY, JSON.stringify(downloads));
-
-                addActivity('İndirme silindi');
-                loadDownloads();
-                updateDashboard();
-                showToast('İndirme silindi!', 'success');
-                syncToCloudflare();
-            }
-        }
-
-        // ===== CMS MANAGEMENT =====
-        function loadCMSContent() {
-            const cms = JSON.parse(localStorage.getItem(CMS_KEY));
-            
-            if (cms.hero) {
-                document.getElementById('heroBadge').value = cms.hero.badge || '';
-                document.getElementById('heroTitle').value = cms.hero.title || '';
-                document.getElementById('heroSubtitle').value = cms.hero.subtitle || '';
-            }
-            
-            if (cms.footer) {
-                document.getElementById('footerCompany').value = cms.footer.company || '';
-                document.getElementById('footerCopyright').value = cms.footer.copyright || '';
-            }
-        }
-
-        function saveCMSHero() {
-            const cms = JSON.parse(localStorage.getItem(CMS_KEY));
-            cms.hero = {
-                badge: document.getElementById('heroBadge').value,
-                title: document.getElementById('heroTitle').value,
-                subtitle: document.getElementById('heroSubtitle').value
-            };
-            localStorage.setItem(CMS_KEY, JSON.stringify(cms));
-            addActivity('Hero bölümü güncellendi');
-            showToast('Hero kaydedildi!', 'success');
-            syncToCloudflare();
-        }
-
-        function saveCMSFooter() {
-            const cms = JSON.parse(localStorage.getItem(CMS_KEY));
-            cms.footer = {
-                company: document.getElementById('footerCompany').value,
-                copyright: document.getElementById('footerCopyright').value
-            };
-            localStorage.setItem(CMS_KEY, JSON.stringify(cms));
-            addActivity('Footer güncellendi');
-            showToast('Footer kaydedildi!', 'success');
-            syncToCloudflare();
-        }
-
-        // ===== COOKIE MANAGEMENT =====
-        function loadCookieSettings() {
-            const settings = JSON.parse(localStorage.getItem(COOKIES_KEY));
-            document.getElementById('cookieTitle').value = settings.title || '';
-            document.getElementById('cookieDescription').value = settings.description || '';
-            document.getElementById('cookieAcceptText').value = settings.acceptText || '';
-
-            const stats = JSON.parse(localStorage.getItem(COOKIE_STATS_KEY));
-            document.getElementById('cookie-accepted').textContent = stats.accepted;
-            document.getElementById('cookie-rejected').textContent = stats.rejected;
-        }
-
-        function saveCookieSettings() {
-            const settings = {
-                title: document.getElementById('cookieTitle').value,
-                description: document.getElementById('cookieDescription').value,
-                acceptText: document.getElementById('cookieAcceptText').value
-            };
-            localStorage.setItem(COOKIES_KEY, JSON.stringify(settings));
-            addActivity('Çerez ayarları güncellendi');
-            showToast('Çerez ayarları kaydedildi!', 'success');
-            syncToCloudflare();
-        }
-
-        function recordCookieAccept() {
-            const stats = JSON.parse(localStorage.getItem(COOKIE_STATS_KEY));
-            stats.accepted++;
-            localStorage.setItem(COOKIE_STATS_KEY, JSON.stringify(stats));
-            loadCookieSettings();
-            addActivity('Çerez kabul edildi');
-        }
-
-        function recordCookieReject() {
-            const stats = JSON.parse(localStorage.getItem(COOKIE_STATS_KEY));
-            stats.rejected++;
-            localStorage.setItem(COOKIE_STATS_KEY, JSON.stringify(stats));
-            loadCookieSettings();
-            addActivity('Çerez reddedildi');
-        }
-
-        function resetCookieStats() {
-            if (confirm('Çerez istatistiklerini sıfırlamak istediğinize emin misiniz?')) {
-                localStorage.setItem(COOKIE_STATS_KEY, JSON.stringify({ accepted: 0, rejected: 0 }));
-                loadCookieSettings();
-                addActivity('Çerez istatistikleri sıfırlandı');
-                showToast('İstatistikler sıfırlandı!', 'success');
-            }
-        }
-
-        // ===== LOGIN SYSTEM =====
-        const CORRECT_USERNAME = 'arcprlua';
-        const CORRECT_PASSWORD = '9PsO!J7qI4zSmmnfMdx4%wJqR3N85SYyvh';
-
-        function attemptLogin() {
-            const username = document.getElementById('loginUsername').value;
-            const password = document.getElementById('loginPassword').value;
-            const error = document.getElementById('loginError');
-
-            if (username !== CORRECT_USERNAME || password !== CORRECT_PASSWORD) {
-                error.textContent = 'Hatalı kullanıcı adı veya şifre!';
-                error.classList.remove('hidden');
-                return;
-            }
-
-            // Successful login
-            localStorage.setItem('adminToken', 'authenticated');
-            localStorage.setItem('adminLoginTime', Date.now());
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('adminPanel').style.display = 'block';
-        }
-
-        // Check if already logged in
         function checkAuth() {
-            const token = localStorage.getItem('adminToken');
-            const loginTime = localStorage.getItem('adminLoginTime');
-            
-            // Session expires after 4 hours
-            if (token && loginTime && (Date.now() - parseInt(loginTime)) < 14400000) {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'block';
-            }
+            var t = localStorage.getItem('adminToken'), d = localStorage.getItem('adminTime');
+            if (t && d && (Date.now() - parseInt(d)) < 14400000) { g('login').style.display = 'none'; g('admin').style.display = 'flex'; }
+        }
+        function doLogout() { if (!confirm('Cikis?')) return; localStorage.removeItem('adminToken'); localStorage.removeItem('adminTime'); location.reload(); }
+
+        function go(tab, el) {
+            document.querySelectorAll('.tab-c').forEach(function(t) { t.classList.remove('active'); });
+            document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+            var t = g('t-' + tab); if (t) t.classList.add('active');
+            if (el) el.classList.add('active');
         }
 
-        // Run auth check on page load
+        function openModal(type, id) {
+            editId[type] = id || null;
+            var m = g('m-' + type); if (m) m.classList.add('active');
+            var title = g('m-' + type + '-title');
+            if (id) {
+                if (title) title.textContent = 'Duzenle';
+                if (type === 'ann') { var d = ls(K.ann).find(function(x) { return x.id === id; }); if (d) { g('annTitle').value = d.title; g('annContent').value = d.content; g('annCat').value = d.category; } }
+                if (type === 'proj') { var d = ls(K.proj).find(function(x) { return x.id === id; }); if (d) { g('projName').value = d.name; g('projDesc').value = d.description; g('projVer').value = d.version; g('projCat').value = d.category; g('projStatus').value = d.status; g('projLink').value = d.link || ''; g('projIcon').value = d.icon || ''; } }
+                if (type === 'dl') { var d = ls(K.dl).find(function(x) { return x.id === id; }); if (d) { g('dlName').value = d.name; g('dlVer').value = d.version; g('dlType').value = d.type; g('dlLink').value = d.link || ''; } }
+            } else { if (title) title.textContent = type === 'ann' ? 'Yeni Duyuru' : type === 'proj' ? 'Yeni Proje' : 'Yeni Indirme'; }
+        }
+        function closeModal(type) {
+            var m = g('m-' + type); if (m) m.classList.remove('active');
+            editId[type] = null;
+            if (type === 'ann') { g('annTitle').value = ''; g('annContent').value = ''; g('annCat').value = 'bilgi'; }
+            if (type === 'proj') { g('projName').value = ''; g('projDesc').value = ''; g('projVer').value = ''; g('projCat').value = ''; g('projStatus').value = 'release'; g('projLink').value = ''; g('projIcon').value = ''; }
+            if (type === 'dl') { g('dlName').value = ''; g('dlVer').value = ''; g('dlType').value = 'modpack'; g('dlLink').value = ''; }
+        }
+
+        function saveAnn() {
+            var t = g('annTitle').value, c = g('annContent').value, cat = g('annCat').value;
+            if (!t || !c) { alert('Alanlari doldurun!'); return; }
+            var arr = ls(K.ann);
+            if (editId.ann) { var i = arr.findIndex(function(x) { return x.id === editId.ann; }); if (i > -1) { arr[i].title = t; arr[i].content = c; arr[i].category = cat; log('Duyuru duzenlendi: ' + t); } }
+            else { arr.push({ id: Date.now(), title: t, content: c, category: cat, date: new Date().toLocaleDateString('tr-TR'), createdAt: new Date().toISOString() }); log('Duyuru eklendi: ' + t); }
+            ls(K.ann, arr); loadAnn(); stats(); closeModal('ann'); sync();
+        }
+        function delAnn(id) { if (!confirm('Sil?')) return; ls(K.ann, ls(K.ann).filter(function(x) { return x.id !== id; })); log('Duyuru silindi'); loadAnn(); stats(); sync(); }
+        function loadAnn() {
+            var arr = ls(K.ann), el = g('annList'); if (!el) return;
+            if (!arr.length) { el.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500 py-6">Bos</td></tr>'; return; }
+            el.innerHTML = arr.map(function(a) { return '<tr><td class="font-semibold">' + a.title + '</td><td><span class="px-2 py-0.5 bg-blue-500/15 text-blue-400 rounded text-[10px] font-bold">' + a.category + '</span></td><td class="text-gray-500 text-xs">' + a.date + '</td><td class="flex gap-1"><button onclick="openModal(\'ann\',' + a.id + ')" class="btn-s">Duzenle</button><button onclick="delAnn(' + a.id + ')" class="btn-d">Sil</button></td></tr>'; }).join('');
+        }
+
+        function saveProj() {
+            var n = g('projName').value, d = g('projDesc').value, v = g('projVer').value, c = g('projCat').value, s = g('projStatus').value, l = g('projLink').value, ic = g('projIcon').value;
+            if (!n || !d) { alert('Ad ve aciklama girin!'); return; }
+            var arr = ls(K.proj);
+            if (editId.proj) { var i = arr.findIndex(function(x) { return x.id === editId.proj; }); if (i > -1) { arr[i] = Object.assign(arr[i], { name: n, description: d, version: v || 'v1.0', category: c || 'Genel', status: s, link: l, icon: ic || '' }); log('Proje duzenlendi: ' + n); } }
+            else { arr.push({ id: Date.now(), name: n, description: d, version: v || 'v1.0', category: c || 'Genel', status: s, link: l, icon: ic || '', type: 'project', createdAt: new Date().toISOString() }); log('Proje eklendi: ' + n); }
+            ls(K.proj, arr); loadProj(); stats(); closeModal('proj'); sync();
+        }
+        function delProj(id) { if (!confirm('Sil?')) return; ls(K.proj, ls(K.proj).filter(function(x) { return x.id !== id; })); log('Proje silindi'); loadProj(); stats(); sync(); }
+        function loadProj() {
+            var arr = ls(K.proj), el = g('projList'); if (!el) return;
+            if (!arr.length) { el.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-6">Bos</td></tr>'; return; }
+            el.innerHTML = arr.map(function(p) {
+                var sc = p.status === 'release' ? 'text-green-400 bg-green-500/15' : p.status === 'beta' ? 'text-yellow-400 bg-yellow-500/15' : 'text-purple-400 bg-purple-500/15';
+                return '<tr><td class="font-semibold">' + p.name + '</td><td class="text-gray-500">' + p.version + '</td><td><span class="px-2 py-0.5 rounded text-[10px] font-bold ' + sc + '">' + p.status + '</span></td><td class="text-gray-500">' + p.category + '</td><td class="flex gap-1"><button onclick="openModal(\'proj\',' + p.id + ')" class="btn-s">Duzenle</button><button onclick="delProj(' + p.id + ')" class="btn-d">Sil</button></td></tr>';
+            }).join('');
+        }
+
+        function saveDl() {
+            var n = g('dlName').value, v = g('dlVer').value, t = g('dlType').value, l = g('dlLink').value;
+            if (!n || !l) { alert('Isim ve link girin!'); return; }
+            var arr = ls(K.dl);
+            if (editId.dl) { var i = arr.findIndex(function(x) { return x.id === editId.dl; }); if (i > -1) { arr[i] = Object.assign(arr[i], { name: n, version: v || '1.0', type: t, link: l }); log('Indirme duzenlendi: ' + n); } }
+            else { arr.push({ id: Date.now(), name: n, version: v || '1.0', type: t, link: l, createdAt: new Date().toISOString() }); log('Indirme eklendi: ' + n); }
+            ls(K.dl, arr); loadDl(); stats(); closeModal('dl'); sync();
+        }
+        function delDl(id) { if (!confirm('Sil?')) return; ls(K.dl, ls(K.dl).filter(function(x) { return x.id !== id; })); log('Indirme silindi'); loadDl(); stats(); sync(); }
+        function loadDl() {
+            var arr = ls(K.dl), el = g('dlList'); if (!el) return;
+            if (!arr.length) { el.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-6">Bos</td></tr>'; return; }
+            el.innerHTML = arr.map(function(d) { return '<tr><td class="font-semibold">' + d.name + '</td><td class="text-gray-500">' + d.version + '</td><td class="text-gray-500">' + d.type + '</td><td><a href="' + d.link + '" target="_blank" class="text-blue-400 hover:underline text-xs">Ac</a></td><td class="flex gap-1"><button onclick="openModal(\'dl\',' + d.id + ')" class="btn-s">Duzenle</button><button onclick="delDl(' + d.id + ')" class="btn-d">Sil</button></td></tr>'; }).join('');
+        }
+
+        function loadCMS() {
+            var d = ls(K.cms);
+            if (d.hero) { g('cmsBadge').value = d.hero.badge || ''; g('cmsTitle').value = d.hero.title || ''; g('cmsSub').value = d.hero.subtitle || ''; }
+        }
+        function saveCMS() {
+            var d = ls(K.cms);
+            d.hero = { badge: g('cmsBadge').value, title: g('cmsTitle').value, subtitle: g('cmsSub').value };
+            ls(K.cms, d); log('CMS guncellendi'); toast('Kaydedildi!', 'ok'); sync();
+        }
+
+        function loadCK() {
+            var d = ls(K.ck);
+            g('ckTitle').value = d.title || ''; g('ckDesc').value = d.description || ''; g('ckBtn').value = d.acceptText || '';
+        }
+        function saveCK() {
+            ls(K.ck, { title: g('ckTitle').value, description: g('ckDesc').value, acceptText: g('ckBtn').value });
+            log('Cerez ayarlari guncellendi'); toast('Kaydedildi!', 'ok'); sync();
+        }
+
+        function log(msg) {
+            var arr = ls(K.act); arr.unshift({ message: msg, time: new Date().toLocaleString('tr-TR') });
+            if (arr.length > 50) arr.pop(); ls(K.act, arr); loadAct();
+        }
+        function loadAct() {
+            var arr = ls(K.act), el = g('actList'); if (!el) return;
+            if (!arr.length) { el.innerHTML = '<p class="text-gray-500 text-center py-6 text-sm">Aktivite yok</p>'; return; }
+            el.innerHTML = arr.map(function(a) { return '<div class="glass p-3 flex items-center justify-between"><span class="text-sm font-semibold">' + a.message + '</span><span class="text-[10px] text-gray-500 flex-shrink-0 ml-4">' + a.time + '</span></div>'; }).join('');
+        }
+        function clearAct() { if (!confirm('Temizle?')) return; ls(K.act, []); loadAct(); }
+
+        function stats() {
+            var sa = g('s-ann'), sp = g('s-proj'), sd = g('s-dl'), sc = g('s-ck');
+            if (sa) sa.textContent = ls(K.ann).length;
+            if (sp) sp.textContent = ls(K.proj).length;
+            if (sd) sd.textContent = ls(K.dl).length;
+            if (sc) sc.textContent = (ls(K.stats).accepted || 0);
+        }
+
+        function toast(msg, type) {
+            var t = document.createElement('div');
+            t.style.cssText = 'position:fixed;top:1.5rem;right:1.5rem;z-index:9999;padding:0.75rem 1.25rem;border-radius:0.75rem;font-size:0.8rem;font-weight:700;transition:all 0.3s;';
+            t.style.background = type === 'ok' ? '#22c55e' : type === 'err' ? '#ef4444' : '#3b82f6';
+            t.style.color = 'white';
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(function() { t.style.opacity = '0'; t.style.transform = 'translateY(-10px)'; setTimeout(function() { t.remove(); }, 300); }, 3000);
+        }
+
         checkAuth();
-
-        // ===== TAB SWITCHING =====
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            document.getElementById(`tab-${tabName}`).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        // ===== MODAL FUNCTIONS =====
-        function openAnnouncementModal() {
-            document.getElementById('announcementModal').classList.add('active');
-        }
-
-        function closeAnnouncementModal() {
-            document.getElementById('announcementModal').classList.remove('active');
-            document.getElementById('announcementTitle').value = '';
-            document.getElementById('announcementContent').value = '';
-            document.getElementById('announcementCategory').value = 'bilgi';
-        }
-
-        // ===== ACTIVITY LOG =====
-        function addActivity(message) {
-            const activities = JSON.parse(localStorage.getItem(ACTIVITY_KEY));
-            activities.unshift({
-                message,
-                timestamp: new Date().toLocaleString('tr-TR')
-            });
-            
-            if (activities.length > 50) activities.pop();
-            
-            localStorage.setItem(ACTIVITY_KEY, JSON.stringify(activities));
-            loadActivity();
-        }
-
-        function loadActivity() {
-            const activities = JSON.parse(localStorage.getItem(ACTIVITY_KEY));
-            const container = document.getElementById('activityLog');
-
-            if (activities.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center py-8">Aktivite yok</p>';
-                return;
-            }
-
-            container.innerHTML = activities.map(act => `
-                <div class="glass-card p-4">
-                    <p class="font-bold">${act.message}</p>
-                    <p class="text-xs text-gray-500 mt-1">${act.timestamp}</p>
-                </div>
-            `).join('');
-        }
-
-        // ===== DASHBOARD UPDATE =====
-        function updateDashboard() {
-            const announcements = JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY));
-            const projects = JSON.parse(localStorage.getItem(PROJECTS_KEY));
-            const downloads = JSON.parse(localStorage.getItem(DOWNLOADS_KEY));
-            const cookieStats = JSON.parse(localStorage.getItem(COOKIE_STATS_KEY));
-
-            document.getElementById('stat-announcements').textContent = announcements.length;
-            document.getElementById('stat-projects').textContent = projects.length;
-            document.getElementById('stat-downloads').textContent = downloads.length;
-            document.getElementById('stat-cookies').textContent = cookieStats.accepted;
-        }
-
-        // ===== TOAST NOTIFICATIONS =====
-        function showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            toast.className = `fixed top-6 right-6 z-50 px-6 py-4 rounded-xl font-bold ${
-                type === 'success' ? 'bg-green-500' : 
-                type === 'error' ? 'bg-red-500' : 'bg-blue-500'
-            } text-white shadow-2xl`;
-            toast.textContent = message;
-            document.body.appendChild(toast);
-
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(-20px)';
-                toast.style.transition = 'all 0.3s';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        // ===== LOGOUT =====
-        function logout() {
-            if (confirm('Çıkış yapmak istediğinize emin misiniz?')) {
-                localStorage.removeItem('adminToken');
-                localStorage.removeItem('adminLoginTime');
-                window.location.reload();
-            }
-        }
-
-        // ===== INIT ON LOAD =====
-        window.addEventListener('DOMContentLoaded', () => {
-            initializeData();
-            updateDashboard();
-            loadAnnouncements();
-            loadProjects();
-            loadDownloads();
-            loadCMSContent();
-            loadCookieSettings();
-            loadActivity();
-        });
+        window.addEventListener('DOMContentLoaded', function() { init(); stats(); loadAnn(); loadProj(); loadDl(); loadCMS(); loadCK(); loadAct(); });
     </script>
 </body>
 </html>
