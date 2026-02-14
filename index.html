@@ -864,8 +864,8 @@
                     '<div class="flex flex-col lg:flex-row gap-16 items-center relative z-10">' +
                         '<div class="relative flex-shrink-0">' +
                             '<div class="absolute inset-0 bg-orange-500 blur-3xl opacity-30"></div>' +
-                            '<div class="relative w-44 h-44 md:w-56 md:h-56 bg-gradient-to-br from-orange-600 to-yellow-500 rounded-[3rem] shadow-2xl animate-float border-4 border-orange-500/30 flex items-center justify-center overflow-hidden">' +
-                                '<img src="' + (s.logo || '') + '" style="width: 100%; height: 100%; object-fit: cover; object-position: center; transform: scale(1.15);" alt="' + s.name + ' Logo" onerror="this.parentElement.innerHTML=\'<span class=\\"text-7xl font-black\\">' + (s.name[0] || 'S') + '</span>\'">' +
+                            '<div class="relative w-44 h-44 md:w-56 md:h-56 bg-gradient-to-br from-orange-600 to-yellow-500 rounded-[3rem] shadow-2xl animate-float border-4 border-orange-500/30 overflow-hidden" style="background-image: url(\'' + (s.logo || '') + '\'); background-size: cover; background-position: center; background-repeat: no-repeat;">' +
+                                (s.logo ? '' : '<div class="w-full h-full flex items-center justify-center"><span class="text-7xl font-black">' + (s.name[0] || 'S') + '</span></div>') +
                             '</div>' +
                         '</div>' +
                         '<div class="flex-1 space-y-10 text-center lg:text-left">' +
