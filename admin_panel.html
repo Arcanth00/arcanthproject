@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arcanth Admin Panel</title>
     <link rel="icon" type="image/png" href="logo.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{dark:{900:'#020408',800:'#0a0f1a',700:'#111827',600:'#1f2937'}}}}}</script>
     <style>
@@ -44,7 +49,6 @@
     </style>
 </head>
 <body>
-    <!-- LOGIN -->
     <div id="login" class="fixed inset-0 z-[9999] flex items-center justify-center" style="background:#020408">
         <div class="glass p-10 max-w-sm w-full mx-4">
             <div class="text-center mb-8">
@@ -55,17 +59,16 @@
                 <p class="text-gray-500 text-xs mt-1">Guvenli giris yapiniz</p>
             </div>
             <div class="space-y-3">
-                <input type="text" id="loginUser" class="input-f" placeholder="Kullanici adi">
-                <input type="password" id="loginPass" class="input-f" placeholder="Sifre" onkeydown="if(event.key==='Enter')doLogin()">
-                <button onclick="doLogin()" class="btn-p w-full py-3">Giris Yap</button>
-                <p id="loginErr" class="text-red-500 text-xs text-center hidden"></p>
+                <button onclick="doGoogleLogin()" class="btn-p w-full py-3 flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/></svg>
+                    Google ile Giriş Yap
+                </button>
+                <p id="loginErr" class="text-red-500 text-xs text-center hidden font-bold"></p>
             </div>
         </div>
     </div>
 
-    <!-- ADMIN -->
     <div id="admin" style="display:none" class="flex min-h-screen">
-        <!-- Sidebar -->
         <aside class="sidebar w-64 fixed inset-y-0 left-0 flex flex-col z-50">
             <div class="p-6 border-b border-white/5">
                 <div class="flex items-center gap-3">
@@ -90,13 +93,13 @@
                     <span class="sync-dot" id="sync-dot"></span>
                     <span class="text-xs text-gray-500" id="sync-text">Hazir</span>
                 </div>
+                <div class="mb-2 px-1 text-[10px] text-gray-500 font-mono overflow-hidden text-ellipsis whitespace-nowrap" id="current-user-uid"></div>
                 <button onclick="doLogout()" class="w-full text-left nav-item text-red-400 hover:text-red-300 hover:bg-red-500/10">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>Cikis Yap
                 </button>
             </div>
         </aside>
 
-        <!-- Mobile Nav -->
         <div class="mobile-nav hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0a0f1a] border-t border-white/5 px-2 py-2 gap-1 overflow-x-auto">
             <button onclick="go('dashboard')" class="flex-shrink-0 px-3 py-2 rounded-lg text-[10px] font-bold uppercase text-gray-400 hover:bg-white/5">Dash</button>
             <button onclick="go('announcements')" class="flex-shrink-0 px-3 py-2 rounded-lg text-[10px] font-bold uppercase text-gray-400 hover:bg-white/5">Duyuru</button>
@@ -105,9 +108,7 @@
             <button onclick="go('cms')" class="flex-shrink-0 px-3 py-2 rounded-lg text-[10px] font-bold uppercase text-gray-400 hover:bg-white/5">CMS</button>
         </div>
 
-        <!-- Content -->
         <div class="flex-1 lg:ml-64 p-6 pb-20 lg:pb-6">
-            <!-- Dashboard -->
             <div id="t-dashboard" class="tab-c active space-y-6">
                 <h2 class="text-2xl font-black">Dashboard</h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -130,25 +131,21 @@
                 </div>
             </div>
 
-            <!-- Announcements -->
             <div id="t-announcements" class="tab-c space-y-6">
                 <div class="flex items-center justify-between"><h2 class="text-2xl font-black">Duyurular</h2><button onclick="openModal('ann')" class="btn-p">+ Yeni</button></div>
                 <div class="glass p-4 overflow-x-auto"><table><thead><tr><th>Baslik</th><th>Kategori</th><th>Tarih</th><th>Islem</th></tr></thead><tbody id="annList"></tbody></table></div>
             </div>
 
-            <!-- Projects -->
             <div id="t-projects" class="tab-c space-y-6">
                 <div class="flex items-center justify-between"><h2 class="text-2xl font-black">Projeler</h2><button onclick="openModal('proj')" class="btn-p">+ Yeni</button></div>
                 <div class="glass p-4 overflow-x-auto"><table><thead><tr><th>Ad</th><th>Versiyon</th><th>Durum</th><th>Kategori</th><th>Islem</th></tr></thead><tbody id="projList"></tbody></table></div>
             </div>
 
-            <!-- Downloads -->
             <div id="t-downloads" class="tab-c space-y-6">
                 <div class="flex items-center justify-between"><h2 class="text-2xl font-black">Indirmeler</h2><button onclick="openModal('dl')" class="btn-p">+ Yeni</button></div>
                 <div class="glass p-4 overflow-x-auto"><table><thead><tr><th>Isim</th><th>Versiyon</th><th>Tip</th><th>Link</th><th>Islem</th></tr></thead><tbody id="dlList"></tbody></table></div>
             </div>
 
-            <!-- CMS -->
             <div id="t-cms" class="tab-c space-y-6">
                 <h2 class="text-2xl font-black">CMS Icerik</h2>
                 <div class="glass p-6 space-y-4">
@@ -160,7 +157,6 @@
                 </div>
             </div>
 
-            <!-- Cookies -->
             <div id="t-cookies" class="tab-c space-y-6">
                 <h2 class="text-2xl font-black">Cerez Ayarlari</h2>
                 <div class="glass p-6 space-y-4">
@@ -171,7 +167,6 @@
                 </div>
             </div>
 
-            <!-- Activity -->
             <div id="t-activity" class="tab-c space-y-6">
                 <div class="flex items-center justify-between"><h2 class="text-2xl font-black">Aktivite</h2><button onclick="clearAct()" class="btn-d">Temizle</button></div>
                 <div id="actList" class="space-y-2"></div>
@@ -179,7 +174,6 @@
         </div>
     </div>
 
-    <!-- Announcement Modal -->
     <div id="m-ann" class="modal">
         <div class="modal-box">
             <h3 class="text-xl font-black mb-4" id="m-ann-title">Yeni Duyuru</h3>
@@ -192,7 +186,6 @@
         </div>
     </div>
 
-    <!-- Project Modal -->
     <div id="m-proj" class="modal">
         <div class="modal-box">
             <h3 class="text-xl font-black mb-4" id="m-proj-title">Yeni Proje</h3>
@@ -211,7 +204,6 @@
         </div>
     </div>
 
-    <!-- Download Modal -->
     <div id="m-dl" class="modal">
         <div class="modal-box">
             <h3 class="text-xl font-black mb-4" id="m-dl-title">Yeni Indirme</h3>
@@ -228,14 +220,95 @@
     </div>
 
     <script>
+        // --- FIREBASE CONFIGURATION START ---
+        // Lutfen kendi Firebase Konsolunuzdan aldiginiz config degerlerini buraya girin.
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        // --- ADMIN UID LIST ---
+        // Sadece buradaki UID'lere sahip hesaplar giris yapabilir.
+        const allowedAdmins = ["PUT_UID_HERE"]; 
+        // --- CONFIG END ---
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const auth = firebase.auth();
+        const provider = new firebase.auth.GoogleAuthProvider();
+
         var K = { ann: 'admin_announcements', proj: 'admin_projects', dl: 'admin_downloads', cms: 'admin_cms_content', ck: 'admin_cookie_settings', stats: 'admin_cookie_stats', act: 'admin_activity' };
         var API = 'https://sweet-resonance-7779.omerhaktan5454.workers.dev/api/data';
-        var AUTH = 'Bearer arcprlua_secret_key_2026';
-        var USER = 'arcprlua', PASS = '9PsO!J7qI4zSmmnfMdx4%wJqR3N85SYyvh';
+        var AUTH_TOKEN = 'Bearer arcprlua_secret_key_2026';
         var editId = { ann: null, proj: null, dl: null };
 
         function g(id) { return document.getElementById(id); }
         function ls(k, v) { if (v !== undefined) { localStorage.setItem(k, JSON.stringify(v)); return v; } return JSON.parse(localStorage.getItem(k) || (k === K.cms ? '{"hero":{},"footer":{}}' : k === K.ck ? '{}' : k === K.stats ? '{"accepted":0,"rejected":0}' : '[]')); }
+
+        // --- AUTH LOGIC ---
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in, check if allowed
+                if (allowedAdmins.includes(user.uid)) {
+                    // Authorized
+                    g('login').style.display = 'none';
+                    g('admin').style.display = 'flex';
+                    g('loginErr').classList.add('hidden');
+                    
+                    var uidDisplay = g('current-user-uid');
+                    if(uidDisplay) uidDisplay.textContent = user.uid;
+
+                    log('Admin girisi: ' + user.email);
+                    
+                    // Initialize Data Only When Logged In
+                    init(); 
+                    stats(); 
+                    loadAnn(); 
+                    loadProj(); 
+                    loadDl(); 
+                    loadCMS(); 
+                    loadCK(); 
+                    loadAct();
+                } else {
+                    // User exists but NOT allowed
+                    console.warn("Unauthorized UID:", user.uid);
+                    auth.signOut().then(() => {
+                        g('loginErr').textContent = "Yetkisiz hesap (" + user.email + "). Erişim reddedildi.";
+                        g('loginErr').classList.remove('hidden');
+                        g('login').style.display = 'flex';
+                        g('admin').style.display = 'none';
+                    });
+                }
+            } else {
+                // No user
+                g('login').style.display = 'flex';
+                g('admin').style.display = 'none';
+            }
+        });
+
+        function doGoogleLogin() {
+            g('loginErr').classList.add('hidden');
+            auth.signInWithPopup(provider).catch((error) => {
+                console.error("Login Error:", error);
+                g('loginErr').textContent = "Hata: " + error.message;
+                g('loginErr').classList.remove('hidden');
+            });
+        }
+
+        function doLogout() {
+            if (!confirm('Cikis?')) return;
+            auth.signOut().then(() => {
+                location.reload();
+            });
+        }
+
+        // --- APP LOGIC ---
 
         function init() {
             [K.ann, K.proj, K.dl].forEach(function(k) { if (!localStorage.getItem(k)) ls(k, []); });
@@ -250,7 +323,7 @@
             if (dot) { dot.className = 'sync-dot sync-loading'; } if (txt) txt.textContent = 'Kaydediliyor...';
             var data = { announcements: ls(K.ann), projects: ls(K.proj), downloads: ls(K.dl), cms_content: ls(K.cms), cookie_settings: ls(K.ck) };
             try {
-                var r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': AUTH }, body: JSON.stringify(data) });
+                var r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': AUTH_TOKEN }, body: JSON.stringify(data) });
                 if (!r.ok) throw new Error();
                 if (dot) dot.className = 'sync-dot sync-ok'; if (txt) txt.textContent = 'Kaydedildi';
                 toast('Kaydedildi! Herkes gorebilir.', 'ok');
@@ -259,19 +332,6 @@
                 toast('Kaydetme hatasi!', 'err');
             }
         }
-
-        function doLogin() {
-            var u = g('loginUser').value, p = g('loginPass').value, e = g('loginErr');
-            if (u !== USER || p !== PASS) { e.textContent = 'Hatali giris!'; e.classList.remove('hidden'); return; }
-            localStorage.setItem('adminToken', 'ok'); localStorage.setItem('adminTime', Date.now().toString());
-            g('login').style.display = 'none'; g('admin').style.display = 'flex';
-            log('Admin girisi yapildi');
-        }
-        function checkAuth() {
-            var t = localStorage.getItem('adminToken'), d = localStorage.getItem('adminTime');
-            if (t && d && (Date.now() - parseInt(d)) < 14400000) { g('login').style.display = 'none'; g('admin').style.display = 'flex'; }
-        }
-        function doLogout() { if (!confirm('Cikis?')) return; localStorage.removeItem('adminToken'); localStorage.removeItem('adminTime'); location.reload(); }
 
         function go(tab, el) {
             document.querySelectorAll('.tab-c').forEach(function(t) { t.classList.remove('active'); });
@@ -395,8 +455,7 @@
             setTimeout(function() { t.style.opacity = '0'; t.style.transform = 'translateY(-10px)'; setTimeout(function() { t.remove(); }, 300); }, 3000);
         }
 
-        checkAuth();
-        window.addEventListener('DOMContentLoaded', function() { init(); stats(); loadAnn(); loadProj(); loadDl(); loadCMS(); loadCK(); loadAct(); });
+        // Removed manual init and checkAuth calls since auth.onAuthStateChanged handles everything
     </script>
 </body>
 </html>
