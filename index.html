@@ -621,7 +621,7 @@
                             </div>
                             <div>
                                 <p class="text-xs font-black uppercase text-blue-500 tracking-widest mb-1">E-POSTA</p>
-                                <p class="text-lg font-black">optiflow892@gmail.com</p>
+                                <p class="text-lg font-black"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="87e8f7f3eee1ebe8f0bfbeb5c7e0eae6eeeba9e4e8ea">[email&#160;protected]</a></p>
                             </div>
                         </div>
                     </div>
@@ -664,7 +664,7 @@
                             <h3 class="text-3xl font-black uppercase italic tracking-tighter">
                                 Mesaj <span class="text-blue-500">Gonder</span>
                             </h3>
-                            <p class="text-gray-400 italic">Formunu doldur, size optiflow892@gmail.com'dan geri donelim</p>
+                            <p class="text-gray-400 italic">Formunu doldur, size <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="523d22263b343e3d256a6b6012353f333b3e7c313d3f">[email&#160;protected]</a>'dan geri donelim</p>
                         </div>
 
                         <form id="contactForm" class="space-y-5" action="https://formspree.io/f/xnnqewqb" method="POST">
@@ -726,7 +726,25 @@
         </div>
     </footer>
 
+    <!-- Firebase Scripts -->
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCnkk6j1CGsi4sNXJ8FA9Gd2B6_VDptVDg",
+            authDomain: "arcanthproject.firebaseapp.com",
+            databaseURL: "https://arcanthproject-default-rtdb.firebaseio.com",
+            projectId: "arcanthproject",
+            storageBucket: "arcanthproject.firebasestorage.app",
+            messagingSenderId: "826341954149",
+            appId: "1:826341954149:web:6429d61a5b40810009ac8c"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+
+        // Ana kod buradan başlıyor
         var ANNOUNCEMENTS_KEY = 'admin_announcements';
         var PROJECTS_KEY = 'admin_projects';
         var DOWNLOADS_KEY = 'admin_downloads';
@@ -745,21 +763,22 @@
             if (data.cookie_settings) localStorage.setItem(COOKIES_KEY, JSON.stringify(data.cookie_settings));
         }
 
-        async function syncWithGitHub() {
-            try {
-                var res = await fetch(GITHUB_DATA + '?t=' + Date.now());
-                if (!res.ok) throw new Error('GitHub fetch failed');
-                var data = await res.json();
-                if (data && (data.projects || data.announcements)) {
-                    applyData(data);
-                    return true;
-                }
-                return false;
-            } catch (e) {
-                console.warn('GitHub sync failed, using localStorage fallback:', e.message);
-                return false;
-            }
+        async function syncWithFirebase() {
+    try {
+        const snapshot = await db.ref('site_data').once('value');
+        const data = snapshot.val();
+        if (data && (data.projects || data.announcements)) {
+            applyData(data);
+            console.log('✅ Firebase verisi yüklendi!');
+            return true;
         }
+        console.warn('Firebase\'de veri yok, localStorage kullanılıyor');
+        return false;
+    } catch (e) {
+        console.error('Firebase sync hatası:', e.message);
+        return false;
+    }
+}
 
         function loadCMSContent() {
             var cms = JSON.parse(localStorage.getItem(CMS_KEY) || '{}');
@@ -1083,21 +1102,10 @@
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
-            await syncWithGitHub();
+    await syncWithFirebase();
 
             loadCMSContent();
             loadAnnouncements();
             loadProjects();
             loadDownloads();
-            loadCookieNotice();
-            initParticles();
-            initScrollAnimations();
-
-            setTimeout(function() {
-                var ls = document.getElementById('loading-screen');
-                if (ls) { ls.classList.add('hidden'); setTimeout(function() { ls.remove(); }, 800); }
-            }, 500);
-        });
-    </script>
-</body>
-</html>
+            loadCooki
