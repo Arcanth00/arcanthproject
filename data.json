@@ -2,20 +2,20 @@
   "announcements": [
     {
       "id": 1738660800000,
-      "title": "Hoş Geldiniz!",
-      "content": "Arcanth Project'e hoş geldiniz. Admin panelden içerik yönetebilirsiniz.",
+      "title": "Hos Geldiniz!",
+      "content": "Arcanth Project'e hos geldiniz. Admin panelden icerik yonetebilirsiniz.",
       "category": "bilgi",
-      "date": "14 Şubat 2026"
+      "date": "14 Subat 2026"
     }
   ],
   "projects": [
     {
       "id": 1,
       "name": "OptiFlow",
-      "description": "Fabric için optimize edilmiş modpack. %40+ FPS artışı.",
+      "description": "Fabric icin optimize edilmis modpack. %40+ FPS artisi.",
       "type": "modpack",
       "status": "release",
-      "icon": "📦",
+      "icon": "",
       "version": "v1.3",
       "link": "https://www.curseforge.com/minecraft/modpacks/optiflow",
       "category": "ModPack"
@@ -23,10 +23,10 @@
     {
       "id": 2,
       "name": "Carbonium",
-      "description": "Karbon temalı materyaller, aletler, silahlar ekleyen mod.",
+      "description": "Karbon temali materyaller, aletler, silahlar ekleyen mod.",
       "type": "mod",
       "status": "beta",
-      "icon": "⚔️",
+      "icon": "",
       "version": "v1.0",
       "link": "https://www.curseforge.com/minecraft/mc-mods/carbonium",
       "category": "Forge Mod"
@@ -43,14 +43,14 @@
   ],
   "cms_content": {
     "hero": {
-      "badge": "Carbonium Beta Yayında!",
-      "title": "YENİ BİR VİZYON",
-      "subtitle": "Sıradanlığı sorgulayan, geleceği bugünden inşa edenlerin kalesi."
+      "badge": "Carbonium Beta Yayinda!",
+      "title": "YENI BIR VIZYON",
+      "subtitle": "Siradanligi sorgulayan, gelecegi bugunden insa edenlerin kalesi."
     }
   },
   "cookie_settings": {
-    "title": "Bu site temel çerezler kullanır",
-    "description": "Deneyiminizi geliştirmek için temel çerezleri kullanıyoruz.",
+    "title": "Bu site temel cerezler kullanir",
+    "description": "Deneyiminizi gelistirmek icin temel cerezleri kullaniyoruz.",
     "acceptText": "ANLADIM"
   }
 }
