@@ -71,7 +71,7 @@
                 <div class="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                 </div>
-                <h1 class="text-2xl font-black uppercase tracking-tight"><span class="text-blue-500">ArcanthProject</span> Admin Panel</h1>
+                <h1 class="text-2xl font-black uppercase tracking-tight"><span class="text-blue-500">ArcanthProject</span> Admin</h1>
                 <p class="text-gray-500 text-xs mt-1">Google hesabınızla giriş yapın</p>
             </div>
             <div class="space-y-3">
@@ -95,7 +95,7 @@
                 <div class="flex items-center gap-3">
                     <img src="logo.png" class="w-9 h-9 rounded-lg" onerror="this.style.display='none'">
                     <div>
-                        <p class="font-black text-sm uppercase tracking-tight">ArcanthProject</p>
+                        <p class="font-black text-sm uppercase tracking-tight">ARCANTH</p>
                         <p class="text-[10px] text-gray-500 font-semibold">Admin Panel</p>
                     </div>
                 </div>
@@ -120,6 +120,10 @@
                 <div class="nav-item" onclick="go('sponsors',this)">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     Sponsorlar
+                </div>
+                <div class="nav-item" onclick="go('support',this)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    Destek Talepleri
                 </div>
                 <div class="nav-item" onclick="go('cms',this)">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -186,6 +190,25 @@
                 <div id="sponsorList" class="space-y-4"></div>
             </div>
 
+            <div id="t-support" class="tab-c space-y-6">
+                <h2 class="text-2xl font-black">Destek Talepleri</h2>
+                <div class="glass p-4 overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı</th>
+                                <th>Konu</th>
+                                <th>Kategori</th>
+                                <th>Durum</th>
+                                <th>Tarih</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="supportList"></tbody>
+                    </table>
+                </div>
+            </div>
+
             <div id="t-cms" class="tab-c space-y-6">
                 <h2 class="text-2xl font-black">CMS İçerik</h2>
                 <div class="glass p-6 space-y-4">
@@ -248,7 +271,11 @@
         window.addEventListener('beforeunload',()=>{if(localStorage.getItem('rememberMe')!=='true')sessionStorage.removeItem('currentSession')});
         function doGoogleLogin(){const rememberMe=g('rememberMe').checked;localStorage.setItem('rememberMe',rememberMe);if(!rememberMe)auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);auth.signInWithPopup(provider).catch(e=>{g('loginErr').textContent="Hata: "+e.message;g('loginErr').classList.remove('hidden')})}
         function doLogout(){if(confirm('Çıkış yapmak istediğinize emin misiniz?')){localStorage.removeItem('rememberMe');sessionStorage.removeItem('currentSession');auth.signOut()}}
-        function initApp(){[K.ann,K.proj,K.dl,K.sponsor].forEach(k=>{if(!localStorage.getItem(k))ls(k,[])});[K.cms,K.cookies,K.settings].forEach(k=>{if(!localStorage.getItem(k))ls(k,{})});loadAnn();loadProj();loadDl();loadSponsors();loadCMS();loadCookies();loadSettings();loadAct();stats();checkConnection()}
+        function initApp(){[K.ann,K.proj,K.dl,K.sponsor].forEach(k=>{if(!localStorage.getItem(k))ls(k,[])});[K.cms,K.cookies,K.settings].forEach(k=>{if(!localStorage.getItem(k))ls(k,{})});loadAnn();loadProj();loadDl();loadSponsors();loadCMS();loadCookies();loadSettings();loadAct();loadSupport();stats();checkConnection()}
+        async function loadSupport(){try{const snapshot=await db.ref('support_tickets').once('value');const tickets=[];snapshot.forEach(child=>{tickets.push(child.val())});tickets.sort((a,b)=>b.created.localeCompare(a.created));const el=g('supportList');const statusColors={aktif:'text-green-400 bg-green-500/15',beklemede:'text-yellow-400 bg-yellow-500/15',kapali:'text-gray-400 bg-gray-500/15'};el.innerHTML=tickets.map(t=>`<tr><td class="text-sm">${t.userEmail}</td><td class="font-semibold">${t.subject}</td><td><span class="px-2 py-0.5 bg-purple-500/15 text-purple-400 rounded text-[10px] font-bold uppercase">${t.category}</span></td><td><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusColors[t.status]||statusColors.aktif}">${t.status}</span></td><td class="text-gray-500 text-xs">${new Date(t.created).toLocaleString('tr-TR')}</td><td class="flex gap-1"><button onclick="viewTicket('${t.id}')" class="btn-s">Gör</button><button onclick="changeStatus('${t.id}')" class="btn-s">Durum</button><button onclick="delTicket('${t.id}')" class="btn-d">Sil</button></td></tr>`).join('')||'<tr><td colspan="6" class="text-center text-gray-500 py-8">Henüz destek talebi yok</td></tr>'}catch(e){g('supportList').innerHTML='<tr><td colspan="6" class="text-center text-red-500 py-8">Hata: '+e.message+'</td></tr>'}}
+        async function viewTicket(id){try{const snapshot=await db.ref('support_tickets/'+id).once('value');const t=snapshot.val();if(t)alert(`DESTEK TALEBİ #${id}\n\nKullanıcı: ${t.userEmail}\nKonu: ${t.subject}\nKategori: ${t.category}\nDurum: ${t.status}\nTarih: ${new Date(t.created).toLocaleString('tr-TR')}\n\nMesaj:\n${t.message}`)}catch(e){alert('Hata: '+e.message)}}
+        async function changeStatus(id){const newStatus=prompt('Yeni durum:\n\naktif\nbeklemede\nkapali');if(!newStatus||!['aktif','beklemede','kapali'].includes(newStatus))return;try{await db.ref('support_tickets/'+id+'/status').set(newStatus);loadSupport();log('Destek durumu güncellendi')}catch(e){alert('Hata: '+e.message)}}
+        async function delTicket(id){if(!confirm('Bu destek talebini silmek istediğinize emin misiniz?'))return;try{await db.ref('support_tickets/'+id).remove();loadSupport();log('Destek talebi silindi')}catch(e){alert('Hata: '+e.message)}}
         async function checkConnection(){try{await db.ref('.info/connected').once('value');g('sync-dot').className='sync-dot sync-ok';g('sync-text').textContent='Sistem Sorunsuz';g('system-status').textContent='Sistem Sorunsuz Çalışıyor'}catch(e){g('sync-dot').className='sync-dot sync-err';g('sync-text').textContent='Bağlantı Hatası';g('system-status').textContent='Bağlantıda Sorun Var'}}
         async function sync(){g('sync-dot').className='sync-dot sync-loading';g('sync-text').textContent='Kaydediliyor...';try{await db.ref('site_data').set({announcements:ls(K.ann),projects:ls(K.proj),downloads:ls(K.dl),sponsors:ls(K.sponsor),cms_content:ls(K.cms),cookie_settings:ls(K.cookies),settings:ls(K.settings)});g('sync-dot').className='sync-dot sync-ok';g('sync-text').textContent='Sistem Sorunsuz';g('system-status').textContent='Sistem Sorunsuz Çalışıyor'}catch(e){g('sync-dot').className='sync-dot sync-err';g('sync-text').textContent='Hata: '+e.message;g('system-status').textContent='Bağlantıda Sorun Var'}}
         function go(tab,el){document.querySelectorAll('.tab-c').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));g('t-'+tab).classList.add('active');if(el)el.classList.add('active')}
