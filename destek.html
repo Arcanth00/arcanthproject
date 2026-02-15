@@ -177,7 +177,70 @@
 
         async function createTicket(){const subject=document.getElementById('ticketSubject').value.trim(),category=document.getElementById('ticketCategory').value,message=document.getElementById('ticketMessage').value.trim(),status=document.getElementById('createStatus');if(!subject||!category||!message){status.textContent='Lütfen tüm alanları doldurun!';status.className='text-center text-sm text-red-500';status.classList.remove('hidden');return}status.textContent='Oluşturuluyor...';status.className='text-center text-sm text-yellow-500';status.classList.remove('hidden');try{const ticketId=Date.now();await db.ref('support_tickets/'+ticketId).set({id:ticketId,userId:currentUser.uid,userEmail:currentUser.email,subject:subject,category:category,message:message,status:'aktif',created:new Date().toISOString()});status.textContent='✓ Talep oluşturuldu! 48 saat içinde yanıt vereceğiz.';status.className='text-center text-sm text-green-500';document.getElementById('ticketSubject').value='';document.getElementById('ticketCategory').value='';document.getElementById('ticketMessage').value='';setTimeout(()=>showTab('taleplerim'),2000)}catch(error){status.textContent='Hata: '+error.message;status.className='text-center text-sm text-red-500'}}
 
-        async function loadUserTickets(){if(!currentUser)return;const container=document.getElementById('ticketsList');container.innerHTML='<p class="text-center text-gray-500">Yükleniyor...</p>';try{const snapshot=await db.ref('support_tickets').orderByChild('userId').equalTo(currentUser.uid).once('value');const tickets=[];snapshot.forEach(child=>{tickets.push(child.val())});if(tickets.length===0){container.innerHTML='<div class="glass p-8 text-center"><p class="text-gray-500 text-lg font-bold">Destek bulunamadı!</p><p class="text-gray-600 text-sm mt-2">Henüz destek talebiniz yok</p></div>';return}tickets.sort((a,b)=>b.created.localeCompare(a.created));container.innerHTML=tickets.map(t=>`<div class="ticket-card mb-4"><div class="flex flex-col md:flex-row md:items-start justify-between gap-3 mb-3"><div class="flex-1"><h3 class="font-bold text-lg">${t.subject}</h3><p class="text-xs text-gray-500">${new Date(t.created).toLocaleString('tr-TR')}</p></div><span class="status-aktif self-start">${t.status}</span></div><p class="text-sm text-gray-400 mb-3">${t.message.substring(0,150)}${t.message.length>150?'...':''}</p><div class="flex items-center gap-2"><span class="text-xs px-3 py-1 bg-white/5 rounded-full">${t.category}</span></div></div>`).join('')}catch(error){container.innerHTML='<div class="glass p-8 text-center"><p class="text-red-500">Hata: '+error.message+'</p></div>'}}
+        async function loadUserTickets(){if(!currentUser)return;const container=document.getElementById('ticketsList');container.innerHTML='<p class="text-center text-gray-500">Yükleniyor...</p>';try{const snapshot=await db.ref('support_tickets').orderByChild('userId').equalTo(currentUser.uid).once('value');const tickets=[];snapshot.forEach(child=>{tickets.push(child.val())});if(tickets.length===0){container.innerHTML='<div class="glass p-8 text-center"><p class="text-gray-500 text-lg font-bold">Destek bulunamadı!</p><p class="text-gray-600 text-sm mt-2">Henüz destek talebiniz yok</p></div>';return}tickets.sort((a,b)=>b.created.localeCompare(a.created));container.innerHTML=tickets.map(t=>`<div class="ticket-card mb-4 cursor-pointer hover:border-blue-500/50 transition-all" onclick="showTicketDetail(${t.id})"><div class="flex flex-col md:flex-row md:items-start justify-between gap-3 mb-3"><div class="flex-1"><h3 class="font-bold text-lg">${t.subject}</h3><p class="text-xs text-gray-500">${new Date(t.created).toLocaleString('tr-TR')}</p></div><span class="px-3 py-1 rounded-full text-xs font-bold ${t.status==='aktif'?'bg-green-500/15 text-green-400':t.status==='beklemede'?'bg-yellow-500/15 text-yellow-400':'bg-gray-500/15 text-gray-400'} self-start">${t.status}</span></div><p class="text-sm text-gray-400 mb-3">${t.message.substring(0,100)}${t.message.length>100?'...':''}</p><div class="flex items-center justify-between"><span class="text-xs px-3 py-1 bg-white/5 rounded-full">${t.category}</span><span class="text-xs text-blue-400">Tıklayın →</span></div></div>`).join('')}catch(error){container.innerHTML='<div class="glass p-8 text-center"><p class="text-red-500">Hata: '+error.message+'</p></div>'}}
+
+        async function showTicketDetail(ticketId){
+            try{
+                const snapshot=await db.ref('support_tickets/'+ticketId).once('value');
+                const ticket=snapshot.val();
+                if(!ticket)return alert('Ticket bulunamadı!');
+                
+                let repliesHTML='';
+                if(ticket.replies){
+                    Object.values(ticket.replies).sort((a,b)=>a.created.localeCompare(b.created)).forEach(r=>{
+                        repliesHTML+=`
+                        <div class="mb-4 p-4 rounded-xl ${r.author==='Admin'?'bg-blue-500/10 border border-blue-500/20':'bg-white/5'}">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="font-bold text-sm ${r.author==='Admin'?'text-blue-400':'text-gray-300'}">${r.author}</span>
+                                <span class="text-xs text-gray-500">${new Date(r.created).toLocaleString('tr-TR')}</span>
+                            </div>
+                            <p class="text-sm text-gray-300">${r.message}</p>
+                        </div>`;
+                    });
+                }
+                
+                const modal=`
+                <div id="ticketModal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm" onclick="closeTicketModal()">
+                    <div class="relative max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+                        <div class="glass p-8 rounded-[2rem]">
+                            <div class="flex items-start justify-between mb-6">
+                                <div class="flex-1">
+                                    <h2 class="text-2xl font-black mb-2">${ticket.subject}</h2>
+                                    <p class="text-sm text-gray-500">${new Date(ticket.created).toLocaleString('tr-TR')}</p>
+                                </div>
+                                <button onclick="closeTicketModal()" class="ml-4 w-10 h-10 rounded-xl flex items-center justify-center hover:bg-white/10 transition-all">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </button>
+                            </div>
+                            
+                            <div class="mb-6 p-6 bg-white/5 rounded-xl">
+                                <p class="text-xs text-gray-500 mb-2">Mesajınız:</p>
+                                <p class="text-gray-300">${ticket.message}</p>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <h3 class="font-bold mb-4">Yanıtlar</h3>
+                                ${repliesHTML||'<p class="text-gray-500 text-center py-8">Henüz yanıt yok. Destek ekibimiz en kısa sürede yanıt verecek.</p>'}
+                            </div>
+                            
+                            <div class="flex gap-3">
+                                <span class="px-4 py-2 rounded-xl text-xs font-bold ${ticket.status==='aktif'?'bg-green-500/15 text-green-400':ticket.status==='beklemede'?'bg-yellow-500/15 text-yellow-400':'bg-gray-500/15 text-gray-400'}">${ticket.status}</span>
+                                <span class="px-4 py-2 rounded-xl text-xs font-bold bg-purple-500/15 text-purple-400">${ticket.category}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+                
+                document.body.insertAdjacentHTML('beforeend',modal);
+            }catch(e){
+                alert('Hata: '+e.message);
+            }
+        }
+
+        function closeTicketModal(){
+            const modal=document.getElementById('ticketModal');
+            if(modal)modal.remove();
+        }
     </script>
 </body>
 </html>
