@@ -11,332 +11,136 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; background: #0a0a0f; color: white; }
-        
-        #loading-screen { position: fixed; inset: 0; z-index: 10000; background: #0a0a0f; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 2rem; transition: opacity 0.8s ease, visibility 0.8s ease; }
+        #loading-screen { position: fixed; inset: 0; z-index: 10000; background: #0a0a0f; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 2rem; transition: opacity 0.8s ease; }
         #loading-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
         .loader-ring { width: 56px; height: 56px; border: 3px solid rgba(59,130,246,0.15); border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
         .glass { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 1rem; }
-        .glass:hover { border-color: rgba(59,130,246,0.2); }
-        .input-f { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: white; padding: 0.75rem 1rem; border-radius: 0.75rem; width: 100%; outline: none; transition: border-color 0.2s; }
+        .input-f { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: white; padding: 0.75rem 1rem; border-radius: 0.75rem; width: 100%; outline: none; }
         .input-f:focus { border-color: #3b82f6; }
-        .btn-p { background: linear-gradient(135deg,#3b82f6,#6366f1); color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s; }
-        .btn-p:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(59,130,246,0.3); }
-        .btn-s { background: rgba(255,255,255,0.06); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-        .btn-s:hover { background: rgba(255,255,255,0.1); }
-        
-        .tab-btn { padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s; background: rgba(255,255,255,0.05); color: #9ca3af; }
+        .btn-p { background: linear-gradient(135deg,#3b82f6,#6366f1); color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; border: none; cursor: pointer; }
+        .btn-s { background: rgba(255,255,255,0.06); color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; cursor: pointer; }
+        .tab-btn { padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; cursor: pointer; background: rgba(255,255,255,0.05); color: #9ca3af; }
         .tab-btn.active { background: #3b82f6; color: white; }
-        
-        .ticket-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 1rem; padding: 1.5rem; transition: all 0.3s; cursor: pointer; }
-        .ticket-card:hover { border-color: rgba(59,130,246,0.3); transform: translateY(-2px); }
-        
-        .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
-        .status-aktif { background: rgba(34,197,94,0.15); color: #22c55e; }
-        .status-beklemede { background: rgba(234,179,8,0.15); color: #eab308; }
-        .status-kapali { background: rgba(107,114,128,0.15); color: #6b7280; }
+        .ticket-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 1rem; padding: 1.5rem; cursor: pointer; }
+        .status-aktif { background: rgba(34,197,94,0.15); color: #22c55e; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; }
+        @media (max-width: 768px) { .container { padding: 1rem !important; } }
     </style>
 </head>
 <body>
-    <!-- LOADING SCREEN -->
     <div id="loading-screen">
         <img src="logo.png" class="w-16 h-16 rounded-2xl animate-pulse" onerror="this.style.display='none'">
         <div class="loader-ring"></div>
-        <p class="text-gray-500 text-sm font-bold tracking-[0.3em] uppercase">Yükleniyor</p>
+        <p class="text-gray-500 text-sm font-bold">Yükleniyor</p>
     </div>
 
-    <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="hidden min-h-screen p-6 flex items-center justify-center">
+    <div id="login-screen" class="hidden min-h-screen p-4 md:p-6 flex items-center justify-center">
         <div class="max-w-md w-full">
             <div class="text-center mb-8">
-                <a href="index.html" class="inline-block mb-6">
-                    <img src="logo.png" class="w-16 h-16 rounded-2xl mx-auto" onerror="this.style.display='none'">
-                </a>
-                <h1 class="text-4xl font-black uppercase mb-2">DESTEK</h1>
+                <a href="index.html"><img src="logo.png" class="w-16 h-16 rounded-2xl mx-auto mb-4" onerror="this.style.display='none'"></a>
+                <h1 class="text-3xl md:text-4xl font-black uppercase mb-2">DESTEK</h1>
                 <p class="text-gray-400">Giriş yapın veya kayıt olun</p>
             </div>
 
-            <div class="glass p-8 space-y-4">
-                <button onclick="loginWithGoogle()" class="w-full btn-p flex items-center justify-center gap-2 py-3">
+            <div class="glass p-6 md:p-8 space-y-4">
+                <button onclick="loginWithGoogle()" class="w-full btn-p py-3 flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/></svg>
                     Google ile Giriş
                 </button>
-
-                <button onclick="loginWithGithub()" class="w-full btn-s flex items-center justify-center gap-2 py-3">
+                <button onclick="loginWithGithub()" class="w-full btn-s py-3 flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                     GitHub ile Giriş
                 </button>
-
-                <div class="relative">
-                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/10"></div></div>
-                    <div class="relative flex justify-center text-xs uppercase"><span class="bg-[#0a0a0f] px-2 text-gray-500">veya</span></div>
-                </div>
-
-                <div id="email-login-form" class="space-y-3">
+                <div class="relative"><div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/10"></div></div><div class="relative flex justify-center text-xs uppercase"><span class="bg-[#0a0a0f] px-2 text-gray-500">veya</span></div></div>
+                <div id="email-form" class="space-y-3">
+                    <input type="text" id="nameInput" class="input-f" placeholder="Ad Soyad">
+                    <input type="text" id="usernameInput" class="input-f" placeholder="Kullanıcı Adı">
                     <input type="email" id="emailInput" class="input-f" placeholder="E-posta">
-                    <input type="password" id="passwordInput" class="input-f" placeholder="Şifre">
-                    <button onclick="loginWithEmail()" class="w-full btn-s py-3">E-posta ile Giriş</button>
-                    <button onclick="registerWithEmail()" class="w-full text-sm text-gray-400 hover:text-white transition-colors">Hesabınız yok mu? Kayıt olun</button>
+                    <input type="tel" id="phoneInput" class="input-f" placeholder="Telefon (Opsiyonel)">
+                    <input type="password" id="passwordInput" class="input-f" placeholder="Şifre (min 6 karakter)">
+                    <button onclick="registerUser()" class="w-full btn-p py-3">Kayıt Ol</button>
+                    <button onclick="showLogin()" class="w-full text-sm text-gray-400 hover:text-white">Zaten hesabınız var mı? Giriş yapın</button>
                 </div>
-
                 <p id="authError" class="text-red-500 text-xs text-center hidden"></p>
             </div>
-
-            <div class="text-center mt-6">
-                <a href="index.html" class="text-gray-500 hover:text-white transition-colors text-sm">← Ana Sayfaya Dön</a>
-            </div>
+            <div class="text-center mt-6"><a href="index.html" class="text-gray-500 hover:text-white text-sm">← Ana Sayfa</a></div>
         </div>
     </div>
 
-    <!-- MAIN APP -->
-    <div id="main-app" class="hidden min-h-screen p-6">
+    <div id="main-app" class="hidden min-h-screen p-4 md:p-6">
         <div class="max-w-6xl mx-auto">
-            <!-- HEADER -->
-            <div class="flex items-center justify-between mb-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
-                    <a href="index.html" class="inline-block mb-4">
-                        <img src="logo.png" class="w-12 h-12 rounded-xl" onerror="this.style.display='none'">
-                    </a>
-                    <h1 class="text-3xl font-black uppercase">Destek Talepleri</h1>
+                    <a href="index.html"><img src="logo.png" class="w-12 h-12 rounded-xl mb-4" onerror="this.style.display='none'"></a>
+                    <h1 class="text-2xl md:text-3xl font-black uppercase">Destek Talepleri</h1>
                     <p class="text-gray-400 text-sm" id="userEmail"></p>
                 </div>
                 <button onclick="logout()" class="btn-s">Çıkış</button>
             </div>
 
-            <!-- TABS -->
-            <div class="flex gap-3 mb-6">
-                <button class="tab-btn active" onclick="showTab('yeni')">Yeni Talep Oluştur</button>
-                <button class="tab-btn" onclick="showTab('taleplerim')">Taleplerim</button>
+            <div class="glass p-4 md:p-6 mb-6">
+                <div class="flex items-center gap-3">
+                    <svg class="w-6 h-6 text-[#5865F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                    <div>
+                        <p class="font-bold text-sm">Hızlı Yanıt için Discord'a Katılın</p>
+                        <p class="text-xs text-gray-400">Discord: ~24 saat • E-posta: ~48 saat</p>
+                    </div>
+                    <a href="https://discord.gg/y4tAHYGzC6" target="_blank" class="ml-auto px-4 py-2 bg-[#5865F2] rounded-lg text-sm font-bold hover:opacity-90">Katıl</a>
+                </div>
             </div>
 
-            <!-- YENİ TALEP -->
+            <div class="flex flex-wrap gap-3 mb-6">
+                <button class="tab-btn" onclick="showTab('taleplerim')">Taleplerim</button>
+                <button class="tab-btn active" onclick="showTab('yeni')">Yeni Talep</button>
+            </div>
+
             <div id="tab-yeni" class="tab-content">
-                <div class="glass p-8 space-y-6">
-                    <div>
-                        <label class="block text-sm font-bold mb-2 text-gray-400">Konu *</label>
-                        <input type="text" id="ticketSubject" class="input-f" placeholder="Sorun başlığı">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-bold mb-2 text-gray-400">Kategori *</label>
-                        <select id="ticketCategory" class="input-f">
-                            <option value="teknik">Teknik Destek</option>
-                            <option value="genel">Genel Soru</option>
-                            <option value="oneri">Öneri</option>
-                            <option value="sikayet">Şikayet</option>
-                            <option value="diger">Diğer</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-bold mb-2 text-gray-400">Mesajınız *</label>
-                        <textarea id="ticketMessage" class="input-f" rows="6" placeholder="Sorununuzu detaylı açıklayın..."></textarea>
-                    </div>
-
+                <div class="glass p-4 md:p-8 space-y-4 md:space-y-6">
+                    <input type="text" id="ticketSubject" class="input-f" placeholder="Konu *">
+                    <select id="ticketCategory" class="input-f">
+                        <option value="">Kategori Seçin *</option>
+                        <option value="teknik">Teknik Destek</option>
+                        <option value="genel">Genel Soru</option>
+                        <option value="oneri">Öneri</option>
+                        <option value="sikayet">Şikayet</option>
+                        <option value="diger">Diğer</option>
+                    </select>
+                    <textarea id="ticketMessage" class="input-f" rows="6" placeholder="Mesajınız *"></textarea>
                     <button onclick="createTicket()" class="btn-p w-full">Destek Talebi Oluştur</button>
                     <p id="createStatus" class="text-center text-sm hidden"></p>
                 </div>
             </div>
 
-            <!-- TALEPLERİM -->
             <div id="tab-taleplerim" class="tab-content hidden">
-                <div id="ticketsList" class="space-y-4"></div>
+                <div id="ticketsList"></div>
             </div>
         </div>
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCnkk6j1CGsi4sNXJ8FA9Gd2B6_VDptVDg",
-            authDomain: "arcanthproject.firebaseapp.com",
-            databaseURL: "https://arcanthproject-default-rtdb.firebaseio.com",
-            projectId: "arcanthproject",
-            storageBucket: "arcanthproject.firebasestorage.app",
-            messagingSenderId: "826341954149",
-            appId: "1:826341954149:web:6429d61a5b40810009ac8c"
-        };
+        const firebaseConfig={apiKey:"AIzaSyCnkk6j1CGsi4sNXJ8FA9Gd2B6_VDptVDg",authDomain:"arcanthproject.firebaseapp.com",databaseURL:"https://arcanthproject-default-rtdb.firebaseio.com",projectId:"arcanthproject",storageBucket:"arcanthproject.firebasestorage.app",messagingSenderId:"826341954149",appId:"1:826341954149:web:6429d61a5b40810009ac8c"};
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.database();
-        const googleProvider = new firebase.auth.GoogleAuthProvider();
-        const githubProvider = new firebase.auth.GithubAuthProvider();
+        const auth=firebase.auth(),db=firebase.database(),googleProvider=new firebase.auth.GoogleAuthProvider(),githubProvider=new firebase.auth.GithubAuthProvider();
+        let currentUser=null,isLoginMode=false;
 
-        let currentUser = null;
+        auth.onAuthStateChanged(user=>{setTimeout(()=>{document.getElementById('loading-screen').classList.add('hidden');if(user){currentUser=user;document.getElementById('login-screen').classList.add('hidden');document.getElementById('main-app').classList.remove('hidden');document.getElementById('userEmail').textContent=user.email;loadUserTickets()}else{document.getElementById('login-screen').classList.remove('hidden');document.getElementById('main-app').classList.add('hidden')}},800)});
 
-        // AUTH STATE
-        auth.onAuthStateChanged((user) => {
-            setTimeout(() => {
-                document.getElementById('loading-screen').classList.add('hidden');
-                
-                if (user) {
-                    currentUser = user;
-                    document.getElementById('login-screen').classList.add('hidden');
-                    document.getElementById('main-app').classList.remove('hidden');
-                    document.getElementById('userEmail').textContent = user.email;
-                    loadUserTickets();
-                } else {
-                    document.getElementById('login-screen').classList.remove('hidden');
-                    document.getElementById('main-app').classList.add('hidden');
-                }
-            }, 800);
-        });
+        function loginWithGoogle(){auth.signInWithPopup(googleProvider).catch(err=>{document.getElementById('authError').textContent='Hata: '+err.message;document.getElementById('authError').classList.remove('hidden')})}
+        function loginWithGithub(){auth.signInWithPopup(githubProvider).catch(err=>{document.getElementById('authError').textContent='Hata: '+err.message;document.getElementById('authError').classList.remove('hidden')})}
+        
+        function showLogin(){isLoginMode=!isLoginMode;const form=document.getElementById('email-form');if(isLoginMode){form.innerHTML='<input type="email" id="emailInput" class="input-f" placeholder="E-posta"><input type="password" id="passwordInput" class="input-f" placeholder="Şifre"><button onclick="loginUser()" class="w-full btn-p py-3">Giriş Yap</button><button onclick="showLogin()" class="w-full text-sm text-gray-400 hover:text-white">Hesabınız yok mu? Kayıt olun</button>'}else{form.innerHTML='<input type="text" id="nameInput" class="input-f" placeholder="Ad Soyad"><input type="text" id="usernameInput" class="input-f" placeholder="Kullanıcı Adı"><input type="email" id="emailInput" class="input-f" placeholder="E-posta"><input type="tel" id="phoneInput" class="input-f" placeholder="Telefon (Opsiyonel)"><input type="password" id="passwordInput" class="input-f" placeholder="Şifre (min 6 karakter)"><button onclick="registerUser()" class="w-full btn-p py-3">Kayıt Ol</button><button onclick="showLogin()" class="w-full text-sm text-gray-400 hover:text-white">Zaten hesabınız var mı? Giriş yapın</button>'}}
 
-        // LOGIN
-        function loginWithGoogle() {
-            auth.signInWithPopup(googleProvider).catch(err => {
-                document.getElementById('authError').textContent = 'Hata: ' + err.message;
-                document.getElementById('authError').classList.remove('hidden');
-            });
-        }
+        function registerUser(){const name=document.getElementById('nameInput').value.trim(),username=document.getElementById('usernameInput').value.trim(),email=document.getElementById('emailInput').value.trim(),phone=document.getElementById('phoneInput').value.trim(),password=document.getElementById('passwordInput').value,err=document.getElementById('authError');if(!name||!username||!email||!password){err.textContent='Tüm zorunlu alanları doldurun!';err.classList.remove('hidden');return}if(password.length<6){err.textContent='Şifre en az 6 karakter olmalı!';err.classList.remove('hidden');return}auth.createUserWithEmailAndPassword(email,password).then(cred=>{return db.ref('users/'+cred.user.uid).set({name:name,username:username,email:email,phone:phone||'',created:new Date().toISOString()})}).catch(e=>{err.textContent='Hata: '+e.message;err.classList.remove('hidden')})}
 
-        function loginWithGithub() {
-            auth.signInWithPopup(githubProvider).catch(err => {
-                document.getElementById('authError').textContent = 'Hata: ' + err.message;
-                document.getElementById('authError').classList.remove('hidden');
-            });
-        }
+        function loginUser(){const email=document.getElementById('emailInput').value.trim(),password=document.getElementById('passwordInput').value,err=document.getElementById('authError');if(!email||!password){err.textContent='E-posta ve şifre gerekli!';err.classList.remove('hidden');return}auth.signInWithEmailAndPassword(email,password).catch(e=>{err.textContent='Hata: '+e.message;err.classList.remove('hidden')})}
 
-        function loginWithEmail() {
-            const email = document.getElementById('emailInput').value.trim();
-            const password = document.getElementById('passwordInput').value;
-            
-            if (!email || !password) {
-                document.getElementById('authError').textContent = 'E-posta ve şifre gerekli!';
-                document.getElementById('authError').classList.remove('hidden');
-                return;
-            }
+        function logout(){if(confirm('Çıkış yapmak istediğinize emin misiniz?'))auth.signOut()}
 
-            auth.signInWithEmailAndPassword(email, password).catch(err => {
-                document.getElementById('authError').textContent = 'Hata: ' + err.message;
-                document.getElementById('authError').classList.remove('hidden');
-            });
-        }
+        function showTab(tab){document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(content=>content.classList.add('hidden'));event.target.classList.add('active');document.getElementById('tab-'+tab).classList.remove('hidden');if(tab==='taleplerim')loadUserTickets()}
 
-        function registerWithEmail() {
-            const email = document.getElementById('emailInput').value.trim();
-            const password = document.getElementById('passwordInput').value;
-            
-            if (!email || !password) {
-                document.getElementById('authError').textContent = 'E-posta ve şifre gerekli!';
-                document.getElementById('authError').classList.remove('hidden');
-                return;
-            }
+        async function createTicket(){const subject=document.getElementById('ticketSubject').value.trim(),category=document.getElementById('ticketCategory').value,message=document.getElementById('ticketMessage').value.trim(),status=document.getElementById('createStatus');if(!subject||!category||!message){status.textContent='Lütfen tüm alanları doldurun!';status.className='text-center text-sm text-red-500';status.classList.remove('hidden');return}status.textContent='Oluşturuluyor...';status.className='text-center text-sm text-yellow-500';status.classList.remove('hidden');try{const ticketId=Date.now();await db.ref('support_tickets/'+ticketId).set({id:ticketId,userId:currentUser.uid,userEmail:currentUser.email,subject:subject,category:category,message:message,status:'aktif',created:new Date().toISOString()});status.textContent='✓ Talep oluşturuldu! 48 saat içinde yanıt vereceğiz.';status.className='text-center text-sm text-green-500';document.getElementById('ticketSubject').value='';document.getElementById('ticketCategory').value='';document.getElementById('ticketMessage').value='';setTimeout(()=>showTab('taleplerim'),2000)}catch(error){status.textContent='Hata: '+error.message;status.className='text-center text-sm text-red-500'}}
 
-            if (password.length < 6) {
-                document.getElementById('authError').textContent = 'Şifre en az 6 karakter olmalı!';
-                document.getElementById('authError').classList.remove('hidden');
-                return;
-            }
-
-            auth.createUserWithEmailAndPassword(email, password).catch(err => {
-                document.getElementById('authError').textContent = 'Hata: ' + err.message;
-                document.getElementById('authError').classList.remove('hidden');
-            });
-        }
-
-        function logout() {
-            if (confirm('Çıkış yapmak istediğinize emin misiniz?')) {
-                auth.signOut();
-            }
-        }
-
-        // TABS
-        function showTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
-            
-            event.target.classList.add('active');
-            document.getElementById('tab-' + tab).classList.remove('hidden');
-            
-            if (tab === 'taleplerim') loadUserTickets();
-        }
-
-        // CREATE TICKET
-        async function createTicket() {
-            const subject = document.getElementById('ticketSubject').value.trim();
-            const category = document.getElementById('ticketCategory').value;
-            const message = document.getElementById('ticketMessage').value.trim();
-            const status = document.getElementById('createStatus');
-
-            if (!subject || !message) {
-                status.textContent = 'Lütfen tüm alanları doldurun!';
-                status.className = 'text-center text-sm text-red-500';
-                status.classList.remove('hidden');
-                return;
-            }
-
-            status.textContent = 'Oluşturuluyor...';
-            status.className = 'text-center text-sm text-yellow-500';
-            status.classList.remove('hidden');
-
-            try {
-                const ticketId = Date.now();
-                await db.ref('support_tickets/' + ticketId).set({
-                    id: ticketId,
-                    userId: currentUser.uid,
-                    userEmail: currentUser.email,
-                    subject: subject,
-                    category: category,
-                    message: message,
-                    status: 'aktif',
-                    created: new Date().toISOString()
-                });
-
-                status.textContent = '✓ Talep oluşturuldu! 48 saat içinde yanıt vereceğiz.';
-                status.className = 'text-center text-sm text-green-500';
-
-                document.getElementById('ticketSubject').value = '';
-                document.getElementById('ticketMessage').value = '';
-                
-                setTimeout(() => showTab('taleplerim'), 2000);
-            } catch (error) {
-                status.textContent = 'Hata: ' + error.message;
-                status.className = 'text-center text-sm text-red-500';
-            }
-        }
-
-        // LOAD USER TICKETS
-        async function loadUserTickets() {
-            if (!currentUser) return;
-            
-            const container = document.getElementById('ticketsList');
-            container.innerHTML = '<p class="text-center text-gray-500">Yükleniyor...</p>';
-
-            try {
-                const snapshot = await db.ref('support_tickets').orderByChild('userId').equalTo(currentUser.uid).once('value');
-                const tickets = [];
-                
-                snapshot.forEach(child => {
-                    tickets.push(child.val());
-                });
-
-                if (tickets.length === 0) {
-                    container.innerHTML = '<div class="glass p-8 text-center"><p class="text-gray-500">Henüz destek talebiniz yok</p></div>';
-                    return;
-                }
-
-                tickets.sort((a, b) => b.created.localeCompare(a.created));
-
-                container.innerHTML = tickets.map(t => `
-                    <div class="ticket-card">
-                        <div class="flex items-start justify-between mb-3">
-                            <div>
-                                <h3 class="font-bold text-lg mb-1">${t.subject}</h3>
-                                <p class="text-xs text-gray-500">${new Date(t.created).toLocaleString('tr-TR')}</p>
-                            </div>
-                            <span class="status-badge status-${t.status}">${t.status}</span>
-                        </div>
-                        <p class="text-sm text-gray-400 mb-3">${t.message.substring(0, 150)}${t.message.length > 150 ? '...' : ''}</p>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs px-3 py-1 bg-white/5 rounded-full">${t.category}</span>
-                        </div>
-                    </div>
-                `).join('');
-            } catch (error) {
-                container.innerHTML = '<div class="glass p-8 text-center"><p class="text-red-500">Hata: ' + error.message + '</p></div>';
-            }
-        }
+        async function loadUserTickets(){if(!currentUser)return;const container=document.getElementById('ticketsList');container.innerHTML='<p class="text-center text-gray-500">Yükleniyor...</p>';try{const snapshot=await db.ref('support_tickets').orderByChild('userId').equalTo(currentUser.uid).once('value');const tickets=[];snapshot.forEach(child=>{tickets.push(child.val())});if(tickets.length===0){container.innerHTML='<div class="glass p-8 text-center"><p class="text-gray-500 text-lg font-bold">Destek bulunamadı!</p><p class="text-gray-600 text-sm mt-2">Henüz destek talebiniz yok</p></div>';return}tickets.sort((a,b)=>b.created.localeCompare(a.created));container.innerHTML=tickets.map(t=>`<div class="ticket-card mb-4"><div class="flex flex-col md:flex-row md:items-start justify-between gap-3 mb-3"><div class="flex-1"><h3 class="font-bold text-lg">${t.subject}</h3><p class="text-xs text-gray-500">${new Date(t.created).toLocaleString('tr-TR')}</p></div><span class="status-aktif self-start">${t.status}</span></div><p class="text-sm text-gray-400 mb-3">${t.message.substring(0,150)}${t.message.length>150?'...':''}</p><div class="flex items-center gap-2"><span class="text-xs px-3 py-1 bg-white/5 rounded-full">${t.category}</span></div></div>`).join('')}catch(error){container.innerHTML='<div class="glass p-8 text-center"><p class="text-red-500">Hata: '+error.message+'</p></div>'}}
     </script>
 </body>
 </html>
