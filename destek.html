@@ -10,21 +10,21 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <style>
-        body { font-family: 'Inter', system-ui, sans-serif; background: #0a0a0f; color: white; }
-        #loading-screen { position: fixed; inset: 0; z-index: 10000; background: #0a0a0f; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 2rem; transition: opacity 0.8s ease; }
-        #loading-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        .loader-ring { width: 56px; height: 56px; border: 3px solid rgba(59,130,246,0.15); border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .glass { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 1rem; }
-        .input-f { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: white; padding: 0.75rem 1rem; border-radius: 0.75rem; width: 100%; outline: none; }
-        .input-f:focus { border-color: #3b82f6; }
-        .btn-p { background: linear-gradient(135deg,#3b82f6,#6366f1); color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; border: none; cursor: pointer; }
-        .btn-s { background: rgba(255,255,255,0.06); color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; cursor: pointer; }
-        .tab-btn { padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; cursor: pointer; background: rgba(255,255,255,0.05); color: #9ca3af; }
-        .tab-btn.active { background: #3b82f6; color: white; }
-        .ticket-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 1rem; padding: 1.5rem; cursor: pointer; }
-        .status-aktif { background: rgba(34,197,94,0.15); color: #22c55e; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; }
-        @media (max-width: 768px) { .container { padding: 1rem !important; } }
+        body{font-family:'Inter',system-ui,sans-serif;background:#0a0a0f;color:white}
+        #loading-screen{position:fixed;inset:0;z-index:10000;background:#0a0a0f;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2rem;transition:opacity .8s ease}
+        #loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+        .loader-ring{width:56px;height:56px;border:3px solid rgba(59,130,246,.15);border-top-color:#3b82f6;border-radius:50%;animation:spin .8s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .glass{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:1rem}
+        .input-f{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:white;padding:.75rem 1rem;border-radius:.75rem;width:100%;outline:none}
+        .input-f:focus{border-color:#3b82f6}
+        .btn-p{background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;padding:.75rem 1.5rem;border-radius:.75rem;font-weight:700;border:none;cursor:pointer}
+        .btn-s{background:rgba(255,255,255,.06);color:white;padding:.75rem 1.5rem;border-radius:.75rem;font-weight:700;cursor:pointer}
+        .tab-btn{padding:.75rem 1.5rem;border-radius:.75rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,.05);color:#9ca3af}
+        .tab-btn.active{background:#3b82f6;color:white}
+        .ticket-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:1rem;padding:1.5rem;cursor:pointer}
+        .status-aktif{background:rgba(34,197,94,.15);color:#22c55e;padding:.25rem .75rem;border-radius:9999px;font-size:.75rem;font-weight:700}
+        @media (max-width:768px){.container{padding:1rem!important}}
     </style>
 </head>
 <body>
@@ -54,7 +54,6 @@
                 <div class="relative"><div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/10"></div></div><div class="relative flex justify-center text-xs uppercase"><span class="bg-[#0a0a0f] px-2 text-gray-500">veya</span></div></div>
                 <div id="email-form" class="space-y-3">
                     <input type="text" id="nameInput" class="input-f" placeholder="Ad Soyad">
-                    <input type="text" id="usernameInput" class="input-f" placeholder="Kullanıcı Adı">
                     <input type="email" id="emailInput" class="input-f" placeholder="E-posta">
                     <input type="tel" id="phoneInput" class="input-f" placeholder="Telefon (Opsiyonel)">
                     <input type="password" id="passwordInput" class="input-f" placeholder="Şifre (min 6 karakter)">
@@ -90,11 +89,11 @@
             </div>
 
             <div class="flex flex-wrap gap-3 mb-6">
-                <button class="tab-btn" onclick="showTab('taleplerim')">Taleplerim</button>
-                <button class="tab-btn active" onclick="showTab('yeni')">Yeni Talep</button>
+                <button class="tab-btn active" onclick="showTab('taleplerim')">Taleplerim</button>
+                <button class="tab-btn" onclick="showTab('yeni')">Yeni Talep</button>
             </div>
 
-            <div id="tab-yeni" class="tab-content">
+            <div id="tab-yeni" class="tab-content hidden">
                 <div class="glass p-4 md:p-8 space-y-4 md:space-y-6">
                     <input type="text" id="ticketSubject" class="input-f" placeholder="Konu *">
                     <select id="ticketCategory" class="input-f">
@@ -111,7 +110,7 @@
                 </div>
             </div>
 
-            <div id="tab-taleplerim" class="tab-content hidden">
+            <div id="tab-taleplerim" class="tab-content">
                 <div id="ticketsList"></div>
             </div>
         </div>
@@ -121,16 +120,17 @@
         const firebaseConfig={apiKey:"AIzaSyCnkk6j1CGsi4sNXJ8FA9Gd2B6_VDptVDg",authDomain:"arcanthproject.firebaseapp.com",databaseURL:"https://arcanthproject-default-rtdb.firebaseio.com",projectId:"arcanthproject",storageBucket:"arcanthproject.firebasestorage.app",messagingSenderId:"826341954149",appId:"1:826341954149:web:6429d61a5b40810009ac8c"};
         firebase.initializeApp(firebaseConfig);
         const auth=firebase.auth(),db=firebase.database(),googleProvider=new firebase.auth.GoogleAuthProvider(),githubProvider=new firebase.auth.GithubAuthProvider();
-        let currentUser=null,isLoginMode=false;
+        let currentUser=null,isLoginMode=false,loginInProgress=false;
 
         auth.onAuthStateChanged(user=>{setTimeout(()=>{document.getElementById('loading-screen').classList.add('hidden');if(user){currentUser=user;document.getElementById('login-screen').classList.add('hidden');document.getElementById('main-app').classList.remove('hidden');document.getElementById('userEmail').textContent=user.email;loadUserTickets()}else{document.getElementById('login-screen').classList.remove('hidden');document.getElementById('main-app').classList.add('hidden')}},800)});
 
-        function loginWithGoogle(){auth.signInWithPopup(googleProvider).catch(err=>{document.getElementById('authError').textContent='Hata: '+err.message;document.getElementById('authError').classList.remove('hidden')})}
-        function loginWithGithub(){auth.signInWithPopup(githubProvider).catch(err=>{document.getElementById('authError').textContent='Hata: '+err.message;document.getElementById('authError').classList.remove('hidden')})}
-        
-        function showLogin(){isLoginMode=!isLoginMode;const form=document.getElementById('email-form');if(isLoginMode){form.innerHTML='<input type="email" id="emailInput" class="input-f" placeholder="E-posta"><input type="password" id="passwordInput" class="input-f" placeholder="Şifre"><button onclick="loginUser()" class="w-full btn-p py-3">Giriş Yap</button><button onclick="showLogin()" class="w-full text-sm text-gray-400 hover:text-white">Hesabınız yok mu? Kayıt olun</button>'}else{form.innerHTML='<input type="text" id="nameInput" class="input-f" placeholder="Ad Soyad"><input type="text" id="usernameInput" class="input-f" placeholder="Kullanıcı Adı"><input type="email" id="emailInput" class="input-f" placeholder="E-posta"><input type="tel" id="phoneInput" class="input-f" placeholder="Telefon (Opsiyonel)"><input type="password" id="passwordInput" class="input-f" placeholder="Şifre (min 6 karakter)"><button onclick="registerUser()" class="w-full btn-p py-3">Kayıt Ol</button><button onclick="showLogin()" class="w-full text-sm text-gray-400 hover:text-white">Zaten hesabınız var mı? Giriş yapın</button>'}}
+        function loginWithGoogle(){if(loginInProgress)return;loginInProgress=true;auth.signInWithPopup(googleProvider).catch(err=>{loginInProgress=false;if(err.code==='auth/popup-cancelled-by-user'||err.code==='auth/cancelled-popup-request')return;if(err.code==='auth/account-exists-with-different-credential'){document.getElementById('authError').textContent='Bu e-posta başka bir giriş yöntemiyle kayıtlı. Lütfen o yöntemi kullanın.';document.getElementById('authError').classList.remove('hidden');return}document.getElementById('authError').textContent='Hata: '+err.message;document.getElementById('authError').classList.remove('hidden')})}
 
-        function registerUser(){const name=document.getElementById('nameInput').value.trim(),username=document.getElementById('usernameInput').value.trim(),email=document.getElementById('emailInput').value.trim(),phone=document.getElementById('phoneInput').value.trim(),password=document.getElementById('passwordInput').value,err=document.getElementById('authError');if(!name||!username||!email||!password){err.textContent='Tüm zorunlu alanları doldurun!';err.classList.remove('hidden');return}if(password.length<6){err.textContent='Şifre en az 6 karakter olmalı!';err.classList.remove('hidden');return}auth.createUserWithEmailAndPassword(email,password).then(cred=>{return db.ref('users/'+cred.user.uid).set({name:name,username:username,email:email,phone:phone||'',created:new Date().toISOString()})}).catch(e=>{err.textContent='Hata: '+e.message;err.classList.remove('hidden')})}
+        function loginWithGithub(){if(loginInProgress)return;loginInProgress=true;auth.signInWithPopup(githubProvider).catch(err=>{loginInProgress=false;if(err.code==='auth/popup-cancelled-by-user'||err.code==='auth/cancelled-popup-request')return;if(err.code==='auth/account-exists-with-different-credential'){document.getElementById('authError').textContent='Bu e-posta başka bir giriş yöntemiyle kayıtlı. Lütfen o yöntemi kullanın.';document.getElementById('authError').classList.remove('hidden');return}document.getElementById('authError').textContent='Hata: '+err.message;document.getElementById('authError').classList.remove('hidden')})}
+        
+        function showLogin(){isLoginMode=!isLoginMode;const form=document.getElementById('email-form');if(isLoginMode){form.innerHTML='<input type="email" id="emailInput" class="input-f" placeholder="E-posta"><input type="password" id="passwordInput" class="input-f" placeholder="Şifre"><button onclick="loginUser()" class="w-full btn-p py-3">Giriş Yap</button><button onclick="showLogin()" class="w-full text-sm text-gray-400 hover:text-white">Hesabınız yok mu? Kayıt olun</button>'}else{form.innerHTML='<input type="text" id="nameInput" class="input-f" placeholder="Ad Soyad"><input type="email" id="emailInput" class="input-f" placeholder="E-posta"><input type="tel" id="phoneInput" class="input-f" placeholder="Telefon (Opsiyonel)"><input type="password" id="passwordInput" class="input-f" placeholder="Şifre (min 6 karakter)"><button onclick="registerUser()" class="w-full btn-p py-3">Kayıt Ol</button><button onclick="showLogin()" class="w-full text-sm text-gray-400 hover:text-white">Zaten hesabınız var mı? Giriş yapın</button>'}}
+
+        function registerUser(){const name=document.getElementById('nameInput').value.trim(),email=document.getElementById('emailInput').value.trim(),phone=document.getElementById('phoneInput').value.trim(),password=document.getElementById('passwordInput').value,err=document.getElementById('authError');if(!name||!email||!password){err.textContent='Tüm zorunlu alanları doldurun!';err.classList.remove('hidden');return}if(password.length<6){err.textContent='Şifre en az 6 karakter olmalı!';err.classList.remove('hidden');return}auth.createUserWithEmailAndPassword(email,password).then(cred=>{return db.ref('users/'+cred.user.uid).set({name:name,email:email,phone:phone||'',created:new Date().toISOString()})}).catch(e=>{if(e.code==='auth/email-already-in-use'){err.textContent='Bu e-posta zaten kayıtlı. Giriş yapmayı deneyin.';err.classList.remove('hidden');return}err.textContent='Hata: '+e.message;err.classList.remove('hidden')})}
 
         function loginUser(){const email=document.getElementById('emailInput').value.trim(),password=document.getElementById('passwordInput').value,err=document.getElementById('authError');if(!email||!password){err.textContent='E-posta ve şifre gerekli!';err.classList.remove('hidden');return}auth.signInWithEmailAndPassword(email,password).catch(e=>{err.textContent='Hata: '+e.message;err.classList.remove('hidden')})}
 
