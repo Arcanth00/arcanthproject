@@ -125,6 +125,10 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     Destek Talepleri
                 </div>
+                <div class="nav-item" onclick="go('users',this)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    Kullanıcılar
+                </div>
                 <div class="nav-item" onclick="go('cms',this)">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                     CMS
@@ -209,6 +213,35 @@
                 </div>
             </div>
 
+            <div id="t-users" class="tab-c space-y-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-black">Kullanıcılar</h2>
+                    <input type="text" id="userSearch" placeholder="Kullanıcı ara..." oninput="searchUsers()" class="input-f" style="max-width:300px">
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="stat"><p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Toplam</p><p class="text-3xl font-black mt-1" id="stat-total-users">0</p></div>
+                    <div class="stat"><p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Aktif</p><p class="text-3xl font-black mt-1" id="stat-active-users">0</p></div>
+                    <div class="stat"><p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Bugün</p><p class="text-3xl font-black mt-1" id="stat-today-users">0</p></div>
+                    <div class="stat"><p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Bu Ay</p><p class="text-3xl font-black mt-1" id="stat-month-users">0</p></div>
+                </div>
+                <div class="glass p-4 overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı</th>
+                                <th>Email</th>
+                                <th>Kayıt</th>
+                                <th>Provider</th>
+                                <th>Talepler</th>
+                                <th>Durum</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersList"></tbody>
+                    </table>
+                </div>
+            </div>
+
             <div id="t-cms" class="tab-c space-y-6">
                 <h2 class="text-2xl font-black">CMS İçerik</h2>
                 <div class="glass p-6 space-y-4">
@@ -271,11 +304,116 @@
         window.addEventListener('beforeunload',()=>{if(localStorage.getItem('rememberMe')!=='true')sessionStorage.removeItem('currentSession')});
         function doGoogleLogin(){const rememberMe=g('rememberMe').checked;localStorage.setItem('rememberMe',rememberMe);if(!rememberMe)auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);auth.signInWithPopup(provider).catch(e=>{g('loginErr').textContent="Hata: "+e.message;g('loginErr').classList.remove('hidden')})}
         function doLogout(){if(confirm('Çıkış yapmak istediğinize emin misiniz?')){localStorage.removeItem('rememberMe');sessionStorage.removeItem('currentSession');auth.signOut()}}
-        function initApp(){[K.ann,K.proj,K.dl,K.sponsor].forEach(k=>{if(!localStorage.getItem(k))ls(k,[])});[K.cms,K.cookies,K.settings].forEach(k=>{if(!localStorage.getItem(k))ls(k,{})});loadAnn();loadProj();loadDl();loadSponsors();loadCMS();loadCookies();loadSettings();loadAct();loadSupport();stats();checkConnection()}
+        function initApp(){[K.ann,K.proj,K.dl,K.sponsor].forEach(k=>{if(!localStorage.getItem(k))ls(k,[])});[K.cms,K.cookies,K.settings].forEach(k=>{if(!localStorage.getItem(k))ls(k,{})});loadAnn();loadProj();loadDl();loadSponsors();loadCMS();loadCookies();loadSettings();loadAct();loadSupport();loadUsers();stats();checkConnection()}
+        
+        let allUsers=[];
+        async function loadUsers(){
+            try{
+                const snapshot=await db.ref('users').once('value');
+                allUsers=[];
+                snapshot.forEach(child=>{
+                    allUsers.push({uid:child.key,...child.val()});
+                });
+                displayUsers(allUsers);
+                updateUserStats();
+            }catch(e){
+                document.getElementById('usersList').innerHTML='<tr><td colspan="7" class="text-center text-red-500 py-8">Hata: '+e.message+'</td></tr>';
+            }
+        }
+
+        function displayUsers(users){
+            const el=document.getElementById('usersList');
+            if(!users.length){
+                el.innerHTML='<tr><td colspan="7" class="text-center text-gray-500 py-8">Henüz kullanıcı yok</td></tr>';
+                return;
+            }
+            el.innerHTML=users.map(u=>`<tr>
+                <td class="font-semibold">${u.name||'Bilinmiyor'}</td>
+                <td class="text-sm">${u.email}</td>
+                <td class="text-gray-500 text-xs">${u.created?new Date(u.created).toLocaleDateString('tr-TR'):'Bilinmiyor'}</td>
+                <td><span class="px-2 py-0.5 bg-blue-500/15 text-blue-400 rounded text-[10px] font-bold uppercase">${u.provider||'email'}</span></td>
+                <td class="text-center"><span class="px-2 py-1 bg-purple-500/15 text-purple-400 rounded font-bold text-sm" id="ticket-count-${u.uid}">0</span></td>
+                <td><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${u.blocked?'bg-red-500/15 text-red-400':'bg-green-500/15 text-green-400'}">${u.blocked?'Engelli':'Aktif'}</span></td>
+                <td class="flex gap-1">
+                    <button onclick="viewUser('${u.uid}')" class="btn-s">Detay</button>
+                    <button onclick="toggleUserBlock('${u.uid}',${u.blocked?'false':'true'})" class="btn-${u.blocked?'p':'d'}">${u.blocked?'Aç':'Engelle'}</button>
+                </td>
+            </tr>`).join('');
+            
+            // Ticket sayılarını yükle
+            users.forEach(u=>{
+                db.ref('support_tickets').orderByChild('userId').equalTo(u.uid).once('value').then(snap=>{
+                    const count=snap.numChildren();
+                    const el=document.getElementById('ticket-count-'+u.uid);
+                    if(el)el.textContent=count;
+                });
+            });
+        }
+
+        function searchUsers(){
+            const query=document.getElementById('userSearch').value.toLowerCase();
+            if(!query){displayUsers(allUsers);return;}
+            const filtered=allUsers.filter(u=>
+                (u.name||'').toLowerCase().includes(query)||
+                (u.email||'').toLowerCase().includes(query)||
+                (u.username||'').toLowerCase().includes(query)
+            );
+            displayUsers(filtered);
+        }
+
+        function updateUserStats(){
+            document.getElementById('stat-total-users').textContent=allUsers.length;
+            const active=allUsers.filter(u=>!u.blocked).length;
+            document.getElementById('stat-active-users').textContent=active;
+            
+            const today=new Date().toDateString();
+            const todayUsers=allUsers.filter(u=>u.created&&new Date(u.created).toDateString()===today).length;
+            document.getElementById('stat-today-users').textContent=todayUsers;
+            
+            const thisMonth=new Date().getMonth();
+            const monthUsers=allUsers.filter(u=>u.created&&new Date(u.created).getMonth()===thisMonth).length;
+            document.getElementById('stat-month-users').textContent=monthUsers;
+        }
+
+        async function viewUser(uid){
+            const user=allUsers.find(u=>u.uid===uid);
+            if(!user)return;
+            const snap=await db.ref('support_tickets').orderByChild('userId').equalTo(uid).once('value');
+            const tickets=[];
+            snap.forEach(c=>tickets.push(c.val()));
+            alert(`KULLANICI DETAYI\n\nAd: ${user.name||'Bilinmiyor'}\nEmail: ${user.email}\nKullanıcı Adı: ${user.username||'Yok'}\nKayıt: ${user.created?new Date(user.created).toLocaleString('tr-TR'):'Bilinmiyor'}\nProvider: ${user.provider||'email'}\nDurum: ${user.blocked?'Engelli':'Aktif'}\nDestek Talepleri: ${tickets.length}\n\nUID: ${uid}`);
+        }
+
+        async function toggleUserBlock(uid,block){
+            if(!confirm('Bu kullanıcıyı '+(block?'engellemek':'aktif etmek')+' istediğinize emin misiniz?'))return;
+            try{
+                await db.ref('users/'+uid+'/blocked').set(block);
+                await loadUsers();
+                log('Kullanıcı '+(block?'engellendi':'aktif edildi'));
+            }catch(e){alert('Hata: '+e.message)}
+        }
         async function loadSupport(){try{const snapshot=await db.ref('support_tickets').once('value');const tickets=[];snapshot.forEach(child=>{tickets.push(child.val())});tickets.sort((a,b)=>b.created.localeCompare(a.created));const el=g('supportList');const statusColors={aktif:'text-green-400 bg-green-500/15',beklemede:'text-yellow-400 bg-yellow-500/15',kapali:'text-gray-400 bg-gray-500/15'};el.innerHTML=tickets.map(t=>`<tr><td class="text-sm">${t.userEmail}</td><td class="font-semibold">${t.subject}</td><td><span class="px-2 py-0.5 bg-purple-500/15 text-purple-400 rounded text-[10px] font-bold uppercase">${t.category}</span></td><td><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusColors[t.status]||statusColors.aktif}">${t.status}</span></td><td class="text-gray-500 text-xs">${new Date(t.created).toLocaleString('tr-TR')}</td><td class="flex gap-1"><button onclick="viewTicket('${t.id}')" class="btn-s">Gör</button><button onclick="changeStatus('${t.id}')" class="btn-s">Durum</button><button onclick="delTicket('${t.id}')" class="btn-d">Sil</button></td></tr>`).join('')||'<tr><td colspan="6" class="text-center text-gray-500 py-8">Henüz destek talebi yok</td></tr>'}catch(e){g('supportList').innerHTML='<tr><td colspan="6" class="text-center text-red-500 py-8">Hata: '+e.message+'</td></tr>'}}
         async function viewTicket(id){try{const snapshot=await db.ref('support_tickets/'+id).once('value');const t=snapshot.val();if(t)alert(`DESTEK TALEBİ #${id}\n\nKullanıcı: ${t.userEmail}\nKonu: ${t.subject}\nKategori: ${t.category}\nDurum: ${t.status}\nTarih: ${new Date(t.created).toLocaleString('tr-TR')}\n\nMesaj:\n${t.message}`)}catch(e){alert('Hata: '+e.message)}}
         async function changeStatus(id){const newStatus=prompt('Yeni durum:\n\naktif\nbeklemede\nkapali');if(!newStatus||!['aktif','beklemede','kapali'].includes(newStatus))return;try{await db.ref('support_tickets/'+id+'/status').set(newStatus);loadSupport();log('Destek durumu güncellendi')}catch(e){alert('Hata: '+e.message)}}
         async function delTicket(id){if(!confirm('Bu destek talebini silmek istediğinize emin misiniz?'))return;try{await db.ref('support_tickets/'+id).remove();loadSupport();log('Destek talebi silindi')}catch(e){alert('Hata: '+e.message)}}
+        
+        async function replyTicket(id){
+            const reply=prompt('Yanıtınız:');
+            if(!reply)return;
+            try{
+                const replyId=Date.now();
+                await db.ref('support_tickets/'+id+'/replies/'+replyId).set({
+                    id:replyId,
+                    message:reply,
+                    author:'Admin',
+                    created:new Date().toISOString()
+                });
+                await db.ref('support_tickets/'+id+'/lastReply').set(new Date().toISOString());
+                alert('✓ Yanıt gönderildi!');
+                loadSupport();
+                log('Destek talebine yanıt verildi');
+            }catch(e){alert('Hata: '+e.message)}
+        }
         async function checkConnection(){try{await db.ref('.info/connected').once('value');g('sync-dot').className='sync-dot sync-ok';g('sync-text').textContent='Sistem Sorunsuz';g('system-status').textContent='Sistem Sorunsuz Çalışıyor'}catch(e){g('sync-dot').className='sync-dot sync-err';g('sync-text').textContent='Bağlantı Hatası';g('system-status').textContent='Bağlantıda Sorun Var'}}
         async function sync(){g('sync-dot').className='sync-dot sync-loading';g('sync-text').textContent='Kaydediliyor...';try{await db.ref('site_data').set({announcements:ls(K.ann),projects:ls(K.proj),downloads:ls(K.dl),sponsors:ls(K.sponsor),cms_content:ls(K.cms),cookie_settings:ls(K.cookies),settings:ls(K.settings)});g('sync-dot').className='sync-dot sync-ok';g('sync-text').textContent='Sistem Sorunsuz';g('system-status').textContent='Sistem Sorunsuz Çalışıyor'}catch(e){g('sync-dot').className='sync-dot sync-err';g('sync-text').textContent='Hata: '+e.message;g('system-status').textContent='Bağlantıda Sorun Var'}}
         function go(tab,el){document.querySelectorAll('.tab-c').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));g('t-'+tab).classList.add('active');if(el)el.classList.add('active')}
