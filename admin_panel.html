@@ -287,6 +287,54 @@
     </div>
 
     <div id="m-ann" class="modal"><div class="modal-box"><h3 class="text-xl font-black mb-4">Duyuru</h3><div class="space-y-3"><input type="text" id="annTitle" class="input-f" placeholder="Başlık"><textarea id="annContent" class="input-f" rows="4" placeholder="İçerik"></textarea><select id="annCat" class="input-f"><option value="bilgi">Bilgi</option><option value="guncelleme">Güncelleme</option><option value="onemli">Önemli</option><option value="etkinlik">Etkinlik</option></select><div class="flex gap-3"><button onclick="saveAnn()" class="btn-p flex-1">Kaydet</button><button onclick="closeModal('ann')" class="btn-s flex-1">İptal</button></div></div></div></div>
+    
+    <div id="m-reply" class="modal">
+        <div class="modal-box" style="max-width: 700px;">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-black">Destek Talebine Yanıt Ver</h3>
+                <button onclick="closeReplyModal()" class="w-8 h-8 rounded-lg hover:bg-white/10 transition-all">
+                    <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
+            <div class="glass p-4 mb-4 max-h-60 overflow-y-auto">
+                <div class="flex items-start gap-3 mb-3">
+                    <div class="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <p class="font-bold text-sm" id="replyUserEmail"></p>
+                            <span class="px-2 py-0.5 bg-purple-500/15 text-purple-400 rounded text-[10px] font-bold uppercase" id="replyCategory"></span>
+                        </div>
+                        <h4 class="font-bold text-lg mb-2" id="replySubject"></h4>
+                        <p class="text-gray-400 text-sm leading-relaxed" id="replyMessage"></p>
+                        <p class="text-xs text-gray-600 mt-2" id="replyDate"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="replyHistory" class="mb-4"></div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Yanıtınız</label>
+                    <textarea id="replyText" class="input-f" rows="6" placeholder="Yanıtınızı buraya yazın..."></textarea>
+                </div>
+                
+                <div class="flex items-center gap-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl">
+                    <svg class="w-5 h-5 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <p class="text-xs text-blue-400">Yanıtınız kullanıcının email adresine gönderilecek ve destek talebinde görünecek.</p>
+                </div>
+                
+                <div class="flex gap-3">
+                    <button onclick="sendReply()" class="btn-p flex-1 py-4">YANIT GÖNDER</button>
+                    <button onclick="closeReplyModal()" class="btn-s flex-1 py-4">İPTAL</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div id="m-proj" class="modal"><div class="modal-box"><h3 class="text-xl font-black mb-4">Proje</h3><div class="space-y-3"><input type="text" id="projName" class="input-f" placeholder="Ad"><textarea id="projDesc" class="input-f" rows="2" placeholder="Açıklama"></textarea><div class="grid grid-cols-2 gap-3"><input type="text" id="projVer" class="input-f" placeholder="v1.0"><select id="projType" class="input-f"><option value="modpack">ModPack</option><option value="mod">Mod</option><option value="texture">Texture Pack</option><option value="script">Script</option><option value="exe">.EXE Uygulama</option><option value="other">Diğer</option></select></div><select id="projStatus" class="input-f"><option value="release">Release</option><option value="beta">Beta</option><option value="alpha">Alpha</option><option value="development">Development</option></select><input type="url" id="projLink" class="input-f" placeholder="Link"><input type="text" id="projIcon" class="input-f" placeholder="İkon URL"><input type="text" id="projCat" class="input-f" placeholder="Kategori"><div class="flex gap-3"><button onclick="saveProj()" class="btn-p flex-1">Kaydet</button><button onclick="closeModal('proj')" class="btn-s flex-1">İptal</button></div></div></div></div>
     <div id="m-dl" class="modal"><div class="modal-box"><h3 class="text-xl font-black mb-4">İndirme</h3><div class="space-y-3"><input type="text" id="dlName" class="input-f" placeholder="İsim"><div class="grid grid-cols-2 gap-3"><input type="text" id="dlVer" class="input-f" placeholder="1.0"><select id="dlType" class="input-f"><option value="modpack">ModPack</option><option value="mod">Mod</option><option value="texture">Texture Pack</option><option value="script">Script</option><option value="exe">.EXE Uygulama</option><option value="other">Diğer</option></select></div><input type="url" id="dlLink" class="input-f" placeholder="Link"><div class="flex gap-3"><button onclick="saveDl()" class="btn-p flex-1">Kaydet</button><button onclick="closeModal('dl')" class="btn-s flex-1">İptal</button></div></div></div></div>
     <div id="m-sponsor" class="modal"><div class="modal-box"><h3 class="text-xl font-black mb-4">Sponsor</h3><div class="space-y-3"><input type="text" id="spName" class="input-f" placeholder="İsim"><input type="text" id="spTag" class="input-f" placeholder="Slogan"><textarea id="spDesc" class="input-f" rows="2" placeholder="Açıklama"></textarea><input type="text" id="spLogo" class="input-f" placeholder="Logo URL"><input type="url" id="spWeb" class="input-f" placeholder="Website"><input type="url" id="spDiscord" class="input-f" placeholder="Discord"><input type="text" id="spIP" class="input-f" placeholder="IP"><textarea id="spFeatures" class="input-f" rows="3" placeholder="Özellikler (her satır 1)"></textarea><div class="flex gap-3"><button onclick="saveSponsor()" class="btn-p flex-1">Kaydet</button><button onclick="closeModal('sponsor')" class="btn-s flex-1">İptal</button></div></div></div></div>
@@ -392,27 +440,76 @@
                 log('Kullanıcı '+(block?'engellendi':'aktif edildi'));
             }catch(e){alert('Hata: '+e.message)}
         }
-        async function loadSupport(){try{const snapshot=await db.ref('support_tickets').once('value');const tickets=[];snapshot.forEach(child=>{tickets.push(child.val())});tickets.sort((a,b)=>b.created.localeCompare(a.created));const el=g('supportList');const statusColors={aktif:'text-green-400 bg-green-500/15',beklemede:'text-yellow-400 bg-yellow-500/15',kapali:'text-gray-400 bg-gray-500/15'};el.innerHTML=tickets.map(t=>`<tr><td class="text-sm">${t.userEmail}</td><td class="font-semibold">${t.subject}</td><td><span class="px-2 py-0.5 bg-purple-500/15 text-purple-400 rounded text-[10px] font-bold uppercase">${t.category}</span></td><td><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusColors[t.status]||statusColors.aktif}">${t.status}</span></td><td class="text-gray-500 text-xs">${new Date(t.created).toLocaleString('tr-TR')}</td><td><div class="flex gap-1 flex-wrap"><button onclick="viewTicket('${t.id}')" class="btn-s">Gör</button><button onclick="replyTicket('${t.id}')" class="btn-p text-[10px] px-2 py-1">Yanıtla</button><button onclick="changeStatus('${t.id}')" class="btn-s">Durum</button><button onclick="delTicket('${t.id}')" class="btn-d">Sil</button></div></td></tr>`).join('')||'<tr><td colspan="6" class="text-center text-gray-500 py-8">Henüz destek talebi yok</td></tr>'}catch(e){g('supportList').innerHTML='<tr><td colspan="6" class="text-center text-red-500 py-8">Hata: '+e.message+'</td></tr>'}}
+        async function loadSupport(){try{const snapshot=await db.ref('support_tickets').once('value');const tickets=[];snapshot.forEach(child=>{tickets.push(child.val())});tickets.sort((a,b)=>b.created.localeCompare(a.created));const el=g('supportList');const statusColors={aktif:'text-green-400 bg-green-500/15',beklemede:'text-yellow-400 bg-yellow-500/15',kapali:'text-gray-400 bg-gray-500/15'};el.innerHTML=tickets.map(t=>`<tr><td class="text-sm">${t.userEmail}</td><td class="font-semibold">${t.subject}</td><td><span class="px-2 py-0.5 bg-purple-500/15 text-purple-400 rounded text-[10px] font-bold uppercase">${t.category}</span></td><td><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusColors[t.status]||statusColors.aktif}">${t.status}</span></td><td class="text-gray-500 text-xs">${new Date(t.created).toLocaleString('tr-TR')}</td><td class="whitespace-nowrap"><button onclick="viewTicket(${t.id})" class="btn-s mr-1">Gör</button><button onclick="replyTicket(${t.id})" class="btn-p text-[10px] px-2 py-1 mr-1">Yanıtla</button><button onclick="changeStatus(${t.id})" class="btn-s mr-1">Durum</button><button onclick="delTicket(${t.id})" class="btn-d">Sil</button></td></tr>`).join('')||'<tr><td colspan="6" class="text-center text-gray-500 py-8">Henüz destek talebi yok</td></tr>'}catch(e){g('supportList').innerHTML='<tr><td colspan="6" class="text-center text-red-500 py-8">Hata: '+e.message+'</td></tr>'}}
         async function viewTicket(id){try{const snapshot=await db.ref('support_tickets/'+id).once('value');const t=snapshot.val();if(t)alert(`DESTEK TALEBİ #${id}\n\nKullanıcı: ${t.userEmail}\nKonu: ${t.subject}\nKategori: ${t.category}\nDurum: ${t.status}\nTarih: ${new Date(t.created).toLocaleString('tr-TR')}\n\nMesaj:\n${t.message}`)}catch(e){alert('Hata: '+e.message)}}
         async function changeStatus(id){const newStatus=prompt('Yeni durum:\n\naktif\nbeklemede\nkapali');if(!newStatus||!['aktif','beklemede','kapali'].includes(newStatus))return;try{await db.ref('support_tickets/'+id+'/status').set(newStatus);loadSupport();log('Destek durumu güncellendi')}catch(e){alert('Hata: '+e.message)}}
         async function delTicket(id){if(!confirm('Bu destek talebini silmek istediğinize emin misiniz?'))return;try{await db.ref('support_tickets/'+id).remove();loadSupport();log('Destek talebi silindi')}catch(e){alert('Hata: '+e.message)}}
         
         async function replyTicket(id){
-            const reply=prompt('Yanıtınız:');
-            if(!reply)return;
+            try{
+                const snapshot=await db.ref('support_tickets/'+id).once('value');
+                const ticket=snapshot.val();
+                if(!ticket){alert('Ticket bulunamadı!');return}
+                
+                document.getElementById('replyUserEmail').textContent=ticket.userEmail;
+                document.getElementById('replyCategory').textContent=ticket.category;
+                document.getElementById('replySubject').textContent=ticket.subject;
+                document.getElementById('replyMessage').textContent=ticket.message;
+                document.getElementById('replyDate').textContent='Oluşturulma: '+new Date(ticket.created).toLocaleString('tr-TR');
+                document.getElementById('replyText').value='';
+                
+                // Yanıt geçmişini yükle
+                const historyDiv=document.getElementById('replyHistory');
+                if(ticket.replies){
+                    const replies=Object.values(ticket.replies).sort((a,b)=>new Date(a.created)-new Date(b.created));
+                    historyDiv.innerHTML='<div class="space-y-3 mb-4">'+replies.map(r=>`
+                        <div class="glass p-4 border-l-4 ${r.author==='Admin'?'border-green-500':'border-blue-500'}">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="px-2 py-1 ${r.author==='Admin'?'bg-green-500/15 text-green-400':'bg-blue-500/15 text-blue-400'} rounded text-[10px] font-bold uppercase">${r.author}</span>
+                                <span class="text-xs text-gray-500">${new Date(r.created).toLocaleString('tr-TR')}</span>
+                            </div>
+                            <p class="text-sm text-gray-300">${r.message}</p>
+                        </div>
+                    `).join('')+'</div>';
+                }else{
+                    historyDiv.innerHTML='<p class="text-gray-500 text-sm mb-4">Henüz yanıt yok</p>';
+                }
+                
+                window.currentReplyTicketId=id;
+                document.getElementById('m-reply').classList.add('active');
+            }catch(e){
+                alert('Hata: '+e.message);
+            }
+        }
+
+        function closeReplyModal(){
+            document.getElementById('m-reply').classList.remove('active');
+            window.currentReplyTicketId=null;
+        }
+
+        async function sendReply(){
+            const replyText=document.getElementById('replyText').value.trim();
+            if(!replyText){alert('Lütfen bir yanıt yazın!');return}
+            if(!window.currentReplyTicketId){alert('Ticket ID bulunamadı!');return}
+            
             try{
                 const replyId=Date.now();
-                await db.ref('support_tickets/'+id+'/replies/'+replyId).set({
+                await db.ref('support_tickets/'+window.currentReplyTicketId+'/replies/'+replyId).set({
                     id:replyId,
-                    message:reply,
+                    message:replyText,
                     author:'Admin',
                     created:new Date().toISOString()
                 });
-                await db.ref('support_tickets/'+id+'/lastReply').set(new Date().toISOString());
-                alert('✓ Yanıt gönderildi!');
+                await db.ref('support_tickets/'+window.currentReplyTicketId+'/lastReply').set(new Date().toISOString());
+                await db.ref('support_tickets/'+window.currentReplyTicketId+'/status').set('beklemede');
+                
+                alert('✓ Yanıt başarıyla gönderildi!');
+                closeReplyModal();
                 loadSupport();
                 log('Destek talebine yanıt verildi');
-            }catch(e){alert('Hata: '+e.message)}
+            }catch(e){
+                alert('Hata: '+e.message);
+            }
         }
         async function checkConnection(){try{await db.ref('.info/connected').once('value');g('sync-dot').className='sync-dot sync-ok';g('sync-text').textContent='Sistem Sorunsuz';g('system-status').textContent='Sistem Sorunsuz Çalışıyor'}catch(e){g('sync-dot').className='sync-dot sync-err';g('sync-text').textContent='Bağlantı Hatası';g('system-status').textContent='Bağlantıda Sorun Var'}}
         async function sync(){g('sync-dot').className='sync-dot sync-loading';g('sync-text').textContent='Kaydediliyor...';try{await db.ref('site_data').set({announcements:ls(K.ann),projects:ls(K.proj),downloads:ls(K.dl),sponsors:ls(K.sponsor),cms_content:ls(K.cms),cookie_settings:ls(K.cookies),settings:ls(K.settings)});g('sync-dot').className='sync-dot sync-ok';g('sync-text').textContent='Sistem Sorunsuz';g('system-status').textContent='Sistem Sorunsuz Çalışıyor'}catch(e){g('sync-dot').className='sync-dot sync-err';g('sync-text').textContent='Hata: '+e.message;g('system-status').textContent='Bağlantıda Sorun Var'}}
