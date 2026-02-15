@@ -302,8 +302,8 @@
                         <input type="text" id="regName" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-blue-500 transition-all" placeholder="Ad Soyad" required>
                         <input type="email" id="regEmail" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-blue-500 transition-all" placeholder="E-posta" required>
                         <input type="password" id="regPass" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-blue-500 transition-all" placeholder="Şifre (min 6 karakter)" required>
-                        <button type="submit" class="w-full btn-p py-4">KAYIT OL</button>
-                        <button type="button" onclick="toggleAuthMode()" class="w-full text-sm text-gray-400 hover:text-white">Zaten hesabınız var mı? Giriş yapın</button>
+                        <button type="submit" class="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black rounded-xl text-sm uppercase tracking-widest hover:opacity-90 transition-all shadow-xl border-2 border-blue-500/50">KAYIT OL</button>
+                        <button type="button" onclick="toggleAuthMode()" class="w-full text-sm text-gray-400 hover:text-white transition-colors">Zaten hesabınız var mı? Giriş yapın</button>
                     </div>
                 </form>
                 <p id="auth-error" class="text-red-500 text-xs text-center hidden font-bold"></p>
@@ -872,14 +872,14 @@
                     <input type="text" id="regName" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-blue-500 transition-all" placeholder="Ad Soyad" required>
                     <input type="email" id="regEmail" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-blue-500 transition-all" placeholder="E-posta" required>
                     <input type="password" id="regPass" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-blue-500 transition-all" placeholder="Şifre (min 6 karakter)" required>
-                    <button type="submit" class="w-full btn-p py-4">KAYIT OL</button>
-                    <button type="button" onclick="toggleAuthMode()" class="w-full text-sm text-gray-400 hover:text-white">Zaten hesabınız var mı? Giriş yapın</button>`;
+                    <button type="submit" class="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black rounded-xl text-sm uppercase tracking-widest hover:opacity-90 transition-all shadow-xl border-2 border-blue-500/50 active:scale-95">KAYIT OL</button>
+                    <button type="button" onclick="toggleAuthMode()" class="w-full text-sm text-gray-400 hover:text-white transition-colors">Zaten hesabınız var mı? Giriş yapın</button>`;
             } else {
                 form.innerHTML = `
                     <input type="email" id="loginEmail" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-blue-500 transition-all" placeholder="E-posta" required>
                     <input type="password" id="loginPass" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-blue-500 transition-all" placeholder="Şifre" required>
-                    <button type="submit" class="w-full btn-p py-4">GİRİŞ YAP</button>
-                    <button type="button" onclick="toggleAuthMode()" class="w-full text-sm text-gray-400 hover:text-white">Hesabınız yok mu? Kayıt olun</button>`;
+                    <button type="submit" class="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-black rounded-xl text-sm uppercase tracking-widest hover:opacity-90 transition-all shadow-xl border-2 border-green-500/50 active:scale-95">GİRİŞ YAP</button>
+                    <button type="button" onclick="toggleAuthMode()" class="w-full text-sm text-gray-400 hover:text-white transition-colors">Hesabınız yok mu? Kayıt olun</button>`;
             }
         }
 
