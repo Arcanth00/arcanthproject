@@ -166,11 +166,12 @@
                                 <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                             </div>
                             <div>
-                                <h2 class="text-2xl font-black">Şifre Değiştir</h2>
-                                <p class="text-gray-400 text-sm">Güvenliğiniz için güçlü bir şifre seçin</p>
+                                <h2 class="text-2xl font-black">Şifre Yönetimi</h2>
+                                <p class="text-gray-400 text-sm" id="passwordSubtitle">Güvenliğiniz için güçlü bir şifre seçin</p>
                             </div>
                         </div>
-                        <div class="space-y-4">
+                        
+                        <div id="passwordFormNormal" class="space-y-4">
                             <div>
                                 <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Mevcut Şifre</label>
                                 <input type="password" id="currentPass" class="input-f" placeholder="Mevcut şifreniz">
@@ -184,6 +185,21 @@
                                 <input type="password" id="confirmPass" class="input-f" placeholder="Yeni şifrenizi tekrar girin">
                             </div>
                             <button onclick="changePassword()" class="btn-p w-full">ŞİFREYİ DEĞİŞTİR</button>
+                        </div>
+                        
+                        <div id="passwordFormOAuth" class="hidden space-y-4">
+                            <div class="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl mb-4">
+                                <p class="text-sm text-blue-400">Google/GitHub ile giriş yaptınız. Şifre belirleyerek email ile de giriş yapabilirsiniz.</p>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Yeni Şifre Belirleyin</label>
+                                <input type="password" id="oauthNewPass" class="input-f" placeholder="Şifreniz (min 6 karakter)">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Yeni Şifre (Tekrar)</label>
+                                <input type="password" id="oauthConfirmPass" class="input-f" placeholder="Şifrenizi tekrar girin">
+                            </div>
+                            <button onclick="setPasswordForOAuth()" class="btn-p w-full">ŞİFRE BELİRLE</button>
                         </div>
                     </div>
                 </div>
@@ -269,7 +285,29 @@
                 const date=new Date(userData.lastUsernameChange);
                 document.getElementById('lastChangeText').textContent='Son değişiklik: '+date.toLocaleDateString('tr-TR');
             }
+            
+            // OAuth kontrolü - Google/GitHub ile giriş yaptıysa
+            if(userData.provider==='google'||userData.provider==='github'){
+                document.getElementById('passwordFormNormal').classList.add('hidden');
+                document.getElementById('passwordFormOAuth').classList.remove('hidden');
+                document.getElementById('passwordSubtitle').textContent='Google/GitHub ile giriş yaptınız - Şifre belirleyin';
+            }
         });
+
+        async function setPasswordForOAuth(){
+            const newPass=document.getElementById('oauthNewPass').value;
+            const confirm=document.getElementById('oauthConfirmPass').value;
+            if(!newPass||!confirm){alert('Tüm alanları doldurun!');return}
+            if(newPass.length<6){alert('Şifre en az 6 karakter olmalı!');return}
+            if(newPass!==confirm){alert('Şifreler eşleşmiyor!');return}
+            if(!confirm('Şifre belirledikten sonra email ile de giriş yapabileceksiniz. Devam etmek istiyor musunuz?'))return;
+            try{
+                await currentUser.updatePassword(newPass);
+                await db.ref('users/'+currentUser.uid+'/hasPassword').set(true);
+                alert('✓ Şifreniz başarıyla belirlendi!\n\nArtık email ve şifrenizle de giriş yapabilirsiniz.');
+                location.reload();
+            }catch(e){alert('Hata: '+e.message+'\n\nLütfen çıkış yapıp tekrar giriş yapın ve tekrar deneyin.')}
+        }
 
         function showSection(section){
             document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
