@@ -879,7 +879,23 @@
                     <input type="email" id="loginEmail" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-blue-500 transition-all" placeholder="E-posta" required>
                     <input type="password" id="loginPass" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-blue-500 transition-all" placeholder="Şifre" required>
                     <button type="submit" class="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-black rounded-xl text-sm uppercase tracking-widest hover:opacity-90 transition-all shadow-xl border-2 border-green-500/50 active:scale-95">GİRİŞ YAP</button>
+                    <button type="button" onclick="resetPassword()" class="w-full text-sm text-blue-400 hover:text-blue-300 transition-colors">Şifremi Unuttum</button>
                     <button type="button" onclick="toggleAuthMode()" class="w-full text-sm text-gray-400 hover:text-white transition-colors">Hesabınız yok mu? Kayıt olun</button>`;
+            }
+        }
+
+        async function resetPassword() {
+            const email = prompt('Şifre sıfırlama linkini göndermek için e-posta adresinizi girin:');
+            if (!email) return;
+            try {
+                await auth.sendPasswordResetEmail(email);
+                alert('✓ Şifre sıfırlama linki e-posta adresinize gönderildi!\n\nLütfen e-postanızı kontrol edin.');
+            } catch (e) {
+                if (e.code === 'auth/user-not-found') {
+                    alert('Bu e-posta adresi ile kayıtlı kullanıcı bulunamadı!');
+                } else {
+                    alert('Hata: ' + e.message);
+                }
             }
         }
 
