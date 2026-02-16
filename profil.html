@@ -10,6 +10,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     <style>
         body {
             font-family: 'Inter', system-ui, sans-serif;
@@ -233,205 +234,203 @@
                 <div id="section-info" class="section active">
                     <div class="glass p-8 space-y-6">
                         <div class="flex items-center gap-4 mb-6">
-                            <div class="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center">
-                                <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h2 class="text-2xl font-black">Hesap Bilgileri</h2>
-                                <p class="text-gray-400 text-sm">Mevcut hesap bilgileriniz</p>
+                            <div class="relative group cursor-not-allowed"
+                                onclick="alert('Profil fotoğrafı değiştirme özelliği çok yakında eklenecek!')">
+                                <img id="profileImage" src="https://via.placeholder.com/150/1e293b/FFFFFF?text=USER"
+                                    class="w-32 h-32 rounded-full border-4 border-blue-500/30 object-cover shadow-2xl transition-all group-hover:scale-105 group-hover:border-blue-500">
+                                <div
+                                    class="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                                    <span class="text-xs font-bold text-white uppercase tracking-widest">Çok
+                                        Yakında</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="space-y-4">
-                            <div class="p-4 bg-white/5 rounded-xl">
-                                <p class="text-xs text-gray-500 mb-1">Ad Soyad</p>
-                                <p class="font-bold" id="displayName">Yükleniyor...</p>
-                            </div>
-                            <div class="p-4 bg-white/5 rounded-xl">
-                                <p class="text-xs text-gray-500 mb-1">Kullanıcı Adı</p>
-                                <p class="font-bold" id="displayUsername">Yükleniyor...</p>
-                            </div>
-                            <div class="p-4 bg-white/5 rounded-xl">
-                                <p class="text-xs text-gray-500 mb-1">E-posta Adresi</p>
-                                <p class="font-bold" id="displayEmail">Yükleniyor...</p>
-                            </div>
-                            <div class="p-4 bg-white/5 rounded-xl">
-                                <p class="text-xs text-gray-500 mb-1">Kayıt Tarihi</p>
-                                <p class="font-bold" id="displayCreated">Yükleniyor...</p>
-                            </div>
+                        <div>
+                            <h2 class="text-2xl font-black">Hesap Bilgileri</h2>
+                            <p class="text-gray-400 text-sm">Profil fotoğrafı ve bilgilerinizi yönetin</p>
                         </div>
                     </div>
-                </div>
-
-                <!-- Kullanıcı Adı Değiştir -->
-                <div id="section-username" class="section">
-                    <div class="glass p-8 space-y-6">
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center">
-                                <svg class="w-8 h-8 text-purple-500" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h2 class="text-2xl font-black">Kullanıcı Adı Değiştir</h2>
-                                <p class="text-gray-400 text-sm">Kullanıcı adınızı 2 günde bir değiştirebilirsiniz</p>
-                            </div>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-white/5 rounded-xl">
+                            <p class="text-xs text-gray-500 mb-1">Ad Soyad</p>
+                            <p class="font-bold" id="displayName">Yükleniyor...</p>
                         </div>
-                        <div class="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl mb-4">
-                            <p class="text-sm text-yellow-500" id="lastChangeText">Son değişiklik: Hiç değiştirilmedi
-                            </p>
+                        <div class="p-4 bg-white/5 rounded-xl">
+                            <p class="text-xs text-gray-500 mb-1">Kullanıcı Adı</p>
+                            <p class="font-bold" id="displayUsername">Yükleniyor...</p>
                         </div>
-                        <div class="space-y-4">
-                            <div>
-                                <label
-                                    class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Mevcut
-                                    Kullanıcı Adı</label>
-                                <input type="text" id="currentUsernameDisplay" class="input-f" disabled>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Yeni
-                                    Kullanıcı Adı</label>
-                                <input type="text" id="newUsername" class="input-f" placeholder="Yeni kullanıcı adınız">
-                            </div>
-                            <button onclick="changeUsername()" class="btn-p w-full">KULLANICI ADINI DEĞİŞTİR</button>
+                        <div class="p-4 bg-white/5 rounded-xl">
+                            <p class="text-xs text-gray-500 mb-1">E-posta Adresi</p>
+                            <p class="font-bold" id="displayEmail">Yükleniyor...</p>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Şifre Değiştir -->
-                <div id="section-password" class="section">
-                    <div class="glass p-8 space-y-6">
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center">
-                                <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h2 class="text-2xl font-black">Şifre Yönetimi</h2>
-                                <p class="text-gray-400 text-sm" id="passwordSubtitle">Güvenliğiniz için güçlü bir şifre
-                                    seçin</p>
-                            </div>
+                        <div class="p-4 bg-white/5 rounded-xl">
+                            <p class="text-xs text-gray-500 mb-1">Kayıt Tarihi</p>
+                            <p class="font-bold" id="displayCreated">Yükleniyor...</p>
                         </div>
-
-                        <div id="passwordFormNormal" class="space-y-4">
-                            <div>
-                                <label
-                                    class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Mevcut
-                                    Şifre</label>
-                                <input type="password" id="currentPass" class="input-f" placeholder="Mevcut şifreniz">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Yeni
-                                    Şifre</label>
-                                <input type="password" id="newPass" class="input-f"
-                                    placeholder="Yeni şifreniz (min 6 karakter)">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Yeni
-                                    Şifre (Tekrar)</label>
-                                <input type="password" id="confirmPass" class="input-f"
-                                    placeholder="Yeni şifrenizi tekrar girin">
-                            </div>
-                            <button onclick="changePassword()" class="btn-p w-full">ŞİFREYİ DEĞİŞTİR</button>
-                        </div>
-
-                        <div id="passwordFormOAuth" class="hidden space-y-4">
-                            <div class="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl mb-4">
-                                <p class="text-sm text-blue-400">Google/GitHub ile giriş yaptınız. Şifre belirleyerek
-                                    email ile de giriş yapabilirsiniz.</p>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Yeni
-                                    Şifre Belirleyin</label>
-                                <input type="password" id="oauthNewPass" class="input-f"
-                                    placeholder="Şifreniz (min 6 karakter)">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Yeni
-                                    Şifre (Tekrar)</label>
-                                <input type="password" id="oauthConfirmPass" class="input-f"
-                                    placeholder="Şifrenizi tekrar girin">
-                            </div>
-                            <button onclick="setPasswordForOAuth()" class="btn-p w-full">ŞİFRE BELİRLE</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- E-posta Değiştir -->
-                <div id="section-email" class="section">
-                    <div class="glass p-8 space-y-6">
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="w-16 h-16 bg-yellow-500/10 rounded-2xl flex items-center justify-center">
-                                <svg class="w-8 h-8 text-yellow-500" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h2 class="text-2xl font-black">E-posta Değiştir</h2>
-                                <p class="text-gray-400 text-sm">Hesabınıza bağlı e-posta adresini güncelleyin</p>
-                            </div>
-                        </div>
-                        <div class="space-y-4">
-                            <div>
-                                <label
-                                    class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Mevcut
-                                    E-posta</label>
-                                <input type="email" id="currentEmailDisplay" class="input-f" disabled>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Yeni
-                                    E-posta</label>
-                                <input type="email" id="newEmail" class="input-f" placeholder="Yeni e-posta adresiniz">
-                            </div>
-                            <div>
-                                <label
-                                    class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Şifreniz</label>
-                                <input type="password" id="emailPass" class="input-f"
-                                    placeholder="Güvenlik için şifrenizi girin">
-                            </div>
-                            <button onclick="changeEmail()" class="btn-p w-full">E-POSTA DEĞİŞTİR</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Hesap Sil -->
-                <div id="section-delete" class="section">
-                    <div class="glass p-8 space-y-6 border-red-500/20">
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center">
-                                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h2 class="text-2xl font-black text-red-400">Hesap Yönetimi</h2>
-                                <p class="text-gray-400 text-sm">Hesabınızı kalıcı olarak silme talebi</p>
-                            </div>
-                        </div>
-                        <div class="p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
-                            <p class="text-sm text-red-400 font-bold mb-2">⚠️ Önemli Uyarı</p>
-                            <ul class="text-sm text-gray-400 space-y-1 list-disc list-inside">
-                                <li>Hesabınız destek ekibi tarafından incelendikten sonra silinecektir</li>
-                                <li>Tüm verileriniz kalıcı olarak silinecek</li>
-                                <li>Bu işlem geri alınamaz</li>
-                            </ul>
-                        </div>
-                        <button onclick="deleteAccount()" class="btn-d w-full">HESAP SİLME TALEBİ OLUŞTUR</button>
                     </div>
                 </div>
             </div>
+
+            <!-- Kullanıcı Adı Değiştir -->
+            <div id="section-username" class="section">
+                <div class="glass p-8 space-y-6">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-black">Kullanıcı Adı Değiştir</h2>
+                            <p class="text-gray-400 text-sm">Kullanıcı adınızı 2 günde bir değiştirebilirsiniz</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl mb-4">
+                        <p class="text-sm text-yellow-500" id="lastChangeText">Son değişiklik: Hiç değiştirilmedi
+                        </p>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Mevcut
+                                Kullanıcı Adı</label>
+                            <input type="text" id="currentUsernameDisplay" class="input-f" disabled>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Yeni
+                                Kullanıcı Adı</label>
+                            <input type="text" id="newUsername" class="input-f" placeholder="Yeni kullanıcı adınız">
+                        </div>
+                        <button onclick="changeUsername()" class="btn-p w-full">KULLANICI ADINI DEĞİŞTİR</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Şifre Değiştir -->
+            <div id="section-password" class="section">
+                <div class="glass p-8 space-y-6">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-black">Şifre Yönetimi</h2>
+                            <p class="text-gray-400 text-sm" id="passwordSubtitle">Güvenliğiniz için güçlü bir şifre
+                                seçin</p>
+                        </div>
+                    </div>
+
+                    <div id="passwordFormNormal" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Mevcut
+                                Şifre</label>
+                            <input type="password" id="currentPass" class="input-f" placeholder="Mevcut şifreniz">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Yeni
+                                Şifre</label>
+                            <input type="password" id="newPass" class="input-f"
+                                placeholder="Yeni şifreniz (min 6 karakter)">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Yeni
+                                Şifre (Tekrar)</label>
+                            <input type="password" id="confirmPass" class="input-f"
+                                placeholder="Yeni şifrenizi tekrar girin">
+                        </div>
+                        <button onclick="changePassword()" class="btn-p w-full">ŞİFREYİ DEĞİŞTİR</button>
+                    </div>
+
+                    <div id="passwordFormOAuth" class="hidden space-y-4">
+                        <div class="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl mb-4">
+                            <p class="text-sm text-blue-400">Google/GitHub ile giriş yaptınız. Şifre belirleyerek
+                                email ile de giriş yapabilirsiniz.</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Yeni
+                                Şifre Belirleyin</label>
+                            <input type="password" id="oauthNewPass" class="input-f"
+                                placeholder="Şifreniz (min 6 karakter)">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Yeni
+                                Şifre (Tekrar)</label>
+                            <input type="password" id="oauthConfirmPass" class="input-f"
+                                placeholder="Şifrenizi tekrar girin">
+                        </div>
+                        <button onclick="setPasswordForOAuth()" class="btn-p w-full">ŞİFRE BELİRLE</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- E-posta Değiştir -->
+            <div id="section-email" class="section">
+                <div class="glass p-8 space-y-6">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-16 h-16 bg-yellow-500/10 rounded-2xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-black">E-posta Değiştir</h2>
+                            <p class="text-gray-400 text-sm">Hesabınıza bağlı e-posta adresini güncelleyin</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Mevcut
+                                E-posta</label>
+                            <input type="email" id="currentEmailDisplay" class="input-f" disabled>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Yeni
+                                E-posta</label>
+                            <input type="email" id="newEmail" class="input-f" placeholder="Yeni e-posta adresiniz">
+                        </div>
+                        <div>
+                            <label
+                                class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Şifreniz</label>
+                            <input type="password" id="emailPass" class="input-f"
+                                placeholder="Güvenlik için şifrenizi girin">
+                        </div>
+                        <button onclick="changeEmail()" class="btn-p w-full">E-POSTA DEĞİŞTİR</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hesap Sil -->
+            <div id="section-delete" class="section">
+                <div class="glass p-8 space-y-6 border-red-500/20">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-black text-red-400">Hesap Yönetimi</h2>
+                            <p class="text-gray-400 text-sm">Hesabınızı kalıcı olarak silme talebi</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
+                        <p class="text-sm text-red-400 font-bold mb-2">⚠️ Önemli Uyarı</p>
+                        <ul class="text-sm text-gray-400 space-y-1 list-disc list-inside">
+                            <li>Hesabınız destek ekibi tarafından incelendikten sonra silinecektir</li>
+                            <li>Tüm verileriniz kalıcı olarak silinecek</li>
+                            <li>Bu işlem geri alınamaz</li>
+                        </ul>
+                    </div>
+                    <button onclick="deleteAccount()" class="btn-d w-full">HESAP SİLME TALEBİ OLUŞTUR</button>
+                </div>
+            </div>
         </div>
+    </div>
     </div>
 
     <script>
@@ -453,6 +452,13 @@
             document.getElementById('displayCreated').textContent = userData.created ? new Date(userData.created).toLocaleDateString('tr-TR') : 'Bilinmiyor';
             document.getElementById('currentUsernameDisplay').value = userData.username || '';
             document.getElementById('currentEmailDisplay').value = user.email;
+
+            // Load Profile Image
+            if (userData.photoURL) {
+                document.getElementById('profileImage').src = userData.photoURL;
+            } else {
+                document.getElementById('profileImage').src = `https://via.placeholder.com/150/1e293b/FFFFFF?text=USER`;
+            }
 
             if (userData.lastUsernameChange) {
                 const date = new Date(userData.lastUsernameChange);
@@ -585,6 +591,7 @@
                     created: new Date().toISOString()
                 });
                 alert('✓ Hesap silme talebiniz oluşturuldu!\n\nDestek ekibimiz en kısa sürede talebinizi işleme alacak.\nTalebinizin durumunu "Destek Taleplerim" bölümünden takip edebilirsiniz.');
+                window.location.href = 'destek.html';
                 window.location.href = 'destek.html';
             } catch (e) { alert('Hata: ' + e.message) }
         }
