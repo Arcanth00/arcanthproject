@@ -659,6 +659,9 @@
         <button onclick="mobileNav('duyurular')"
             class="text-4xl font-black uppercase italic tracking-tighter hover:text-blue-500 transition-all hover:scale-110"
             style="animation: slideUp 0.5s ease forwards; animation-delay: 0.2s; opacity: 0;">Duyurular</button>
+        <button onclick="window.location.href='blog.html'"
+            class="text-4xl font-black uppercase italic tracking-tighter hover:text-blue-500 transition-all hover:scale-110"
+            style="animation: slideUp 0.5s ease forwards; animation-delay: 0.25s; opacity: 0;">Blog</button>
         <button onclick="mobileNav('projeler')"
             class="text-4xl font-black uppercase italic tracking-tighter hover:text-blue-500 transition-all hover:scale-110"
             style="animation: slideUp 0.5s ease forwards; animation-delay: 0.3s; opacity: 0;">Projeler</button>
@@ -701,6 +704,8 @@
                     id="btn-anasayfa">Anasayfa</button>
                 <button onclick="showTab('duyurular')" class="nav-btn hover:text-white transition-all"
                     id="btn-duyurular">Duyurular</button>
+                <button onclick="window.location.href='blog.html'" class="nav-btn hover:text-white transition-all"
+                    id="btn-blog">Blog</button>
                 <button onclick="showTab('projeler')" class="nav-btn hover:text-white transition-all"
                     id="btn-projeler">Projeler</button>
                 <button onclick="showTab('indirmeler')" class="nav-btn hover:text-white transition-all"
@@ -1185,14 +1190,30 @@
             if (user) {
                 // Giriş yapmış
                 authBtn.classList.add('hidden');
-                profileContainer.classList.remove('hidden');
+                document.getElementById('userProfileContainer').classList.remove('hidden');
                 document.getElementById('dropdownEmail').textContent = user.email;
+
+                // Profil foto kontrolü
+                db.ref('users/' + user.uid).once('value').then(snap => {
+                    const u = snap.val();
+                    if (u && u.photoURL) {
+                        document.getElementById('userProfileBtn').innerHTML = `<img src="${u.photoURL}" class="w-full h-full rounded-2xl object-cover">`;
+                    }
+                });
+
+                // Admin kontrolü
+                db.ref('admins/' + user.uid).once('value').then(snap => {
+                    if (snap.exists()) {
+                        document.getElementById('blogLink').classList.remove('hidden'); // Assuming 'blogLink' is the element to show for admins
+                    }
+                });
             } else {
                 // Giriş yapmamış
                 authBtn.classList.remove('hidden');
                 profileContainer.classList.add('hidden');
                 authBtn.textContent = 'Giris Yap';
                 authBtn.onclick = handleAuth;
+                document.getElementById('blogLink').classList.add('hidden'); // Hide blog link if not logged in or not admin
             }
         });
 
