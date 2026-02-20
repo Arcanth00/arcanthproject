@@ -201,7 +201,8 @@
                 <div class="glass group cursor-pointer overflow-hidden border-transparent hover:border-blue-500/30" onclick="openPost('${b.id}')">
                     ${b.image ? `<div class="h-48 overflow-hidden"><img src="${b.image}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"></div>` : ''}
                     <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
+                        <div class="flex items-center gap-2 mb-3 flex-wrap">
+                            ${b.category ? `<span class="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-purple-500/15 text-purple-400 border border-purple-500/20">${b.category}</span>` : ''}
                             <span class="text-xs font-bold text-gray-500">${b.date}</span>
                             <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
                             <span class="text-xs font-bold text-blue-400 uppercase">${b.author || 'Admin'}</span>
