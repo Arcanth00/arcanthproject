@@ -1,0 +1,215 @@
+/* ArcanthProject Core Styles - Professional Elite Version */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --accent-blue: #3b82f6;
+    --accent-purple: #8b5cf6;
+    --accent-teal: #06b6d4;
+    --dark-bg: #020408;
+    --light-bg: #f8fafc;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    border: 3px solid var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: background-color 0.4s ease, color 0.4s ease;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+.dark body {
+    background-color: var(--dark-bg);
+    color: white;
+}
+
+.light body {
+    background-color: var(--light-bg);
+    color: #0f172a;
+}
+
+/* Loading Screen */
+#loading-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: var(--dark-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2rem;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+#loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loader-ring {
+    width: 64px;
+    height: 64px;
+    border: 4px solid rgba(59, 130, 246, 0.1);
+    border-top-color: var(--accent-blue);
+    border-radius: 50%;
+    animation: spin 1s cubic-bezier(0.76, 0, 0.24, 1) infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Glassmorphism Core */
+.nav-glass {
+    backdrop-filter: blur(25px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dark .nav-glass {
+    background: rgba(2, 4, 8, 0.75);
+}
+
+.light .nav-glass {
+    background: rgba(248, 250, 252, 0.85);
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+.glass-card {
+    backdrop-filter: blur(12px) saturate(150%);
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.dark .glass-card {
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.light .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+.glass-card:hover {
+    transform: translateY(-12px) scale(1.01);
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.5);
+}
+
+/* Animations */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Event Themes Special Styles */
+
+/* Ramadan Theme Styles */
+[data-event-theme="ramadan"] {
+    --accent-blue: #10b981; /* Emerald */
+    --accent-purple: #059669;
+}
+
+[data-event-theme="ramadan"] .text-gradient {
+    background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+}
+
+.ramadan-greeting {
+    display: none;
+    background: linear-gradient(90deg, #065f46, #059669);
+    padding: 10px;
+    text-align: center;
+    font-weight: 800;
+    font-style: italic;
+    letter-spacing: 1px;
+    color: white;
+}
+
+[data-event-theme="ramadan"] .ramadan-greeting {
+    display: block;
+}
+
+/* New Year Theme Styles */
+[data-event-theme="newyear"] {
+    --accent-blue: #ef4444; /* Red */
+    --accent-purple: #b91c1c;
+}
+
+[data-event-theme="newyear"] .text-gradient {
+    background: linear-gradient(135deg, #ef4444 0%, #facc15 50%, #ef4444 100%);
+}
+
+.newyear-greeting {
+    display: none;
+    background: linear-gradient(90deg, #991b1b, #ef4444, #991b1b);
+    padding: 10px;
+    text-align: center;
+    font-weight: 800;
+    color: white;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+[data-event-theme="newyear"] .newyear-greeting {
+    display: block;
+}
+
+.snow-particle {
+    position: fixed;
+    background: white;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* Status Badges */
+.status-release { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.2); }
+.status-beta { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.2); }
+.status-alpha { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.2); }
+.status-development { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); }
