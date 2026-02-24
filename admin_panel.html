@@ -489,12 +489,12 @@
                     </svg>
                     Çerezler
                 </div>
-                <div class="nav-item" onclick="go('activity',this)">
+                <div class="nav-item" onclick="go('events',this)">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
                     </svg>
-                    Aktivite
+                    Özel Günler
                 </div>
             </nav>
             <div class="p-4 border-t border-white/5">
@@ -906,16 +906,69 @@
                 <div id="actList" class="space-y-2"></div>
             </div>
 
-            <div id="t-settings" class="tab-c space-y-6">
-                <h2 class="text-2xl font-black">Ayarlar</h2>
-                <div class="glass p-6 space-y-4">
-                    <h3 class="font-bold text-sm uppercase text-gray-500">Sosyal Medya</h3>
-                    <input type="url" id="sDiscord" class="input-f" placeholder="Discord URL">
-                    <input type="url" id="sGithub" class="input-f" placeholder="GitHub URL">
-                    <input type="url" id="sInstagram" class="input-f" placeholder="Instagram URL">
-                    <input type="url" id="sYoutube" class="input-f" placeholder="YouTube URL">
-                    <input type="url" id="sTwitter" class="input-f" placeholder="Twitter/X URL">
-                    <button onclick="saveSettings()" class="btn-p w-full">Kaydet</button>
+            <div id="t-events" class="tab-c space-y-6">
+                <h2 class="text-2xl font-black">Özel Gün Temaları</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="glass p-6 flex flex-col items-center text-center space-y-4 border-blue-500/20">
+                        <div class="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">Normal Tema</h3>
+                            <p class="text-xs text-gray-500">Sitenin standart modern görünümü</p>
+                        </div>
+                        <button onclick="setEventTheme('normal')" class="btn-s w-full py-3" id="btn-theme-normal">AKTİF
+                            ET</button>
+                    </div>
+
+                    <div class="glass p-6 flex flex-col items-center text-center space-y-4 border-emerald-500/20">
+                        <div class="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">Ramazan Modu</h3>
+                            <p class="text-xs text-gray-500">Hilal, kandil ve özel tebrik mesajları</p>
+                        </div>
+                        <button onclick="setEventTheme('ramadan')"
+                            class="btn-p w-full py-3 !from-emerald-600 !to-teal-600" id="btn-theme-ramadan">AKTİF
+                            ET</button>
+                    </div>
+
+                    <div class="glass p-6 flex flex-col items-center text-center space-y-4 border-red-500/20">
+                        <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">Yılbaşı Modu</h3>
+                            <p class="text-xs text-gray-500">Kar efekti ve yeni yıl kutlaması</p>
+                        </div>
+                        <button onclick="setEventTheme('newyear')" class="btn-p w-full py-3 !from-red-600 !to-rose-600"
+                            id="btn-theme-newyear">AKTİF ET</button>
+                    </div>
+                </div>
+
+                <div class="glass p-8 space-y-4">
+                    <h3 class="font-bold text-lg flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Tema Hakkında
+                    </h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Özel gün temaları aktif edildiğinde, tüm kullanıcıların ekranında üst kısımda özel bir banner,
+                        farklı bir arka plan animasyonu ve o güne özel tebrik mesajları belirecektir. Temalar gerçek
+                        zamanlı olarak tüm cihazlarda güncellenir.
+                    </p>
                 </div>
             </div>
         </div>
@@ -1604,9 +1657,53 @@
                     tkTable.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-4">Henüz veri yok</td></tr>';
                 }
 
+                // Load event theme status
+                loadEventThemeStatus();
+
             } catch (e) {
                 console.error('Analytics error:', e);
             }
+        }
+
+        // ============== EVENT THEMES ==============
+        async function setEventTheme(theme) {
+            try {
+                const btn = g('btn-theme-' + theme);
+                const originalText = btn.textContent;
+                btn.textContent = 'GÜNCELLENİYOR...';
+                btn.disabled = true;
+
+                await db.ref('site_data/settings/active_theme').set(theme);
+
+                log('Site teması değiştirildi: ' + theme);
+                loadEventThemeStatus();
+                alert('✓ Site teması başarıyla güncellendi: ' + theme.toUpperCase());
+            } catch (e) {
+                alert('Hata: ' + e.message);
+                loadEventThemeStatus();
+            }
+        }
+
+        function loadEventThemeStatus() {
+            db.ref('site_data/settings/active_theme').on('value', snap => {
+                const activeTheme = snap.val() || 'normal';
+
+                // Reset all buttons
+                ['normal', 'ramadan', 'newyear'].forEach(t => {
+                    const btn = g('btn-theme-' + t);
+                    if (!btn) return;
+                    btn.disabled = false;
+                    if (t === activeTheme) {
+                        btn.textContent = 'ŞU AN AKTİF';
+                        btn.className = 'btn-p w-full py-3 !from-gray-600 !to-gray-700 opacity-50 cursor-default';
+                    } else {
+                        btn.textContent = 'AKTİF ET';
+                        if (t === 'normal') btn.className = 'btn-s w-full py-3';
+                        else if (t === 'ramadan') btn.className = 'btn-p w-full py-3 !from-emerald-600 !to-teal-600';
+                        else if (t === 'newyear') btn.className = 'btn-p w-full py-3 !from-red-600 !to-rose-600';
+                    }
+                });
+            });
         }
     </script>
 </body>
