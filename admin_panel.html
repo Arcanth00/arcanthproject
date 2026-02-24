@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcanth Project Admin Panel</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #020408;
+            color: #e2e8f0;
+        }
+
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: #020408;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 2rem;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        #loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loader-ring {
+            width: 56px;
+            height: 56px;
+            border: 3px solid rgba(59, 130, 246, 0.15);
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .sidebar {
+            background: rgba(10, 15, 26, 0.95);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 1rem;
+            transition: all 0.3s;
+        }
+
+        .glass:hover {
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .input-f {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.2s;
+            font-size: 0.875rem;
+        }
+
+        .input-f:focus {
+            border-color: #3b82f6;
+        }
+
+        .btn-p {
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            color: white;
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.625rem;
+            font-weight: 700;
+            font-size: 0.75rem;
+            cursor: pointer;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.2s;
+        }
+
+        .btn-p:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-d {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-d:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-s {
+            background: rgba(255, 255, 255, 0.06);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-s:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-c {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-c.active {
+            display: block;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.625rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .stat {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(99, 102, 241, 0.08));
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            transition: all 0.2s;
+        }
+
+        .stat:hover {
+            transform: translateY(-3px);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #0a0f1a;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 0.75rem;
+            text-align: left;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        td {
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 0.8rem;
+        }
+
+        .sync-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .sync-ok {
+            background: #22c55e;
+            box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+            animation: pulse-green 2s infinite;
+        }
+
+        .sync-err {
+            background: #ef4444;
+            box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+        }
+
+        .sync-loading {
+            background: #eab308;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        @keyframes pulse-green {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .checkbox-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .checkmark {
+            height: 20px;
+            width: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .checkbox-wrapper:hover .checkmark {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .checkbox-wrapper input:checked~.checkmark {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .checkbox-wrapper input:checked~.checkmark:after {
+            display: block;
+        }
+
+        @media (max-width: 1023px) {
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loading-screen">
+        <img src="logo.png" class="w-16 h-16 rounded-2xl animate-pulse" onerror="this.style.display='none'">
+        <div class="loader-ring"></div>
+        <p class="text-gray-500 text-sm font-bold tracking-[0.3em] uppercase">Yükleniyor</p>
+    </div>
+
+    <div id="login" class="fixed inset-0 z-[9999] flex items-center justify-center hidden" style="background:#020408">
+        <div class="glass p-10 max-w-sm w-full mx-4">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-black uppercase tracking-tight"><span
+                        class="text-blue-500">ArcanthProject</span> Admin Panel</h1>
+                <p class="text-gray-500 text-xs mt-1">Google hesabınızla giriş yapın</p>
+            </div>
+            <div class="space-y-3">
+                <button onclick="doGoogleLogin()" class="btn-p w-full py-3 flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z" />
+                    </svg>
+                    Google ile Giriş
+                </button>
+                <label class="checkbox-wrapper text-sm text-gray-400 flex items-center gap-2 justify-center">
+                    <input type="checkbox" id="rememberMe">
+                    <span class="checkmark"></span>
+                    Beni Hatırla
+                </label>
+                <p id="loginErr" class="text-red-500 text-xs text-center hidden font-bold"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin" style="display:none" class="flex min-h-screen">
+        <aside class="sidebar w-64 fixed inset-y-0 left-0 flex flex-col z-50">
+            <div class="p-6 border-b border-white/5">
+                <div class="flex items-center gap-3">
+                    <img src="logo.png" class="w-9 h-9 rounded-lg" onerror="this.style.display='none'">
+                    <div>
+                        <p class="font-black text-sm uppercase tracking-tight">ARCANTH</p>
+                        <p class="text-[10px] text-gray-500 font-semibold">Admin Panel</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="flex-1 p-4 space-y-1">
+                <div class="nav-item active" onclick="go('dashboard',this)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                    Dashboard
+                </div>
+                <div class="nav-item" onclick="go('announcements',this)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                    </svg>
+                    Duyurular
+                </div>
+                <div class="nav-item" onclick="go('projects',this)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    Projeler
+                </div>
+                <div class="nav-item" onclick="go('downloads',this)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    İndirmeler
+                </div>
+                <div class="nav-item" onclick="go('sponsors',this)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Sponsorlar
+                </div>
+                <div class="nav-item" onclick="go('support',this)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    Destek Talepleri
+                </div>
+                <div class="nav-item" onclick="go('users',this)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    Kullanıcılar
+                </div>
+                <div class="nav-item" onclick="go('analytics',this)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    Analitik
+                </div>
+                <div class="nav-item" onclick="go('settings',this)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Ayarlar
+                </div>
+                <div class="nav-item" onclick="go('blog',this)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                    </svg>
+                    Blog
+                </div>
+                <div class="nav-item" onclick="go('cms',this)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    CMS
+                </div>
+                <div class="nav-item" onclick="go('cookies',this)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Çerezler
+                </div>
+                <div class="nav-item" onclick="go('activity',this)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Aktivite
+                </div>
+            </nav>
+            <div class="p-4 border-t border-white/5">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="sync-dot sync-ok" id="sync-dot"></span>
+                    <span class="text-xs text-gray-500 font-semibold" id="sync-text">Sistem Sorunsuz</span>
+                </div>
+                <div class="mb-3 px-1 text-[10px] text-blue-400 font-mono overflow-hidden text-ellipsis whitespace-nowrap"
+                    id="current-user-uid"></div>
+                <button onclick="doLogout()"
+                    class="w-full text-left nav-item text-red-400 hover:text-red-300 hover:bg-red-500/10 border-transparent hover:border-red-500/20">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Güvenli Çıkış
+                </button>
+            </div>
+        </aside>
+
+        <div class="flex-1 lg:ml-64 p-6 pb-20 lg:pb-6">
+            <div id="t-dashboard" class="tab-c active space-y-6">
+                <h2 class="text-2xl font-black">Genel Durum</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="stat">
+                        <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Duyurular</p>
+                        <p class="text-3xl font-black mt-1" id="s-ann">0</p>
+                    </div>
+                    <div class="stat">
+                        <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Projeler</p>
+                        <p class="text-3xl font-black mt-1" id="s-proj">0</p>
+                    </div>
+                    <div class="stat">
+                        <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">İndirmeler</p>
+                        <p class="text-3xl font-black mt-1" id="s-dl">0</p>
+                    </div>
+                    <div class="stat">
+                        <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Sponsorlar</p>
+                        <p class="text-3xl font-black mt-1" id="s-sponsor">0</p>
+                    </div>
+                </div>
+                <div class="glass p-6">
+                    <h3 class="font-bold mb-2 text-blue-400">Hoş Geldiniz</h3>
+                    <p class="text-gray-400 text-sm" id="system-status">Sistem Sorunsuz Çalışıyor</p>
+                </div>
+            </div>
+
+            <div id="t-announcements" class="tab-c space-y-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-black">Duyurular</h2><button onclick="openModal('ann')" class="btn-p">+
+                        Yeni</button>
+                </div>
+                <div class="glass p-4 overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Başlık</th>
+                                <th>Kategori</th>
+                                <th>Tarih</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="annList"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="t-projects" class="tab-c space-y-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-black">Projeler</h2><button onclick="openModal('proj')" class="btn-p">+
+                        Yeni</button>
+                </div>
+                <div class="glass p-4 overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ad</th>
+                                <th>Tip</th>
+                                <th>Durum</th>
+                                <th>Ver.</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projList"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="t-downloads" class="tab-c space-y-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-black">İndirmeler</h2><button onclick="openModal('dl')" class="btn-p">+
+                        Yeni</button>
+                </div>
+                <div class="glass p-4 overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>İsim</th>
+                                <th>Ver.</th>
+                                <th>Tip</th>
+                                <th>Link</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dlList"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="t-sponsors" class="tab-c space-y-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-black">Sponsorlar</h2><button onclick="openModal('sponsor')"
+                        class="btn-p">+ Yeni</button>
+                </div>
+                <div id="sponsorList" class="space-y-4"></div>
+            </div>
+
+            <div id="t-support" class="tab-c space-y-6">
+                <h2 class="text-2xl font-black">Destek Talepleri</h2>
+                <div class="glass p-4 overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı</th>
+                                <th>Konu</th>
+                                <th>Kategori</th>
+                                <th>Durum</th>
+                                <th>Tarih</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="supportList"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="t-users" class="tab-c space-y-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-black">Kullanıcılar</h2>
+                    <input type="text" id="userSearch" placeholder="Kullanıcı ara..." oninput="searchUsers()"
+                        class="input-f" style="max-width:300px">
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="stat">
+                        <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Toplam</p>
+                        <p class="text-3xl font-black mt-1" id="stat-total-users">0</p>
+                    </div>
+                    <div class="stat">
+                        <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Aktif</p>
+                        <p class="text-3xl font-black mt-1" id="stat-active-users">0</p>
+                    </div>
+                    <div class="stat">
+                        <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Bugün</p>
+                        <p class="text-3xl font-black mt-1" id="stat-today-users">0</p>
+                    </div>
+                    <div class="stat">
+                        <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Bu Ay</p>
+                        <p class="text-3xl font-black mt-1" id="stat-month-users">0</p>
+                    </div>
+                </div>
+                <div class="glass p-4 overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı</th>
+                                <th>Email</th>
+                                <th>Kayıt</th>
+                                <th>Provider</th>
+                                <th>Talepler</th>
+                                <th>Durum</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersList"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="t-analytics" class="tab-c space-y-6">
+                <h2 class="text-2xl font-black">Analitik Dashboard</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="stat">
+                        <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Toplam Ziyaret</p>
+                        <p class="text-3xl font-black mt-1" id="stat-pageviews">0</p>
+                    </div>
+                    <div class="stat">
+                        <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Toplam İndirme</p>
+                        <p class="text-3xl font-black mt-1" id="stat-downloads">0</p>
+                    </div>
+                    <div class="stat">
+                        <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Destek Talepleri</p>
+                        <p class="text-3xl font-black mt-1" id="stat-tickets">0</p>
+                    </div>
+                    <div class="stat">
+                        <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Aktif Kullanıcı</p>
+                        <p class="text-3xl font-black mt-1" id="stat-active">0</p>
+                    </div>
+                </div>
+                <div class="glass p-6">
+                    <h3 class="font-bold mb-4">En Çok İndirilen Projeler</h3>
+                    <div id="top-downloads"></div>
+                </div>
+                <div class="glass p-6">
+                    <h3 class="font-bold mb-4">Son Aktiviteler</h3>
+                    <div id="recent-activities"></div>
+                </div>
+
+                <!-- TABLE ANALYSIS -->
+                <h2 class="text-2xl font-black pt-4 border-t border-white/5">Tablo Analizi</h2>
+                <div class="glass p-6">
+                    <h3 class="font-bold mb-4 flex items-center gap-2"><svg class="w-5 h-5 text-blue-400" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg> Sayfa Görüntüleme</h3>
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Sayfa</th>
+                                    <th>Görüntüleme</th>
+                                    <th>Son Ziyaret</th>
+                                </tr>
+                            </thead>
+                            <tbody id="analytics-pageviews-table">
+                                <tr>
+                                    <td colspan="3" class="text-center text-gray-500 py-4">Yükleniyor...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="glass p-6">
+                    <h3 class="font-bold mb-4 flex items-center gap-2"><svg class="w-5 h-5 text-cyan-400" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg> İndirme Detayları</h3>
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Proje</th>
+                                    <th>İndirme Sayısı</th>
+                                </tr>
+                            </thead>
+                            <tbody id="analytics-downloads-table">
+                                <tr>
+                                    <td colspan="2" class="text-center text-gray-500 py-4">Yükleniyor...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="glass p-6">
+                    <h3 class="font-bold mb-4 flex items-center gap-2"><svg class="w-5 h-5 text-purple-400" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg> Kullanıcı Kayıtları</h3>
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Dönem</th>
+                                    <th>Yeni Kullanıcı</th>
+                                    <th>Toplam</th>
+                                </tr>
+                            </thead>
+                            <tbody id="analytics-users-table">
+                                <tr>
+                                    <td colspan="3" class="text-center text-gray-500 py-4">Yükleniyor...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="glass p-6">
+                    <h3 class="font-bold mb-4 flex items-center gap-2"><svg class="w-5 h-5 text-green-400" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg> Destek Talepleri Özeti</h3>
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kategori</th>
+                                    <th>Aktif</th>
+                                    <th>Beklemede</th>
+                                    <th>Kapalı</th>
+                                    <th>Toplam</th>
+                                </tr>
+                            </thead>
+                            <tbody id="analytics-tickets-table">
+                                <tr>
+                                    <td colspan="5" class="text-center text-gray-500 py-4">Yükleniyor...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="t-settings" class="tab-c space-y-6">
+                <h2 class="text-2xl font-black">Site Ayarları</h2>
+                <div class="glass p-8 space-y-6">
+                    <div
+                        class="flex items-center justify-between p-6 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 rounded-xl">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full animate-pulse" id="bakimStatus"></span>
+                                Bakım Modu
+                            </h3>
+                            <p class="text-sm text-gray-400 mt-1">Site bakımda olduğunda kullanıcılar özel sayfa görecek
+                            </p>
+                            <p class="text-xs text-gray-500 mt-2" id="bakimInfo">Durum: Kapalı</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <button onclick="openBakimModal()"
+                                class="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-sm transition-all">
+                                BAKIMI AÇ
+                            </button>
+                            <button onclick="closeBakim()"
+                                class="px-6 py-3 bg-red-600 hover:bg-red-500 rounded-xl font-bold text-sm transition-all hidden"
+                                id="closeBakimBtn">
+                                BAKIMI KAPAT
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="p-6 bg-white/5 rounded-xl">
+                            <h4 class="font-bold mb-3">Site Başlığı</h4>
+                            <input type="text" id="siteTitle" class="input-f" placeholder="Arcanth Project">
+                            <button onclick="saveSiteSettings()" class="btn-p w-full mt-3">KAYDET</button>
+                        </div>
+                        <div class="p-6 bg-white/5 rounded-xl">
+                            <h4 class="font-bold mb-3">Site Açıklaması</h4>
+                            <textarea id="siteDesc" class="input-f" rows="3"
+                                placeholder="Minecraft sunucuları için özel projeler"></textarea>
+                            <button onclick="saveSiteSettings()" class="btn-p w-full mt-3">KAYDET</button>
+                        </div>
+                    </div>
+                    <div class="p-6 bg-blue-500/10 border border-blue-500/20 rounded-xl">
+                        <h4 class="font-bold text-blue-400 mb-3">🛠️ Sistem Yönetimi</h4>
+                        <p class="text-sm text-gray-400 mb-4">Sistem genelindeki işlemler. Dikkatli kullanın.</p>
+                        <div class="grid md:grid-cols-3 gap-3">
+                            <button onclick="clearAllCache()" class="btn-s">Cache Temizle</button>
+                            <button onclick="exportData()" class="btn-s">Yedekle</button>
+                            <button onclick="resetToDefaults()" class="btn-d">Sıfırla</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="t-blog" class="tab-c space-y-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-black">Blog Yönetimi</h2>
+                    <button onclick="openNewPost()" class="btn-p">+ YENİ YAZI</button>
+                </div>
+                <div class="glass p-4 overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Başlık</th>
+                                <th>Kategori</th>
+                                <th>Yazar</th>
+                                <th>Görüntüleme</th>
+                                <th>Tarih</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="blogList"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="t-cms" class="tab-c space-y-6">
+                <h2 class="text-2xl font-black">CMS İçerik</h2>
+                <div class="glass p-6 space-y-4">
+                    <h3 class="font-bold text-sm uppercase text-gray-500">Ana Sayfa Hero</h3>
+                    <input type="text" id="cmsBadge" class="input-f" placeholder="Badge">
+                    <input type="text" id="cmsTitle" class="input-f" placeholder="Başlık">
+                    <textarea id="cmsSub" class="input-f" rows="2" placeholder="Alt Başlık"></textarea>
+                    <button onclick="saveCMS()" class="btn-p">Kaydet</button>
+                </div>
+            </div>
+
+            <div id="t-cookies" class="tab-c space-y-6">
+                <h2 class="text-2xl font-black">Çerez Ayarları</h2>
+                <div class="glass p-6 space-y-4">
+                    <input type="text" id="cookieTitle" class="input-f" placeholder="Başlık">
+                    <textarea id="cookieDesc" class="input-f" rows="2" placeholder="Açıklama"></textarea>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="text" id="cookieAccept" class="input-f" placeholder="Kabul">
+                        <input type="text" id="cookieReject" class="input-f" placeholder="Reddet">
+                    </div>
+                    <button onclick="saveCookies()" class="btn-p">Kaydet</button>
+                </div>
+            </div>
+
+            <div id="t-activity" class="tab-c space-y-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-black">Aktivite</h2><button onclick="clearAct()"
+                        class="btn-d">Temizle</button>
+                </div>
+                <div id="actList" class="space-y-2"></div>
+            </div>
+
+            <div id="t-settings" class="tab-c space-y-6">
+                <h2 class="text-2xl font-black">Ayarlar</h2>
+                <div class="glass p-6 space-y-4">
+                    <h3 class="font-bold text-sm uppercase text-gray-500">Sosyal Medya</h3>
+                    <input type="url" id="sDiscord" class="input-f" placeholder="Discord URL">
+                    <input type="url" id="sGithub" class="input-f" placeholder="GitHub URL">
+                    <input type="url" id="sInstagram" class="input-f" placeholder="Instagram URL">
+                    <input type="url" id="sYoutube" class="input-f" placeholder="YouTube URL">
+                    <input type="url" id="sTwitter" class="input-f" placeholder="Twitter/X URL">
+                    <button onclick="saveSettings()" class="btn-p w-full">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="m-ann" class="modal">
+        <div class="modal-box">
+            <h3 class="text-xl font-black mb-4">Duyuru</h3>
+            <div class="space-y-3"><input type="text" id="annTitle" class="input-f" placeholder="Başlık"><textarea
+                    id="annContent" class="input-f" rows="4" placeholder="İçerik"></textarea><select id="annCat"
+                    class="input-f">
+                    <option value="bilgi">Bilgi</option>
+                    <option value="guncelleme">Güncelleme</option>
+                    <option value="onemli">Önemli</option>
+                    <option value="etkinlik">Etkinlik</option>
+                </select>
+                <div class="flex gap-3"><button onclick="saveAnn()" class="btn-p flex-1">Kaydet</button><button
+                        onclick="closeModal('ann')" class="btn-s flex-1">İptal</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="m-reply" class="modal">
+        <div class="modal-box" style="max-width: 700px;">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-black">Destek Talebine Yanıt Ver</h3>
+                <button onclick="closeReplyModal()" class="w-8 h-8 rounded-lg hover:bg-white/10 transition-all">
+                    <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="glass p-4 mb-4 max-h-60 overflow-y-auto">
+                <div class="flex items-start gap-3 mb-3">
+                    <div class="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <p class="font-bold text-sm" id="replyUserEmail"></p>
+                            <span
+                                class="px-2 py-0.5 bg-purple-500/15 text-purple-400 rounded text-[10px] font-bold uppercase"
+                                id="replyCategory"></span>
+                        </div>
+                        <h4 class="font-bold text-lg mb-2" id="replySubject"></h4>
+                        <p class="text-gray-400 text-sm leading-relaxed" id="replyMessage"></p>
+                        <p class="text-xs text-gray-600 mt-2" id="replyDate"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="replyHistory" class="mb-4"></div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Yanıtınız</label>
+                    <textarea id="replyText" class="input-f" rows="6"
+                        placeholder="Yanıtınızı buraya yazın..."></textarea>
+                </div>
+
+                <div class="flex items-center gap-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl">
+                    <svg class="w-5 h-5 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="text-xs text-blue-400">Yanıtınız kullanıcının email adresine gönderilecek ve destek
+                        talebinde görünecek.</p>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="sendReply()" class="btn-p flex-1 py-4">YANIT GÖNDER</button>
+                    <button onclick="closeReplyModal()" class="btn-s flex-1 py-4">İPTAL</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="m-proj" class="modal">
+        <div class="modal-box">
+            <h3 class="text-xl font-black mb-4">Proje</h3>
+            <div class="space-y-3"><input type="text" id="projName" class="input-f" placeholder="Ad"><textarea
+                    id="projDesc" class="input-f" rows="2" placeholder="Açıklama"></textarea>
+                <div class="grid grid-cols-2 gap-3"><input type="text" id="projVer" class="input-f"
+                        placeholder="v1.0"><select id="projType" class="input-f">
+                        <option value="modpack">ModPack</option>
+                        <option value="mod">Mod</option>
+                        <option value="texture">Texture Pack</option>
+                        <option value="script">Script</option>
+                        <option value="exe">.EXE Uygulama</option>
+                        <option value="other">Diğer</option>
+                    </select></div><select id="projStatus" class="input-f">
+                    <option value="release">Release</option>
+                    <option value="beta">Beta</option>
+                    <option value="alpha">Alpha</option>
+                    <option value="development">Development</option>
+                </select><input type="url" id="projLink" class="input-f" placeholder="Link"><input type="text"
+                    id="projIcon" class="input-f" placeholder="İkon URL"><input type="text" id="projCat" class="input-f"
+                    placeholder="Kategori">
+                <div class="flex gap-3"><button onclick="saveProj()" class="btn-p flex-1">Kaydet</button><button
+                        onclick="closeModal('proj')" class="btn-s flex-1">İptal</button></div>
+            </div>
+        </div>
+    </div>
+    <div id="m-dl" class="modal">
+        <div class="modal-box">
+            <h3 class="text-xl font-black mb-4">İndirme</h3>
+            <div class="space-y-3"><input type="text" id="dlName" class="input-f" placeholder="İsim">
+                <div class="grid grid-cols-2 gap-3"><input type="text" id="dlVer" class="input-f"
+                        placeholder="1.0"><select id="dlType" class="input-f">
+                        <option value="modpack">ModPack</option>
+                        <option value="mod">Mod</option>
+                        <option value="texture">Texture Pack</option>
+                        <option value="script">Script</option>
+                        <option value="exe">.EXE Uygulama</option>
+                        <option value="other">Diğer</option>
+                    </select></div><input type="url" id="dlLink" class="input-f" placeholder="Link">
+                <div class="flex gap-3"><button onclick="saveDl()" class="btn-p flex-1">Kaydet</button><button
+                        onclick="closeModal('dl')" class="btn-s flex-1">İptal</button></div>
+            </div>
+        </div>
+    </div>
+    <div id="m-sponsor" class="modal">
+        <div class="modal-box">
+            <h3 class="text-xl font-black mb-4">Sponsor</h3>
+            <div class="space-y-3"><input type="text" id="spName" class="input-f" placeholder="İsim"><input type="text"
+                    id="spTag" class="input-f" placeholder="Slogan"><textarea id="spDesc" class="input-f" rows="2"
+                    placeholder="Açıklama"></textarea><input type="text" id="spLogo" class="input-f"
+                    placeholder="Logo URL"><input type="url" id="spWeb" class="input-f" placeholder="Website"><input
+                    type="url" id="spDiscord" class="input-f" placeholder="Discord"><input type="text" id="spIP"
+                    class="input-f" placeholder="IP"><textarea id="spFeatures" class="input-f" rows="3"
+                    placeholder="Özellikler (her satır 1)"></textarea>
+                <div class="flex gap-3"><button onclick="saveSponsor()" class="btn-p flex-1">Kaydet</button><button
+                        onclick="closeModal('sponsor')" class="btn-s flex-1">İptal</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blog Post Modal -->
+    <div id="m-blog" class="modal">
+        <div class="modal-box" style="max-width:650px">
+            <h3 class="text-xl font-black mb-4">Blog Yazısı</h3>
+            <div class="space-y-3">
+                <input type="text" id="blogTitle" class="input-f" placeholder="Başlık *">
+                <select id="blogCategory" class="input-f">
+                    <option value="genel">Genel</option>
+                    <option value="guncelleme">Güncelleme</option>
+                    <option value="rehber">Rehber</option>
+                    <option value="duyuru">Duyuru</option>
+                    <option value="teknik">Teknik</option>
+                </select>
+                <input type="text" id="blogAuthor" class="input-f" placeholder="Yazar (varsayılan: Admin)">
+                <input type="url" id="blogImage" class="input-f" placeholder="Kapak Görseli URL (opsiyonel)">
+                <textarea id="blogContent" class="input-f" rows="10"
+                    placeholder="İçerik (HTML desteklenir) *"></textarea>
+                <div class="flex gap-3">
+                    <button onclick="saveBlogPost()" class="btn-p flex-1">Kaydet</button>
+                    <button onclick="closeBlogModal()" class="btn-s flex-1">İptal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bakım Modal -->
+    <div id="m-bakim" class="modal">
+        <div class="modal-box">
+            <h3 class="text-xl font-black mb-4">Bakım Modunu Aç</h3>
+            <div class="space-y-3">
+                <textarea id="bakimMessage" class="input-f" rows="3"
+                    placeholder="Bakım mesajı">Sitemizi sizin için daha iyi hale getiriyoruz. Kısa süre içinde yeniden hizmetinizde olacağız.</textarea>
+                <input type="number" id="bakimDuration" class="input-f" placeholder="Tahmini süre (dakika)" value="30">
+                <div class="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-xl">
+                    <p class="text-xs text-yellow-400">⚠️ Bakım modu açıldığında site ziyaretçileri bakım sayfasına
+                        yönlendirilecek.</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="startBakim()" class="btn-p flex-1">BAKIMI BAŞLAT</button>
+                    <button onclick="closeBakimModal()" class="btn-s flex-1">İptal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyCnkk6j1CGsi4sNXJ8FA9Gd2B6_VDptVDg", authDomain: "arcanthproject.firebaseapp.com", databaseURL: "https://arcanthproject-default-rtdb.firebaseio.com", projectId: "arcanthproject", storageBucket: "arcanthproject.firebasestorage.app", messagingSenderId: "826341954149", appId: "1:826341954149:web:6429d61a5b40810009ac8c" };
+        const allowedAdmins = ["dlfMOzh6PXWnNghZYDRYcdgPHQs2", "rBoqVOBlyRU5MHclICBtoKKR8Fe2"];
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth(), provider = new firebase.auth.GoogleAuthProvider(), db = firebase.database();
+        var K = { ann: 'admin_announcements', proj: 'admin_projects', dl: 'admin_downloads', sponsor: 'admin_sponsors', cms: 'admin_cms_content', cookies: 'admin_cookie_settings', settings: 'admin_settings', act: 'admin_activity' };
+        var editId = { ann: null, proj: null, dl: null, sponsor: null };
+        function g(id) { return document.getElementById(id) }
+        function ls(k, v) { if (v !== undefined) { localStorage.setItem(k, JSON.stringify(v)); return v } if (k === K.cms || k === K.cookies || k === K.settings) return JSON.parse(localStorage.getItem(k) || '{}'); return JSON.parse(localStorage.getItem(k) || '[]') }
+        auth.onAuthStateChanged(async user => { if (user) { if (allowedAdmins.includes(user.uid)) { const rememberMe = localStorage.getItem('rememberMe') === 'true'; if (!rememberMe && sessionStorage.getItem('currentSession') !== 'active') sessionStorage.setItem('currentSession', 'active'); g('loading-screen').classList.add('hidden'); g('login').style.display = 'none'; g('admin').style.display = 'flex'; g('current-user-uid').textContent = "UID: " + user.uid.substring(0, 12) + "..."; g('current-user-uid').title = user.uid; try { await initApp() } catch (e) { console.error('Init error:', e); alert('Yükleme hatası: ' + e.message) } } else { g('loading-screen').classList.add('hidden'); g('login').style.display = 'flex'; auth.signOut(); g('loginErr').textContent = "Yetkisiz UID: " + user.uid; g('loginErr').classList.remove('hidden') } } else { g('loading-screen').classList.add('hidden'); g('login').style.display = 'flex'; g('admin').style.display = 'none' } });
+        window.addEventListener('beforeunload', () => { if (localStorage.getItem('rememberMe') !== 'true') sessionStorage.removeItem('currentSession') });
+        function doGoogleLogin() { const rememberMe = g('rememberMe').checked; localStorage.setItem('rememberMe', rememberMe); if (!rememberMe) auth.setPersistence(firebase.auth.Auth.Persistence.SESSION); auth.signInWithPopup(provider).catch(e => { g('loginErr').textContent = "Hata: " + e.message; g('loginErr').classList.remove('hidden') }) }
+        function doLogout() { if (confirm('Çıkış yapmak istediğinize emin misiniz?')) { localStorage.removeItem('rememberMe'); sessionStorage.removeItem('currentSession'); auth.signOut() } }
+        async function initApp() {
+            try {
+                [K.ann, K.proj, K.dl, K.sponsor].forEach(k => { if (!localStorage.getItem(k)) ls(k, []) });
+                [K.cms, K.cookies, K.settings].forEach(k => { if (!localStorage.getItem(k)) ls(k, {}) });
+                loadAnn();
+                loadProj();
+                loadDl();
+                loadSponsors();
+                loadCMS();
+                loadCookies();
+                loadSettings();
+                loadAct();
+                loadBlog();
+                await loadSupport();
+                await loadUsers();
+                loadAnalytics();
+                loadBakimStatus();
+                stats();
+                checkConnection();
+            } catch (e) {
+                console.error('InitApp error:', e);
+                alert('Admin panel yüklenirken hata: ' + e.message);
+            }
+        }
+
+        let allUsers = [];
+        async function loadUsers() {
+            try {
+                const snapshot = await db.ref('users').once('value');
+                allUsers = [];
+                if (!snapshot.exists()) {
+                    console.log('Users node yok, boş liste gösteriliyor');
+                    displayUsers([]);
+                    updateUserStats();
+                    return;
+                }
+                snapshot.forEach(child => {
+                    allUsers.push({ uid: child.key, ...child.val() });
+                });
+                displayUsers(allUsers);
+                updateUserStats();
+            } catch (e) {
+                console.error('LoadUsers error:', e);
+                const el = document.getElementById('usersList');
+                if (el) el.innerHTML = '<tr><td colspan="7" class="text-center text-red-500 py-8">Hata: ' + e.message + '</td></tr>';
+            }
+        }
+
+        function displayUsers(users) {
+            const el = document.getElementById('usersList');
+            if (!users.length) {
+                el.innerHTML = '<tr><td colspan="7" class="text-center text-gray-500 py-8">Henüz kullanıcı yok</td></tr>';
+                return;
+            }
+            el.innerHTML = users.map(u => `<tr>
+                <td class="font-semibold">${u.name || 'Bilinmiyor'}</td>
+                <td class="text-sm">${u.email}</td>
+                <td class="text-gray-500 text-xs">${u.created ? new Date(u.created).toLocaleDateString('tr-TR') : 'Bilinmiyor'}</td>
+                <td><span class="px-2 py-0.5 bg-blue-500/15 text-blue-400 rounded text-[10px] font-bold uppercase">${u.provider || 'email'}</span></td>
+                <td class="text-center"><span class="px-2 py-1 bg-purple-500/15 text-purple-400 rounded font-bold text-sm" id="ticket-count-${u.uid}">0</span></td>
+                <td><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${u.blocked ? 'bg-red-500/15 text-red-400' : 'bg-green-500/15 text-green-400'}">${u.blocked ? 'Engelli' : 'Aktif'}</span></td>
+                <td class="flex gap-1">
+                    <button onclick="viewUser('${u.uid}')" class="btn-s">Detay</button>
+                    <button onclick="toggleUserBlock('${u.uid}',${u.blocked ? 'false' : 'true'})" class="btn-${u.blocked ? 'p' : 'd'}">${u.blocked ? 'Aç' : 'Engelle'}</button>
+                </td>
+            </tr>`).join('');
+
+            // Ticket sayılarını yükle
+            users.forEach(u => {
+                db.ref('support_tickets').orderByChild('userId').equalTo(u.uid).once('value').then(snap => {
+                    const count = snap.numChildren();
+                    const el = document.getElementById('ticket-count-' + u.uid);
+                    if (el) el.textContent = count;
+                });
+            });
+        }
+
+        function searchUsers() {
+            const query = document.getElementById('userSearch').value.toLowerCase();
+            if (!query) { displayUsers(allUsers); return; }
+            const filtered = allUsers.filter(u =>
+                (u.name || '').toLowerCase().includes(query) ||
+                (u.email || '').toLowerCase().includes(query) ||
+                (u.username || '').toLowerCase().includes(query)
+            );
+            displayUsers(filtered);
+        }
+
+        function updateUserStats() {
+            document.getElementById('stat-total-users').textContent = allUsers.length;
+            const active = allUsers.filter(u => !u.blocked).length;
+            document.getElementById('stat-active-users').textContent = active;
+
+            const today = new Date().toDateString();
+            const todayUsers = allUsers.filter(u => u.created && new Date(u.created).toDateString() === today).length;
+            document.getElementById('stat-today-users').textContent = todayUsers;
+
+            const thisMonth = new Date().getMonth();
+            const monthUsers = allUsers.filter(u => u.created && new Date(u.created).getMonth() === thisMonth).length;
+            document.getElementById('stat-month-users').textContent = monthUsers;
+        }
+
+        async function viewUser(uid) {
+            const user = allUsers.find(u => u.uid === uid);
+            if (!user) return;
+            const snap = await db.ref('support_tickets').orderByChild('userId').equalTo(uid).once('value');
+            const tickets = [];
+            snap.forEach(c => tickets.push(c.val()));
+            alert(`KULLANICI DETAYI\n\nAd: ${user.name || 'Bilinmiyor'}\nEmail: ${user.email}\nKullanıcı Adı: ${user.username || 'Yok'}\nKayıt: ${user.created ? new Date(user.created).toLocaleString('tr-TR') : 'Bilinmiyor'}\nProvider: ${user.provider || 'email'}\nDurum: ${user.blocked ? 'Engelli' : 'Aktif'}\nDestek Talepleri: ${tickets.length}\n\nUID: ${uid}`);
+        }
+
+        async function toggleUserBlock(uid, block) {
+            if (!confirm('Bu kullanıcıyı ' + (block ? 'engellemek' : 'aktif etmek') + ' istediğinize emin misiniz?')) return;
+            try {
+                await db.ref('users/' + uid + '/blocked').set(block);
+                await loadUsers();
+                log('Kullanıcı ' + (block ? 'engellendi' : 'aktif edildi'));
+            } catch (e) { alert('Hata: ' + e.message) }
+        }
+        async function loadSupport() { try { const snapshot = await db.ref('support_tickets').once('value'); const tickets = []; snapshot.forEach(child => { tickets.push(child.val()) }); tickets.sort((a, b) => b.created.localeCompare(a.created)); const el = g('supportList'); const statusColors = { aktif: 'text-green-400 bg-green-500/15', beklemede: 'text-yellow-400 bg-yellow-500/15', kapali: 'text-gray-400 bg-gray-500/15' }; el.innerHTML = tickets.map(t => `<tr><td class="text-sm">${t.userEmail}</td><td class="font-semibold">${t.subject}</td><td><span class="px-2 py-0.5 bg-purple-500/15 text-purple-400 rounded text-[10px] font-bold uppercase">${t.category}</span></td><td><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusColors[t.status] || statusColors.aktif}">${t.status}</span></td><td class="text-gray-500 text-xs">${new Date(t.created).toLocaleString('tr-TR')}</td><td class="whitespace-nowrap"><button onclick="viewTicket(${t.id})" class="btn-s mr-1">Gör</button><button onclick="replyTicket(${t.id})" class="btn-p text-[10px] px-2 py-1 mr-1">Yanıtla</button><button onclick="changeStatus(${t.id})" class="btn-s mr-1">Durum</button><button onclick="delTicket(${t.id})" class="btn-d">Sil</button></td></tr>`).join('') || '<tr><td colspan="6" class="text-center text-gray-500 py-8">Henüz destek talebi yok</td></tr>' } catch (e) { g('supportList').innerHTML = '<tr><td colspan="6" class="text-center text-red-500 py-8">Hata: ' + e.message + '</td></tr>' } }
+        async function viewTicket(id) { try { const snapshot = await db.ref('support_tickets/' + id).once('value'); const t = snapshot.val(); if (t) alert(`DESTEK TALEBİ #${id}\n\nKullanıcı: ${t.userEmail}\nKonu: ${t.subject}\nKategori: ${t.category}\nDurum: ${t.status}\nTarih: ${new Date(t.created).toLocaleString('tr-TR')}\n\nMesaj:\n${t.message}`) } catch (e) { alert('Hata: ' + e.message) } }
+        async function changeStatus(id) { const newStatus = prompt('Yeni durum:\n\naktif\nbeklemede\nkapali'); if (!newStatus || !['aktif', 'beklemede', 'kapali'].includes(newStatus)) return; try { await db.ref('support_tickets/' + id + '/status').set(newStatus); loadSupport(); log('Destek durumu güncellendi') } catch (e) { alert('Hata: ' + e.message) } }
+        async function delTicket(id) { if (!confirm('Bu destek talebini silmek istediğinize emin misiniz?')) return; try { await db.ref('support_tickets/' + id).remove(); loadSupport(); log('Destek talebi silindi') } catch (e) { alert('Hata: ' + e.message) } }
+
+        async function replyTicket(id) {
+            try {
+                const snapshot = await db.ref('support_tickets/' + id).once('value');
+                const ticket = snapshot.val();
+                if (!ticket) { alert('Ticket bulunamadı!'); return }
+
+                document.getElementById('replyUserEmail').textContent = ticket.userEmail;
+                document.getElementById('replyCategory').textContent = ticket.category;
+                document.getElementById('replySubject').textContent = ticket.subject;
+                document.getElementById('replyMessage').textContent = ticket.message;
+                document.getElementById('replyDate').textContent = 'Oluşturulma: ' + new Date(ticket.created).toLocaleString('tr-TR');
+                document.getElementById('replyText').value = '';
+
+                // Yanıt geçmişini yükle
+                const historyDiv = document.getElementById('replyHistory');
+                if (ticket.replies) {
+                    const replies = Object.values(ticket.replies).sort((a, b) => new Date(a.created) - new Date(b.created));
+                    historyDiv.innerHTML = '<div class="space-y-3 mb-4">' + replies.map(r => `
+                        <div class="glass p-4 border-l-4 ${r.author === 'Admin' ? 'border-green-500' : 'border-blue-500'}">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="px-2 py-1 ${r.author === 'Admin' ? 'bg-green-500/15 text-green-400' : 'bg-blue-500/15 text-blue-400'} rounded text-[10px] font-bold uppercase">${r.author}</span>
+                                <span class="text-xs text-gray-500">${new Date(r.created).toLocaleString('tr-TR')}</span>
+                            </div>
+                            <p class="text-sm text-gray-300">${r.message}</p>
+                        </div>
+                    `).join('') + '</div>';
+                } else {
+                    historyDiv.innerHTML = '<p class="text-gray-500 text-sm mb-4">Henüz yanıt yok</p>';
+                }
+
+                window.currentReplyTicketId = id;
+                document.getElementById('m-reply').classList.add('active');
+            } catch (e) {
+                alert('Hata: ' + e.message);
+            }
+        }
+
+        function closeReplyModal() {
+            document.getElementById('m-reply').classList.remove('active');
+            window.currentReplyTicketId = null;
+        }
+
+        async function sendReply() {
+            const replyText = document.getElementById('replyText').value.trim();
+            if (!replyText) { alert('Lütfen bir yanıt yazın!'); return }
+            if (!window.currentReplyTicketId) { alert('Ticket ID bulunamadı!'); return }
+
+            try {
+                const replyId = Date.now();
+                await db.ref('support_tickets/' + window.currentReplyTicketId + '/replies/' + replyId).set({
+                    id: replyId,
+                    message: replyText,
+                    author: 'Admin',
+                    created: new Date().toISOString()
+                });
+                await db.ref('support_tickets/' + window.currentReplyTicketId + '/lastReply').set(new Date().toISOString());
+                await db.ref('support_tickets/' + window.currentReplyTicketId + '/status').set('beklemede');
+
+                alert('✓ Yanıt başarıyla gönderildi!');
+                closeReplyModal();
+                loadSupport();
+                log('Destek talebine yanıt verildi');
+            } catch (e) {
+                alert('Hata: ' + e.message);
+            }
+        }
+        async function checkConnection() { try { await db.ref('.info/connected').once('value'); g('sync-dot').className = 'sync-dot sync-ok'; g('sync-text').textContent = 'Sistem Sorunsuz'; g('system-status').textContent = 'Sistem Sorunsuz Çalışıyor' } catch (e) { g('sync-dot').className = 'sync-dot sync-err'; g('sync-text').textContent = 'Bağlantı Hatası'; g('system-status').textContent = 'Bağlantıda Sorun Var' } }
+        async function sync() { g('sync-dot').className = 'sync-dot sync-loading'; g('sync-text').textContent = 'Kaydediliyor...'; try { await db.ref('site_data').set({ announcements: ls(K.ann), projects: ls(K.proj), downloads: ls(K.dl), sponsors: ls(K.sponsor), cms_content: ls(K.cms), cookie_settings: ls(K.cookies), settings: ls(K.settings) }); g('sync-dot').className = 'sync-dot sync-ok'; g('sync-text').textContent = 'Sistem Sorunsuz'; g('system-status').textContent = 'Sistem Sorunsuz Çalışıyor' } catch (e) { g('sync-dot').className = 'sync-dot sync-err'; g('sync-text').textContent = 'Hata: ' + e.message; g('system-status').textContent = 'Bağlantıda Sorun Var' } }
+        function go(tab, el) { document.querySelectorAll('.tab-c').forEach(t => t.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); g('t-' + tab).classList.add('active'); if (el) el.classList.add('active') }
+        function loadAnn() { var arr = ls(K.ann), el = g('annList'); el.innerHTML = arr.map(a => `<tr><td class="font-semibold">${a.title}</td><td><span class="px-2 py-0.5 bg-blue-500/15 text-blue-400 rounded text-[10px] font-bold uppercase">${a.category}</span></td><td class="text-gray-500 text-xs">${a.date}</td><td class="flex gap-1"><button onclick="openModal('ann',${a.id})" class="btn-s">Düz</button><button onclick="delAnn(${a.id})" class="btn-d">Sil</button></td></tr>`).join('') || '<tr><td colspan="4" class="text-center text-gray-500 py-8">Henüz duyuru yok</td></tr>' }
+        function saveAnn() { var t = g('annTitle').value, c = g('annContent').value, cat = g('annCat').value; if (!t || !c) return alert('Lütfen tüm alanları doldurun'); var arr = ls(K.ann); if (editId.ann) { var i = arr.findIndex(x => x.id === editId.ann); arr[i] = { ...arr[i], title: t, content: c, category: cat } } else { arr.push({ id: Date.now(), title: t, content: c, category: cat, date: new Date().toLocaleDateString('tr-TR') }) } ls(K.ann, arr); loadAnn(); closeModal('ann'); sync(); log('Duyuru güncellendi'); stats() }
+        function delAnn(id) { if (confirm('Silmek istediğinize emin misiniz?')) { ls(K.ann, ls(K.ann).filter(x => x.id !== id)); loadAnn(); sync(); log('Duyuru silindi'); stats() } }
+        function loadProj() { var arr = ls(K.proj), el = g('projList'); const sc = { release: 'text-green-400 bg-green-500/15', beta: 'text-yellow-400 bg-yellow-500/15', alpha: 'text-purple-400 bg-purple-500/15', development: 'text-blue-400 bg-blue-500/15' }; el.innerHTML = arr.map(p => `<tr><td class="font-semibold">${p.name}</td><td><span class="px-2 py-0.5 bg-purple-500/15 text-purple-400 rounded text-[10px] font-bold uppercase">${p.type}</span></td><td><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${sc[p.status]}">${p.status}</span></td><td class="text-gray-500 text-xs">${p.version}</td><td class="flex gap-1"><button onclick="openModal('proj',${p.id})" class="btn-s">Düz</button><button onclick="delProj(${p.id})" class="btn-d">Sil</button></td></tr>`).join('') || '<tr><td colspan="5" class="text-center text-gray-500 py-8">Henüz proje yok</td></tr>' }
+        function saveProj() { var n = g('projName').value, d = g('projDesc').value; if (!n) return alert('Proje adı gerekli'); var arr = ls(K.proj); var obj = { name: n, description: d, version: g('projVer').value || 'v1.0', type: g('projType').value, category: g('projCat').value || '', status: g('projStatus').value, link: g('projLink').value, icon: g('projIcon').value }; if (editId.proj) { var i = arr.findIndex(x => x.id === editId.proj); arr[i] = { ...arr[i], ...obj } } else { arr.push({ id: Date.now(), ...obj }) } ls(K.proj, arr); loadProj(); closeModal('proj'); sync(); log('Proje güncellendi'); stats() }
+        function delProj(id) { if (confirm('Silmek istediğinize emin misiniz?')) { ls(K.proj, ls(K.proj).filter(x => x.id !== id)); loadProj(); sync(); log('Proje silindi'); stats() } }
+        function loadDl() { var arr = ls(K.dl), el = g('dlList'); el.innerHTML = arr.map(d => `<tr><td class="font-semibold">${d.name}</td><td class="text-gray-500 text-xs">${d.version}</td><td><span class="px-2 py-0.5 bg-cyan-500/15 text-cyan-400 rounded text-[10px] font-bold uppercase">${d.type}</span></td><td><a href="${d.link}" target="_blank" class="text-blue-400 hover:underline text-xs">Aç</a></td><td class="flex gap-1"><button onclick="openModal('dl',${d.id})" class="btn-s">Düz</button><button onclick="delDl(${d.id})" class="btn-d">Sil</button></td></tr>`).join('') || '<tr><td colspan="5" class="text-center text-gray-500 py-8">Henüz indirme yok</td></tr>' }
+        function saveDl() { var n = g('dlName').value, l = g('dlLink').value; if (!n || !l) return alert('İsim ve link gerekli'); var arr = ls(K.dl); var obj = { name: n, version: g('dlVer').value || '1.0', type: g('dlType').value, link: l }; if (editId.dl) { var i = arr.findIndex(x => x.id === editId.dl); arr[i] = { ...arr[i], ...obj } } else { arr.push({ id: Date.now(), ...obj }) } ls(K.dl, arr); loadDl(); closeModal('dl'); sync(); log('İndirme güncellendi'); stats() }
+        function delDl(id) { if (confirm('Silmek istediğinize emin misiniz?')) { ls(K.dl, ls(K.dl).filter(x => x.id !== id)); loadDl(); sync(); log('İndirme silindi'); stats() } }
+        function loadSponsors() { var arr = ls(K.sponsor); if (!arr.length) { arr = [{ id: Date.now(), name: 'LuaNetwork', tagline: 'Minecraft Server', description: 'Özgün SkyBlock deneyimi', logo: 'luanetwork.png', website: 'https://luanetwork.com.tr/', discord: 'https://discord.gg/yfpqrY68tM', ip: 'mc.luanetwork.com.tr', features: ['Özgün SkyBlock sistemi', 'Özel spawner sistemi', 'Aktif topluluk'] }]; ls(K.sponsor, arr) } var el = g('sponsorList'); el.innerHTML = arr.map(s => `<div class="glass p-6"><div class="flex items-center justify-between mb-4"><div class="flex items-center gap-4"><div class="w-12 h-12 bg-orange-500/10 rounded-lg flex items-center justify-center overflow-hidden">${s.logo ? `<img src="${s.logo}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<span class=\\'text-orange-500 font-black\\'>${s.name[0]}</span>'">` : `<span class="text-orange-500 font-black">${s.name[0]}</span>`}</div><div><h3 class="font-bold text-lg">${s.name}</h3><p class="text-xs text-gray-500">${s.tagline || ''}</p></div></div><div class="flex gap-2"><button onclick='editSponsor(${JSON.stringify(s).replace(/'/g, "\\'")})' class="btn-s">Düz</button><button onclick="delSponsor(${s.id})" class="btn-d">Sil</button></div></div>${s.description ? `<p class="text-sm text-gray-400">${s.description}</p>` : ''}</div>`).join('') }
+        function saveSponsor() { var n = g('spName').value; if (!n) return alert('Sponsor adı gerekli'); var arr = ls(K.sponsor); var features = g('spFeatures').value.split('\n').filter(f => f.trim()); var obj = { name: n, tagline: g('spTag').value, description: g('spDesc').value, logo: g('spLogo').value, website: g('spWeb').value, discord: g('spDiscord').value, ip: g('spIP').value, features: features }; if (editId.sponsor) { var i = arr.findIndex(x => x.id === editId.sponsor); arr[i] = { ...arr[i], ...obj } } else { arr.push({ id: Date.now(), ...obj }) } ls(K.sponsor, arr); loadSponsors(); closeModal('sponsor'); sync(); log('Sponsor güncellendi'); stats() }
+        function editSponsor(s) { editId.sponsor = s.id; g('spName').value = s.name; g('spTag').value = s.tagline || ''; g('spDesc').value = s.description || ''; g('spLogo').value = s.logo || ''; g('spWeb').value = s.website || ''; g('spDiscord').value = s.discord || ''; g('spIP').value = s.ip || ''; g('spFeatures').value = (s.features || []).join('\n'); g('m-sponsor').classList.add('active') }
+        function delSponsor(id) { if (confirm('Silmek istediğinize emin misiniz?')) { ls(K.sponsor, ls(K.sponsor).filter(x => x.id !== id)); loadSponsors(); sync(); log('Sponsor silindi'); stats() } }
+        function loadCMS() { var d = ls(K.cms); if (d.hero) { g('cmsBadge').value = d.hero.badge || ''; g('cmsTitle').value = d.hero.title || ''; g('cmsSub').value = d.hero.subtitle || '' } }
+        function saveCMS() { var d = ls(K.cms); d.hero = { badge: g('cmsBadge').value, title: g('cmsTitle').value, subtitle: g('cmsSub').value }; ls(K.cms, d); sync(); log('CMS güncellendi'); alert('CMS kaydedildi!') }
+        function loadCookies() { var c = ls(K.cookies); g('cookieTitle').value = c.title || 'Bu site temel cerezler kullanir'; g('cookieDesc').value = c.description || 'Deneyiminizi gelistirmek icin temel cerezleri kullaniyoruz.'; g('cookieAccept').value = c.acceptText || 'Anladim'; g('cookieReject').value = c.rejectText || 'Reddet' }
+        function saveCookies() { var c = { title: g('cookieTitle').value, description: g('cookieDesc').value, acceptText: g('cookieAccept').value, rejectText: g('cookieReject').value }; ls(K.cookies, c); sync(); log('Çerez ayarları güncellendi'); alert('Çerez ayarları kaydedildi!') }
+        function loadSettings() { var s = ls(K.settings); g('sDiscord').value = s.discord || 'https://discord.gg/y4tAHYGzC6'; g('sGithub').value = s.github || 'https://github.com/arcanth00'; g('sInstagram').value = s.instagram || ''; g('sYoutube').value = s.youtube || ''; g('sTwitter').value = s.twitter || '' }
+        function saveSettings() { var s = { discord: g('sDiscord').value, github: g('sGithub').value, instagram: g('sInstagram').value, youtube: g('sYoutube').value, twitter: g('sTwitter').value }; ls(K.settings, s); sync(); log('Ayarlar güncellendi'); alert('Ayarlar kaydedildi!') }
+        function log(m) { var arr = ls(K.act); arr.unshift({ message: m, time: new Date().toLocaleTimeString('tr-TR') }); if (arr.length > 20) arr.pop(); ls(K.act, arr); loadAct() }
+        function loadAct() { var arr = ls(K.act); g('actList').innerHTML = arr.map(a => `<div class="glass p-3 flex items-center justify-between text-xs"><span class="font-semibold">${a.message}</span><span class="text-gray-500">${a.time}</span></div>`).join('') || '<div class="glass p-6 text-center text-gray-500">Henüz aktivite yok</div>' }
+        function clearAct() { if (confirm('Tüm aktivite günlüğünü temizlemek istediğinize emin misiniz?')) { ls(K.act, []); loadAct() } }
+        function stats() { g('s-ann').textContent = ls(K.ann).length; g('s-proj').textContent = ls(K.proj).length; g('s-dl').textContent = ls(K.dl).length; g('s-sponsor').textContent = ls(K.sponsor).length }
+        function openModal(t, id) { editId[t] = id || null; g('m-' + t).classList.add('active'); if (id) { var d = ls(K[t]).find(x => x.id === id); if (t === 'ann') { g('annTitle').value = d.title; g('annContent').value = d.content; g('annCat').value = d.category } if (t === 'proj') { g('projName').value = d.name; g('projDesc').value = d.description; g('projVer').value = d.version; g('projType').value = d.type; g('projCat').value = d.category || ''; g('projStatus').value = d.status; g('projLink').value = d.link; g('projIcon').value = d.icon } if (t === 'dl') { g('dlName').value = d.name; g('dlVer').value = d.version; g('dlType').value = d.type; g('dlLink').value = d.link } } else { if (t === 'ann') { g('annTitle').value = ''; g('annContent').value = ''; g('annCat').value = 'bilgi' } if (t === 'proj') { g('projName').value = ''; g('projDesc').value = ''; g('projVer').value = ''; g('projType').value = 'modpack'; g('projCat').value = ''; g('projStatus').value = 'release'; g('projLink').value = ''; g('projIcon').value = '' } if (t === 'dl') { g('dlName').value = ''; g('dlVer').value = ''; g('dlType').value = 'modpack'; g('dlLink').value = '' } if (t === 'sponsor') { g('spName').value = ''; g('spTag').value = ''; g('spDesc').value = ''; g('spLogo').value = ''; g('spWeb').value = ''; g('spDiscord').value = ''; g('spIP').value = ''; g('spFeatures').value = '' } } }
+        function closeModal(t) { g('m-' + t).classList.remove('active'); editId[t] = null }
+
+        // ============== BLOG CRUD ==============
+        let editBlogId = null;
+        function openNewPost() { editBlogId = null; g('blogTitle').value = ''; g('blogContent').value = ''; g('blogCategory').value = 'genel'; g('blogAuthor').value = ''; g('blogImage').value = ''; g('m-blog').classList.add('active'); }
+        function closeBlogModal() { g('m-blog').classList.remove('active'); editBlogId = null; }
+        function editBlogPost(id) {
+            db.ref('blog/' + id).once('value').then(snap => {
+                const p = snap.val(); if (!p) return;
+                editBlogId = id;
+                g('blogTitle').value = p.title || '';
+                g('blogContent').value = p.content || '';
+                g('blogCategory').value = p.category || 'genel';
+                g('blogAuthor').value = p.author || '';
+                g('blogImage').value = p.image || '';
+                g('m-blog').classList.add('active');
+            });
+        }
+        async function saveBlogPost() {
+            const title = g('blogTitle').value.trim();
+            const content = g('blogContent').value.trim();
+            if (!title || !content) return alert('Başlık ve içerik gerekli!');
+            const id = editBlogId || Date.now().toString();
+            const post = {
+                id: id,
+                title: title,
+                content: content,
+                category: g('blogCategory').value,
+                author: g('blogAuthor').value.trim() || 'Admin',
+                image: g('blogImage').value.trim() || '',
+                date: editBlogId ? undefined : new Date().toLocaleDateString('tr-TR'),
+                views: editBlogId ? undefined : 0
+            };
+            // Remove undefined keys
+            Object.keys(post).forEach(k => { if (post[k] === undefined) delete post[k]; });
+            try {
+                if (editBlogId) { await db.ref('blog/' + id).update(post); }
+                else { await db.ref('blog/' + id).set(post); }
+                closeBlogModal();
+                loadBlog();
+                log(editBlogId ? 'Blog yazısı düzenlendi' : 'Yeni blog yazısı eklendi');
+                alert('✓ Blog yazısı kaydedildi!');
+            } catch (e) { alert('Hata: ' + e.message); }
+        }
+        async function deleteBlogPost(id) {
+            if (!confirm('Bu blog yazısını silmek istediğinize emin misiniz?')) return;
+            try {
+                await db.ref('blog/' + id).remove();
+                await db.ref('comments/' + id).remove();
+                loadBlog();
+                log('Blog yazısı silindi');
+            } catch (e) { alert('Hata: ' + e.message); }
+        }
+        function loadBlog() {
+            db.ref('blog').once('value').then(snap => {
+                const el = g('blogList');
+                const posts = [];
+                snap.forEach(c => posts.push(c.val()));
+                posts.reverse();
+                if (!posts.length) {
+                    el.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500 py-8">Henüz blog yazısı yok</td></tr>';
+                    return;
+                }
+                el.innerHTML = posts.map(p => `<tr>
+                    <td class="font-semibold">${p.title}</td>
+                    <td><span class="px-2 py-0.5 bg-purple-500/15 text-purple-400 rounded text-[10px] font-bold uppercase">${p.category || 'genel'}</span></td>
+                    <td class="text-sm">${p.author || 'Admin'}</td>
+                    <td class="text-gray-500 text-xs">${p.views || 0}</td>
+                    <td class="text-gray-500 text-xs">${p.date || ''}</td>
+                    <td class="flex gap-1">
+                        <button onclick="editBlogPost('${p.id}')" class="btn-s">Düz</button>
+                        <button onclick="deleteBlogPost('${p.id}')" class="btn-d">Sil</button>
+                    </td>
+                </tr>`).join('');
+            }).catch(e => {
+                g('blogList').innerHTML = '<tr><td colspan="6" class="text-center text-red-500 py-8">Hata: ' + e.message + '</td></tr>';
+            });
+        }
+
+        // ============== SITE SETTINGS ==============
+        function saveSiteSettings() {
+            const title = g('siteTitle') ? g('siteTitle').value : '';
+            const desc = g('siteDesc') ? g('siteDesc').value : '';
+            const settings = ls(K.settings);
+            if (title) settings.siteTitle = title;
+            if (desc) settings.siteDescription = desc;
+            ls(K.settings, settings);
+            sync();
+            log('Site ayarları güncellendi');
+            alert('✓ Site ayarları kaydedildi!');
+        }
+
+        // ============== MAINTENANCE MODE ==============
+        function openBakimModal() { g('m-bakim').classList.add('active'); }
+        function closeBakimModal() { g('m-bakim').classList.remove('active'); }
+        async function startBakim() {
+            const message = g('bakimMessage').value.trim();
+            const duration = parseInt(g('bakimDuration').value) || 30;
+            const endTime = new Date(Date.now() + duration * 60 * 1000).toISOString();
+            try {
+                await db.ref('site_data/settings/maintenance').set({
+                    enabled: true,
+                    message: message,
+                    duration: duration,
+                    endTime: endTime,
+                    startedAt: new Date().toISOString()
+                });
+                closeBakimModal();
+                loadBakimStatus();
+                log('Bakım modu açıldı (' + duration + ' dk)');
+                alert('✓ Bakım modu açıldı! Süre: ' + duration + ' dakika');
+            } catch (e) { alert('Hata: ' + e.message); }
+        }
+        async function closeBakim() {
+            if (!confirm('Bakım modunu kapatmak istediğinize emin misiniz?')) return;
+            try {
+                await db.ref('site_data/settings/maintenance').set({ enabled: false });
+                loadBakimStatus();
+                log('Bakım modu kapatıldı');
+                alert('✓ Bakım modu kapatıldı!');
+            } catch (e) { alert('Hata: ' + e.message); }
+        }
+        function loadBakimStatus() {
+            db.ref('site_data/settings/maintenance').once('value').then(snap => {
+                const data = snap.val();
+                const statusEl = g('bakimStatus');
+                const infoEl = g('bakimInfo');
+                const closeBtn = g('closeBakimBtn');
+                if (data && data.enabled) {
+                    statusEl.className = 'w-3 h-3 rounded-full animate-pulse bg-red-500';
+                    infoEl.textContent = 'Durum: Açık — Bitiş: ' + (data.endTime ? new Date(data.endTime).toLocaleString('tr-TR') : 'Belirsiz');
+                    closeBtn.classList.remove('hidden');
+                } else {
+                    statusEl.className = 'w-3 h-3 rounded-full bg-green-500';
+                    infoEl.textContent = 'Durum: Kapalı';
+                    closeBtn.classList.add('hidden');
+                }
+            });
+        }
+
+        // ============== SYSTEM MANAGEMENT ==============
+        function clearAllCache() {
+            if (!confirm('Tüm önbellek temizlenecek. Emin misiniz?')) return;
+            [K.ann, K.proj, K.dl, K.sponsor, K.cms, K.cookies, K.settings, K.act].forEach(k => localStorage.removeItem(k));
+            log('Önbellek temizlendi');
+            alert('✓ Önbellek temizlendi! Sayfa yenilenecek.');
+            location.reload();
+        }
+        function exportData() {
+            const data = {
+                announcements: ls(K.ann),
+                projects: ls(K.proj),
+                downloads: ls(K.dl),
+                sponsors: ls(K.sponsor),
+                cms_content: ls(K.cms),
+                cookie_settings: ls(K.cookies),
+                settings: ls(K.settings),
+                exportDate: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'arcanth_backup_' + new Date().toISOString().split('T')[0] + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            log('Veri yedeği indirildi');
+        }
+        function resetToDefaults() {
+            if (!confirm('⚠️ DİKKAT!\n\nTüm veriler sıfırlanacak ve varsayılan değerlere dönülecek.\nBu işlem geri alınamaz!\n\nDevam etmek istiyor musunuz?')) return;
+            if (!confirm('Son onay: Gerçekten tüm verileri silmek istediğinize emin misiniz?')) return;
+            [K.ann, K.proj, K.dl, K.sponsor, K.cms, K.cookies, K.settings, K.act].forEach(k => localStorage.removeItem(k));
+            log('Sistem sıfırlandı');
+            alert('✓ Sistem sıfırlandı. Sayfa yenilenecek.');
+            location.reload();
+        }
+
+        // ============== ANALYTICS ==============
+        async function loadAnalytics() {
+            try {
+                // Stat cards
+                const pvSnap = await db.ref('analytics/pageviews').once('value');
+                g('stat-pageviews').textContent = pvSnap.numChildren();
+                const dlSnap = await db.ref('analytics/downloads').once('value');
+                g('stat-downloads').textContent = dlSnap.numChildren();
+                const tkSnap = await db.ref('support_tickets').once('value');
+                g('stat-tickets').textContent = tkSnap.numChildren();
+                const activeUsers = allUsers.filter(u => !u.blocked).length;
+                g('stat-active').textContent = activeUsers;
+
+                // Top downloads
+                const countsSnap = await db.ref('download_counts').once('value');
+                const counts = [];
+                countsSnap.forEach(c => counts.push({ name: c.key, count: c.val() }));
+                counts.sort((a, b) => b.count - a.count);
+                const topEl = g('top-downloads');
+                if (counts.length) {
+                    topEl.innerHTML = counts.slice(0, 10).map((c, i) => `<div class="flex items-center justify-between py-2 ${i > 0 ? 'border-t border-white/5' : ''}"><span class="font-semibold text-sm">${i + 1}. ${c.name}</span><span class="text-blue-400 font-bold">${c.count}</span></div>`).join('');
+                } else {
+                    topEl.innerHTML = '<p class="text-gray-500 text-sm">Henüz indirme verisi yok</p>';
+                }
+
+                // Recent activities from Firebase
+                const actSnap = await db.ref('activity_logs').limitToLast(10).once('value');
+                const acts = []; actSnap.forEach(c => acts.push(c.val())); acts.reverse();
+                const actEl = g('recent-activities');
+                if (acts.length) {
+                    actEl.innerHTML = acts.map(a => `<div class="flex items-center justify-between py-2 border-t border-white/5 first:border-0"><div><span class="text-sm font-semibold">${a.email || a.userId || 'Bilinmiyor'}</span><span class="text-gray-500 text-xs ml-2">${a.type === 'login' ? 'Giriş yaptı' : a.action || a.type}</span></div><span class="text-gray-500 text-xs">${a.timestamp ? new Date(a.timestamp).toLocaleString('tr-TR') : ''}</span></div>`).join('');
+                } else {
+                    actEl.innerHTML = '<p class="text-gray-500 text-sm">Henüz aktivite yok</p>';
+                }
+
+                // === TABLE ANALYSIS ===
+
+                // Pageviews table: group by page
+                const pvData = {};
+                pvSnap.forEach(c => {
+                    const v = c.val();
+                    const page = v.page || 'unknown';
+                    if (!pvData[page]) pvData[page] = { count: 0, last: v.timestamp };
+                    pvData[page].count++;
+                    if (v.timestamp > pvData[page].last) pvData[page].last = v.timestamp;
+                });
+                const pvTable = g('analytics-pageviews-table');
+                const pvEntries = Object.entries(pvData).sort((a, b) => b[1].count - a[1].count);
+                if (pvEntries.length) {
+                    pvTable.innerHTML = pvEntries.map(([page, d]) => `<tr><td class="font-semibold">${page}</td><td class="text-blue-400 font-bold">${d.count}</td><td class="text-gray-500 text-xs">${d.last ? new Date(d.last).toLocaleString('tr-TR') : '-'}</td></tr>`).join('');
+                } else {
+                    pvTable.innerHTML = '<tr><td colspan="3" class="text-center text-gray-500 py-4">Henüz veri yok</td></tr>';
+                }
+
+                // Downloads table
+                const dlTable = g('analytics-downloads-table');
+                if (counts.length) {
+                    dlTable.innerHTML = counts.map(c => `<tr><td class="font-semibold">${c.name}</td><td class="text-cyan-400 font-bold">${c.count}</td></tr>`).join('');
+                } else {
+                    dlTable.innerHTML = '<tr><td colspan="2" class="text-center text-gray-500 py-4">Henüz veri yok</td></tr>';
+                }
+
+                // Users table: by period
+                const now = new Date();
+                const todayStr = now.toDateString();
+                const weekAgo = new Date(now.getTime() - 7 * 86400000);
+                const monthAgo = new Date(now.getTime() - 30 * 86400000);
+                const todayUsers = allUsers.filter(u => u.created && new Date(u.created).toDateString() === todayStr).length;
+                const weekUsers = allUsers.filter(u => u.created && new Date(u.created) >= weekAgo).length;
+                const monthUsers = allUsers.filter(u => u.created && new Date(u.created) >= monthAgo).length;
+                g('analytics-users-table').innerHTML = `
+                    <tr><td class="font-semibold">Bugün</td><td class="text-purple-400 font-bold">${todayUsers}</td><td class="text-gray-400">${allUsers.length}</td></tr>
+                    <tr><td class="font-semibold">Son 7 Gün</td><td class="text-purple-400 font-bold">${weekUsers}</td><td class="text-gray-400">${allUsers.length}</td></tr>
+                    <tr><td class="font-semibold">Son 30 Gün</td><td class="text-purple-400 font-bold">${monthUsers}</td><td class="text-gray-400">${allUsers.length}</td></tr>
+                `;
+
+                // Support tickets table: group by category and status
+                const tickets = []; tkSnap.forEach(c => tickets.push(c.val()));
+                const catStats = {};
+                tickets.forEach(t => {
+                    const cat = t.category || 'diger';
+                    if (!catStats[cat]) catStats[cat] = { aktif: 0, beklemede: 0, kapali: 0, total: 0 };
+                    catStats[cat][t.status || 'aktif']++;
+                    catStats[cat].total++;
+                });
+                const tkTable = g('analytics-tickets-table');
+                const catEntries = Object.entries(catStats);
+                if (catEntries.length) {
+                    tkTable.innerHTML = catEntries.map(([cat, s]) => `<tr><td class="font-semibold capitalize">${cat}</td><td class="text-green-400 font-bold">${s.aktif}</td><td class="text-yellow-400 font-bold">${s.beklemede}</td><td class="text-gray-400 font-bold">${s.kapali}</td><td class="font-bold">${s.total}</td></tr>`).join('');
+                } else {
+                    tkTable.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-4">Henüz veri yok</td></tr>';
+                }
+
+            } catch (e) {
+                console.error('Analytics error:', e);
+            }
+        }
+    </script>
+</body>
+
+</html>

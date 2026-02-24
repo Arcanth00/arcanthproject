@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcanth Project - Blog</title>
+    <meta name="description" content="Arcanth Project güncellemeleri, rehberler ve haberler.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #0a0a0f;
+            color: white;
+            margin: 0;
+            padding: 0
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, .03);
+            border: 1px solid rgba(255, 255, 255, .06);
+            border-radius: 1rem;
+            transition: all .3s
+        }
+
+        .glass:hover {
+            border-color: rgba(59, 130, 246, 0.2);
+            background: rgba(255, 255, 255, .05)
+        }
+
+        .input-f {
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid rgba(255, 255, 255, .08);
+            color: white;
+            padding: .75rem 1rem;
+            border-radius: .75rem;
+            width: 100%;
+            outline: none;
+            transition: border .2s
+        }
+
+        .input-f:focus {
+            border-color: #3b82f6
+        }
+
+        .btn-p {
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            color: white;
+            padding: .75rem 1.5rem;
+            border-radius: .75rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all .2s
+        }
+
+        .btn-p:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3)
+        }
+
+        .ql-editor {
+            padding: 0 !important;
+        }
+
+        .ql-editor img {
+            max-width: 100%;
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen p-6">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-4xl font-black uppercase tracking-tight">Blog & Haberler</h1>
+                <p class="text-gray-400 text-sm mt-1">Gelişmeler, rehberler ve daha fazlası</p>
+            </div>
+            <a href="index.html" class="px-6 py-3 glass rounded-xl text-sm font-bold hover:bg-white/5 transition-all">←
+                Ana Sayfa</a>
+        </div>
+
+        <!-- Blog List -->
+        <div id="blogList" class="grid md:grid-cols-2 gap-6">
+            <div class="col-span-2 text-center py-20">
+                <div
+                    class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4">
+                </div>
+                <p class="text-gray-500">Yazılar yükleniyor...</p>
+            </div>
+        </div>
+
+        <!-- Read Modal -->
+        <div id="readModal"
+            class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+            <div
+                class="bg-[#0f1419] border border-white/10 w-full max-w-4xl max-h-[90vh] rounded-2xl flex flex-col overflow-hidden shadow-2xl">
+                <!-- Modal Header -->
+                <div class="p-6 border-b border-white/5 flex items-center justify-between bg-[#131820]">
+                    <div class="flex items-center gap-3">
+                        <button onclick="closeModal()"
+                            class="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                        </button>
+                        <div>
+                            <p class="text-xs text-blue-400 font-bold uppercase tracking-wider mb-0.5" id="mDate">Date
+                            </p>
+                            <h2 class="text-xl font-black leading-none" id="mTitle">Title</h2>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-gray-500 font-bold uppercase px-2 py-1 bg-white/5 rounded"
+                            id="mAuthor">Author</span>
+                    </div>
+                </div>
+
+                <!-- Modal Content -->
+                <div class="flex-1 overflow-y-auto custom-scrollbar">
+                    <img id="mImage" class="w-full h-64 object-cover hidden">
+                    <div class="p-8 prose prose-invert prose-blue max-w-none" id="mContent"></div>
+
+                    <!-- Comments Section -->
+                    <div class="p-8 border-t border-white/5 bg-black/20">
+                        <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                            </svg>
+                            Yorumlar
+                        </h3>
+
+                        <div id="commentForm" class="mb-8 hidden">
+                            <div class="flex gap-4">
+                                <img id="userAvatar" src="" class="w-10 h-10 rounded-xl object-cover bg-white/5">
+                                <div class="flex-1">
+                                    <textarea id="commentText" class="input-f mb-2 min-h-[100px]"
+                                        placeholder="Düşüncelerini paylaş..."></textarea>
+                                    <div class="flex justify-end">
+                                        <button onclick="postComment()" class="btn-p text-sm">Yorum Yap</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="loginWarning"
+                            class="mb-8 p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl text-center hidden">
+                            <p class="text-blue-200 text-sm">Yorum yapmak için <a href="index.html"
+                                    class="font-bold underline">giriş yapmalısınız</a>.</p>
+                        </div>
+
+                        <div id="commentsList" class="space-y-6">
+                            <!-- Comments will load here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyCnkk6j1CGsi4sNXJ8FA9Gd2B6_VDptVDg", authDomain: "arcanthproject.firebaseapp.com", databaseURL: "https://arcanthproject-default-rtdb.firebaseio.com", projectId: "arcanthproject", storageBucket: "arcanthproject.firebasestorage.app", messagingSenderId: "826341954149", appId: "1:826341954149:web:6429d61a5b40810009ac8c" };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth(), db = firebase.database();
+        let currentUser = null;
+        let currentPostId = null;
+
+        auth.onAuthStateChanged(user => {
+            currentUser = user;
+            if (user) {
+                document.getElementById('commentForm').classList.remove('hidden');
+                document.getElementById('loginWarning').classList.add('hidden');
+                document.getElementById('userAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.email[0]}&background=3b82f6&color=fff`;
+            } else {
+                document.getElementById('commentForm').classList.add('hidden');
+                document.getElementById('loginWarning').classList.remove('hidden');
+            }
+        });
+
+        // Load Blogs
+        db.ref('blog').on('value', snap => {
+            const blogs = [];
+            snap.forEach(c => blogs.push(c.val()));
+            blogs.reverse();
+
+            const el = document.getElementById('blogList');
+            if (blogs.length === 0) {
+                el.innerHTML = '<div class="col-span-2 text-center py-20"><p class="text-gray-500">Henüz blog yazısı yok.</p></div>';
+                return;
+            }
+
+            el.innerHTML = blogs.map(b => `
+                <div class="glass group cursor-pointer overflow-hidden border-transparent hover:border-blue-500/30" onclick="openPost('${b.id}')">
+                    ${b.image ? `<div class="h-48 overflow-hidden"><img src="${b.image}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"></div>` : ''}
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3 flex-wrap">
+                            ${b.category ? `<span class="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-purple-500/15 text-purple-400 border border-purple-500/20">${b.category}</span>` : ''}
+                            <span class="text-xs font-bold text-gray-500">${b.date}</span>
+                            <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
+                            <span class="text-xs font-bold text-blue-400 uppercase">${b.author || 'Admin'}</span>
+                        </div>
+                        <h2 class="text-2xl font-black mb-2 group-hover:text-blue-400 transition-colors">${b.title}</h2>
+                        <div class="text-gray-400 text-sm line-clamp-3">${b.content.replace(/<[^>]*>/g, '').substring(0, 150)}...</div>
+                    </div>
+                </div>
+            `).join('');
+        });
+
+        async function openPost(id) {
+            currentPostId = id;
+            try {
+                const snap = await db.ref('blog/' + id).once('value');
+                const p = snap.val();
+                if (!p) return;
+
+                document.getElementById('mTitle').textContent = p.title;
+                document.getElementById('mDate').textContent = p.date;
+                document.getElementById('mAuthor').textContent = p.author || 'Admin';
+                document.getElementById('mContent').innerHTML = p.content;
+
+                const imgEl = document.getElementById('mImage');
+                if (p.image) {
+                    imgEl.src = p.image;
+                    imgEl.classList.remove('hidden');
+                } else {
+                    imgEl.classList.add('hidden');
+                }
+
+                document.getElementById('readModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                loadComments(id);
+            } catch (e) { console.error(e); }
+        }
+
+        function closeModal() {
+            document.getElementById('readModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            currentPostId = null;
+        }
+
+        function loadComments(postId) {
+            const el = document.getElementById('commentsList');
+            el.innerHTML = '<p class="text-gray-500 text-sm">Yorumlar yükleniyor...</p>';
+
+            db.ref('comments/' + postId).on('value', snap => {
+                const comments = [];
+                snap.forEach(c => comments.push(c.val()));
+                comments.sort((a, b) => new Date(b.created) - new Date(a.created));
+
+                if (comments.length === 0) {
+                    el.innerHTML = '<p class="text-gray-500 text-sm">Henüz yorum yapılmamış. İlk yorumu sen yap!</p>';
+                    return;
+                }
+
+                // Fetch user details for each comment
+                Promise.all(comments.map(async c => {
+                    let userDisplay = { name: 'Anonim', photo: `https://ui-avatars.com/api/?name=A&background=random` };
+                    try {
+                        const uSnap = await db.ref('users/' + c.userId).once('value');
+                        const u = uSnap.val();
+                        if (u) {
+                            userDisplay.name = u.username || u.name || 'Kullanıcı';
+                            userDisplay.photo = u.photoURL || `https://ui-avatars.com/api/?name=${userDisplay.name[0]}&background=random`;
+                        }
+                    } catch (e) { }
+                    return { ...c, user: userDisplay };
+                })).then(enhancedComments => {
+                    el.innerHTML = enhancedComments.map(c => `
+                        <div class="flex gap-4">
+                            <img src="${c.user.photo}" class="w-10 h-10 rounded-xl object-cover bg-white/5">
+                            <div class="flex-1">
+                                <div class="bg-white/5 rounded-xl p-4 rounded-tl-none">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-bold text-sm text-blue-400">${c.user.name}</span>
+                                        <span class="text-[10px] text-gray-500">${c.date}</span>
+                                    </div>
+                                    <p class="text-sm text-gray-300">${c.text}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                });
+            });
+        }
+
+        async function postComment() {
+            if (!currentUser) return;
+            const txt = document.getElementById('commentText').value.trim();
+            if (!txt) return alert('Yorum boş olamaz.');
+            if (txt.length > 500) return alert('Yorum çok uzun!');
+
+            const id = Date.now();
+            const comment = {
+                id: id,
+                userId: currentUser.uid,
+                text: txt,
+                date: new Date().toLocaleDateString('tr-TR'),
+                created: new Date().toISOString()
+            };
+
+            try {
+                await db.ref('comments/' + currentPostId + '/' + id).set(comment);
+                document.getElementById('commentText').value = '';
+            } catch (e) { alert('Hata: ' + e.message); }
+        }
+    </script>
+</body>
+
+</html>
