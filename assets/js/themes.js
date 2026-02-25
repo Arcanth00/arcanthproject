@@ -119,7 +119,7 @@ var ThemeSystem = (function () {
                     y: Math.random() * H * 0.72,
                     r: Math.random() * 1.4 + 0.3,
                     base: Math.random() * 0.6 + 0.2,
-                    speed: Math.random() * 0.02 + 0.005,
+                    speed: Math.random() * 0.9 + 0.3, /* rad/saniye — 0.3~1.2 */
                     phase: Math.random() * Math.PI * 2
                 });
             }
@@ -136,7 +136,7 @@ var ThemeSystem = (function () {
                 lanterns.push({
                     t: t,
                     swingAmp:   4 + Math.random() * 3,
-                    swingSpeed: 0.008 + Math.random() * 0.006,
+                    swingSpeed: 0.5 + Math.random() * 0.4,  /* rad/saniye — yumuşak sallantı ~0.5~0.9 */
                     swingPhase: Math.random() * Math.PI * 2,
                     glowPhase:  Math.random() * Math.PI * 2
                 });
@@ -152,7 +152,7 @@ var ThemeSystem = (function () {
         resize();
         window.addEventListener('resize', resize);
 
-        var t = 0;
+        var startTime = null; /* performance.now() bazlı, FPS bağımsız */
 
         /* --- Cami silüeti çiz --- */
         function drawMosque() {
@@ -273,12 +273,12 @@ var ThemeSystem = (function () {
                 var by = (1 - bt) * (1 - bt) * attachY + 2 * (1 - bt) * bt * ropeMidY + bt * bt * attachY;
 
                 /* Sallantı */
-                var swingOff = Math.sin(t * l.swingSpeed * 60 + l.swingPhase) * l.swingAmp;
+                var swingOff = Math.sin(t * l.swingSpeed + l.swingPhase) * l.swingAmp;
                 var lx = bx + swingOff;
                 var ly = by + 24;
 
                 /* Kandil ışığı (glow) */
-                var glowAlpha = 0.25 + Math.sin(t * 0.04 + l.glowPhase) * 0.15;
+                var glowAlpha = 0.25 + Math.sin(t * 1.8 + l.glowPhase) * 0.15;
                 var grd = ctx.createRadialGradient(lx, ly, 0, lx, ly, 28);
                 grd.addColorStop(0,   'rgba(255, 210, 100, ' + (glowAlpha + 0.35) + ')');
                 grd.addColorStop(0.3, 'rgba(255, 160, 40,  ' + glowAlpha + ')');
@@ -344,9 +344,10 @@ var ThemeSystem = (function () {
         }
 
         /* --- Ana döngü --- */
-        function draw() {
+        function draw(timestamp) {
+            if (!startTime) startTime = timestamp;
+            var t = (timestamp - startTime) / 1000; /* saniye — 60fps/120fps fark etmez */
             ctx.clearRect(0, 0, W, H);
-            t++;
 
             /* Gece gökyüzü gradientı */
             var sky = ctx.createLinearGradient(0, 0, 0, H * 0.75);
