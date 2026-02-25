@@ -63,27 +63,116 @@ function loadCMSContent() {
 function projectCard(p, large) {
     var sc        = p.status === 'release' ? 'status-release' : p.status === 'beta' ? 'status-beta' : p.status === 'alpha' ? 'status-alpha' : 'status-development';
     var sl        = p.status === 'release' ? 'Live' : p.status === 'beta' ? 'Beta' : p.status === 'alpha' ? 'Alpha' : 'Dev';
-    var iconHTML  = (p.icon && p.icon.startsWith('http')) ? '<img src="' + p.icon + '" class="w-full h-full object-cover rounded-2xl">' : '<span class="text-3xl">' + (p.icon || '') + '</span>';
+    var iconHTML  = (p.icon && p.icon.startsWith('http')) ? '<img src="' + p.icon + '" class="w-full h-full object-cover rounded-2xl">' : '<span class="text-3xl">' + (p.icon || '📦') + '</span>';
     var pad       = large ? 'p-10' : 'p-8';
     var titleSize = large ? 'text-4xl md:text-5xl' : 'text-2xl md:text-3xl';
+    var pData     = encodeURIComponent(JSON.stringify(p));
+    /* "Yeni" badge — son 7 gün içinde eklendiyse */
+    var isNew     = p.addedAt && (Date.now() - new Date(p.addedAt).getTime()) < 7 * 24 * 3600 * 1000;
 
-    return '<div class="glass-card ' + pad + ' rounded-[2.5rem] group relative overflow-hidden flex flex-col" data-type="' + (p.type || 'other') + '">' +
+    return '<div class="glass-card project-card ' + pad + ' rounded-[2.5rem] group relative overflow-hidden flex flex-col" data-type="' + (p.type || 'other') + '" data-pid="' + (p.id || p.name) + '" onclick="openProjectModalById(this)">' +
         '<div class="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-transparent to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>' +
         '<div class="relative z-10 space-y-5 flex-1 flex flex-col">' +
         '<div class="flex items-center justify-between">' +
         '<div class="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center overflow-hidden border border-blue-500/20">' + iconHTML + '</div>' +
-        '<div class="flex gap-2 items-center">' +
+        '<div class="flex gap-2 items-center flex-wrap justify-end">' +
+        (isNew ? '<span class="project-new-badge"><span>●</span>YENİ</span>' : '') +
         (p.version ? '<span class="text-xs text-gray-500 font-bold">' + p.version + '</span>' : '') +
         '<span class="px-4 py-1.5 text-[10px] font-black rounded-full ' + sc + '">' + sl + '</span>' +
         '</div></div>' +
         '<h3 class="' + titleSize + ' font-black uppercase italic tracking-tighter">' + p.name + '</h3>' +
-        '<p class="text-gray-400 leading-relaxed flex-1">' + p.description + '</p>' +
-        '<div class="flex flex-wrap gap-2">' +
+        '<p class="text-gray-400 leading-relaxed flex-1 line-clamp-3">' + p.description + '</p>' +
+        '<div class="flex flex-wrap gap-2 mt-auto">' +
         (p.category ? '<span class="px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-400 font-black text-xs">' + p.category + '</span>' : '') +
         (p.type ? '<span class="px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400 font-black text-xs uppercase">' + p.type + '</span>' : '') +
         '</div>' +
-        (p.link ? '<a href="' + p.link + '" target="_blank" class="btn-shine w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:shadow-2xl transition-all mt-auto">INCELE &rarr;</a>' : '') +
+        '<div class="flex items-center justify-between pt-2 border-t border-white/05">' +
+        '<span class="download-count-badge"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>' + formatDownloads(p.downloads || 0) + '</span>' +
+        '<span class="text-xs text-blue-400 font-bold group-hover:underline">Detaylar →</span>' +
+        '</div>' +
         '</div></div>';
+}
+
+function formatDownloads(n) {
+    if (n >= 1000) return (n / 1000).toFixed(1).replace('.0', '') + 'K';
+    return n > 0 ? String(n) : '—';
+}
+
+/* === PROJE DETAY MODALı === */
+/* Store last clicked project */
+function openProjectModalById(el) {
+    var pid = el.getAttribute('data-pid');
+    var p = allProjects.find(function(x) { return (x.id || x.name) == pid; });
+    if (!p) return;
+    openProjectModal(p);
+}
+
+function openProjectModal(p) {
+    var sc = p.status === 'release' ? 'status-release' : p.status === 'beta' ? 'status-beta' : p.status === 'alpha' ? 'status-alpha' : 'status-development';
+    var sl = p.status === 'release' ? 'Yayında' : p.status === 'beta' ? 'Beta' : p.status === 'alpha' ? 'Alpha' : 'Geliştirme';
+    var iconHTML = (p.icon && p.icon.startsWith('http')) ? '<img src="' + p.icon + '" class="w-full h-full object-cover rounded-2xl">' : '<span class="text-5xl">' + (p.icon || '📦') + '</span>';
+
+    document.getElementById('pm-body').innerHTML =
+        '<div class="modal-header-gradient"></div>' +
+        '<div class="p-8 space-y-6">' +
+        /* Üst: ikon + başlık */
+        '<div class="flex items-start gap-5">' +
+        '<div class="w-20 h-20 bg-blue-500/10 rounded-2xl flex items-center justify-center border border-blue-500/20 flex-shrink-0">' + iconHTML + '</div>' +
+        '<div class="flex-1 min-w-0">' +
+        '<div class="flex flex-wrap gap-2 mb-2">' +
+        (p.version ? '<span class="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-gray-400 font-bold">' + p.version + '</span>' : '') +
+        '<span class="px-3 py-1 rounded-full text-xs font-black ' + sc + '">' + sl + '</span>' +
+        '</div>' +
+        '<h2 class="text-3xl md:text-4xl font-black uppercase italic tracking-tighter leading-tight">' + p.name + '</h2>' +
+        (p.category ? '<p class="text-blue-400 font-bold text-sm mt-1">' + p.category + '</p>' : '') +
+        '</div></div>' +
+        /* Açıklama */
+        '<div class="bg-white/02 border border-white/05 rounded-2xl p-5">' +
+        '<p class="text-gray-300 leading-relaxed">' + p.description + '</p>' +
+        '</div>' +
+        /* Stats row */
+        '<div class="grid grid-cols-3 gap-3">' +
+        '<div class="bg-blue-500/08 border border-blue-500/15 rounded-xl p-4 text-center">' +
+        '<p class="text-2xl font-black text-blue-400">' + formatDownloads(p.downloads || 0) + '</p>' +
+        '<p class="text-xs text-gray-600 font-bold uppercase tracking-wider mt-1">İndirme</p></div>' +
+        '<div class="bg-purple-500/08 border border-purple-500/15 rounded-xl p-4 text-center">' +
+        '<p class="text-xl font-black text-purple-400">' + (p.type || '—') + '</p>' +
+        '<p class="text-xs text-gray-600 font-bold uppercase tracking-wider mt-1">Tür</p></div>' +
+        '<div class="bg-emerald-500/08 border border-emerald-500/15 rounded-xl p-4 text-center">' +
+        '<p class="text-xl font-black text-emerald-400">' + sl + '</p>' +
+        '<p class="text-xs text-gray-600 font-bold uppercase tracking-wider mt-1">Durum</p></div>' +
+        '</div>' +
+        /* Butonlar */
+        '<div class="flex gap-3">' +
+        (p.link ? '<a href="' + p.link + '" target="_blank" class="btn-shine flex-1 flex items-center justify-center gap-3 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:shadow-2xl transition-all">⬇ İNDİR / İNCELE →</a>' : '') +
+        '<button onclick="closeProjectModal()" class="px-6 py-4 bg-white/05 border border-white/08 text-gray-400 font-bold rounded-2xl text-sm hover:bg-white/08 transition-all">Kapat</button>' +
+        '</div>' +
+        '</div>';
+
+    document.getElementById('project-modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeProjectModal() {
+    document.getElementById('project-modal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+/* === İNDİRME SAYACI === */
+function incrementDownload(projectId) {
+    if (!projectId) return;
+    try {
+        db.ref('site_data/downloads/' + projectId).transaction(function(val) {
+            return (val || 0) + 1;
+        });
+        /* Local cache güncelle */
+        var projects = JSON.parse(localStorage.getItem('admin_projects') || '[]');
+        projects = projects.map(function(p) {
+            if (p.id == projectId) p.downloads = (p.downloads || 0) + 1;
+            return p;
+        });
+        localStorage.setItem('admin_projects', JSON.stringify(projects));
+    } catch(e) {}
 }
 
 /* === PROJELERİ YÜKLE === */
@@ -91,7 +180,7 @@ function loadProjects() {
     allProjects = JSON.parse(localStorage.getItem(PROJECTS_KEY) || '[]');
     var grid  = document.getElementById('projects-grid');
     var home  = document.getElementById('homepage-projects-grid');
-    var empty = '<div class="glass-card p-10 text-center col-span-full rounded-[2rem]"><p class="text-gray-500 text-lg">Henuz proje yok</p></div>';
+    var empty = '<div class="glass-card p-10 text-center col-span-full rounded-[2rem]"><p class="text-gray-500 text-lg">Henüz proje yok</p></div>';
 
     if (allProjects.length === 0) {
         if (grid) grid.innerHTML = empty;
@@ -101,7 +190,23 @@ function loadProjects() {
         if (home) home.innerHTML = allProjects.slice(0, 2).map(function (p) { return projectCard(p, true); }).join('');
     }
     var stat = document.getElementById('stat-projects');
-    if (stat) stat.textContent = allProjects.length;
+    if (stat) animateCounter(stat, allProjects.length);
+    var footerStat = document.getElementById('footer-stat-projects');
+    if (footerStat) footerStat.textContent = allProjects.length;
+}
+
+/* === ANİMASYONLU SAYAÇ === */
+function animateCounter(el, target) {
+    var start = 0, duration = 1200, startTime = null;
+    function step(ts) {
+        if (!startTime) startTime = ts;
+        var progress = Math.min((ts - startTime) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.floor(eased * target);
+        if (progress < 1) requestAnimationFrame(step);
+        else el.textContent = target;
+    }
+    requestAnimationFrame(step);
 }
 
 /* === PROJE FİLTRESİ === */
@@ -121,22 +226,59 @@ function filterProjects(type) {
     }
 }
 
-/* === DUYURULARI YÜKLE === */
+/* === DUYURULARI YÜKLE (filtreli) === */
+var allAnnouncements = [];
+
 function loadAnnouncements() {
-    var anns = JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY) || '[]');
+    allAnnouncements = JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY) || '[]');
+    var section = document.getElementById('duyurular'); if (!section) return;
+
+    /* Filtre butonları ekle (yoksa) */
+    var filterWrap = document.getElementById('ann-filters');
+    if (!filterWrap) {
+        filterWrap = document.createElement('div');
+        filterWrap.id = 'ann-filters';
+        filterWrap.className = 'flex flex-wrap justify-center gap-3 reveal mb-8';
+        var grid = document.getElementById('announcements-grid');
+        if (grid) grid.parentNode.insertBefore(filterWrap, grid);
+    }
+    var cats = ['tumu', 'onemli', 'guncelleme', 'etkinlik', 'bilgi'];
+    var labels = { tumu: 'Tümü', onemli: '⚠️ Önemli', guncelleme: '🔄 Güncelleme', etkinlik: '🎉 Etkinlik', bilgi: 'ℹ️ Bilgi' };
+    filterWrap.innerHTML = cats.map(function(cat) {
+        return '<button class="ann-filter-btn' + (cat === 'tumu' ? ' active' : '') + '" onclick="filterAnnouncements(&quot;' + cat + '&quot;, this)">' + labels[cat] + '</button>';
+    }).join('');
+
+    renderAnnouncements(allAnnouncements);
+}
+
+function filterAnnouncements(cat, btn) {
+    document.querySelectorAll('.ann-filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    var filtered = cat === 'tumu' ? allAnnouncements : allAnnouncements.filter(function(a) { return a.category === cat; });
+    renderAnnouncements(filtered);
+}
+
+function renderAnnouncements(anns) {
     var grid = document.getElementById('announcements-grid'); if (!grid) return;
     if (anns.length === 0) {
-        grid.innerHTML = '<div class="glass-card p-10 text-center col-span-full rounded-[2rem]"><p class="text-gray-500 text-lg">Henuz duyuru yok</p></div>';
+        grid.innerHTML = '<div class="glass-card p-10 text-center col-span-full rounded-[2rem]"><p class="text-gray-500 text-lg">Bu kategoride duyuru yok</p></div>';
         return;
     }
-    grid.innerHTML = anns.map(function (a) {
-        var catColor = a.category === 'onemli' ? 'red' : a.category === 'guncelleme' ? 'blue' : a.category === 'etkinlik' ? 'purple' : 'emerald';
-        return '<div class="glass-card p-8 md:p-10 rounded-[2.5rem] space-y-5 group relative overflow-hidden">' +
-            '<div class="absolute inset-0 bg-gradient-to-br from-' + catColor + '-600/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>' +
-            '<div class="relative z-10 space-y-5">' +
+    var catMeta = {
+        onemli:     { color: 'red',     label: 'Önemli',     accent: '#ef4444' },
+        guncelleme: { color: 'blue',    label: 'Güncelleme', accent: '#3b82f6' },
+        etkinlik:   { color: 'purple',  label: 'Etkinlik',   accent: '#a855f7' },
+        bilgi:      { color: 'emerald', label: 'Bilgi',      accent: '#10b981' },
+    };
+    grid.innerHTML = anns.map(function(a) {
+        var meta = catMeta[a.category] || catMeta['bilgi'];
+        return '<div class="glass-card ann-card p-8 md:p-10 rounded-[2.5rem] space-y-5 group relative overflow-hidden">' +
+            '<div class="ann-card-accent" style="background:' + meta.accent + '20;border-right:3px solid ' + meta.accent + '"></div>' +
+            '<div class="absolute inset-0 bg-gradient-to-br from-' + meta.color + '-600/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>' +
+            '<div class="relative z-10 space-y-4">' +
             '<div class="flex items-center gap-3">' +
-            '<span class="px-4 py-2 bg-' + catColor + '-500/15 text-' + catColor + '-500 text-[10px] font-black rounded-full uppercase tracking-wider">' + (a.category || 'bilgi') + '</span>' +
-            '<span class="text-xs text-gray-500 font-semibold">' + (a.date || '') + '</span>' +
+            '<span class="px-3 py-1.5 bg-' + meta.color + '-500/15 text-' + meta.color + '-400 text-[10px] font-black rounded-full uppercase tracking-wider border border-' + meta.color + '-500/20">' + meta.label + '</span>' +
+            '<span class="text-xs text-gray-600 font-semibold">' + (a.date || '') + '</span>' +
             '</div>' +
             '<h3 class="text-2xl md:text-3xl font-black uppercase italic tracking-tighter">' + a.title + '</h3>' +
             '<p class="text-gray-400 leading-relaxed">' + a.content + '</p>' +
@@ -149,7 +291,7 @@ function loadDownloads() {
     var dls  = JSON.parse(localStorage.getItem(DOWNLOADS_KEY) || '[]');
     var grid = document.getElementById('downloads-grid'); if (!grid) return;
     if (dls.length === 0) {
-        grid.innerHTML = '<div class="glass-card p-10 text-center col-span-full rounded-[2rem]"><p class="text-gray-500 text-lg">Henuz indirme yok</p></div>';
+        grid.innerHTML = '<div class="glass-card p-10 text-center col-span-full rounded-[2rem]"><p class="text-gray-500 text-lg">Henüz indirme yok</p></div>';
         return;
     }
     grid.innerHTML = dls.map(function (d) {
@@ -161,7 +303,7 @@ function loadDownloads() {
             '</div>' +
             '<h3 class="text-2xl font-black uppercase italic tracking-tighter">' + d.name + '</h3>' +
             '<p class="text-gray-500 text-sm font-semibold">' + (d.version || '') + ' &middot; ' + (d.type || '') + '</p>' +
-            (d.link ? '<a href="' + d.link + '" target="_blank" class="btn-shine block py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:shadow-2xl transition-all">INDIR</a>' : '') +
+        (d.link ? '<a href="' + d.link + '" target="_blank" class="btn-shine block py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:shadow-2xl transition-all">⬇ İNDİR</a>' : '') +
             '</div></div>';
     }).join('');
 }
@@ -204,7 +346,7 @@ function loadSponsors() {
             (featuresHTML ? '<div class="glass-card p-7 rounded-[2rem] space-y-5 border border-orange-500/10 hover:border-orange-500/30 transition-all">' +
                 '<div class="flex items-center gap-3"><div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center">' +
                 '<svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>' +
-                '</div><h4 class="font-black uppercase tracking-wider text-sm">Ozellikler</h4></div>' +
+                '</div><h4 class="font-black uppercase tracking-wider text-sm">Özellikler</h4></div>' +
                 '<ul class="text-gray-400 space-y-3 text-base">' + featuresHTML + '</ul></div>' : '') +
             '<div class="flex flex-wrap gap-5 pt-4 justify-center lg:justify-start">' +
             (s.website ? '<a href="' + s.website + '" target="_blank" class="btn-shine px-10 py-5 bg-orange-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:bg-orange-500 transition-all shadow-2xl">Web Sitesi</a>' : '') +
