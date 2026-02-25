@@ -71,12 +71,9 @@ var ThemeSystem = (function () {
             '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:130px;background:radial-gradient(ellipse,rgba(52,211,153,.1),transparent 70%);pointer-events:none;animation:rmOrb 5s ease-in-out infinite"></div>' +
             '<div style="position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(180deg,transparent,rgba(52,211,153,.7),transparent);animation:rmLineGlow 3s ease-in-out infinite"></div>' +
             '<div style="position:absolute;right:0;top:0;bottom:0;width:2px;background:linear-gradient(180deg,transparent,rgba(52,211,153,.7),transparent);animation:rmLineGlow 3s ease-in-out 1.5s infinite"></div>' +
-            starGroup('left:5%')  +
-            starGroup('right:5%') +
+            starGroup('left:5%') + starGroup('right:5%') +
             '<div style="display:flex;align-items:center;gap:18px;position:relative;z-index:2">' +
-                '<div style="animation:rmMoonGlow 3s ease-in-out infinite;flex-shrink:0">' +
-                    moonSVG(26) +
-                '</div>' +
+                '<div style="animation:rmMoonGlow 3s ease-in-out infinite;flex-shrink:0">' + moonSVG(26) + '</div>' +
                 divider() +
                 '<div style="text-align:center">' +
                     '<p style="margin:0;font-family:\'Plus Jakarta Sans\',system-ui,sans-serif;font-size:14px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;background:linear-gradient(90deg,#6ee7b7 0%,#d1fae5 28%,#fff 50%,#d1fae5 72%,#6ee7b7 100%);background-size:250% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:rmShimmer 5s linear infinite;line-height:1.15">Hoş Geldin Ya Şehri Ramazan</p>' +
@@ -84,8 +81,7 @@ var ThemeSystem = (function () {
                 '</div>' +
                 divider() +
                 '<div style="display:flex;align-items:center;gap:7px;animation:rmMoonGlow 3s ease-in-out 1s infinite;flex-shrink:0">' +
-                    starSVG(9) +
-                    moonSVG(20) +
+                    starSVG(9) + moonSVG(20) +
                 '</div>' +
             '</div>';
 
@@ -94,51 +90,53 @@ var ThemeSystem = (function () {
     }
 
     /* ================================================
-       RAMAZAN ARKAPLAN CANVAS
-       Gece gökyüzü + cami silüeti + kandiller + yıldızlar
+       RAMAZAN ARKA PLAN CANVAS
+       Tüm iç fonksiyonlar T değişkenini closure üzerinden görür
     ================================================ */
     function buildRamadanCanvas() {
         var canvas = document.createElement('canvas');
         canvas.id  = 'ramadan-bg';
         canvas.style.cssText =
             'position:fixed;top:0;left:0;width:100%;height:100%;' +
-            'pointer-events:none;z-index:0;opacity:0;' +
-            'transition:opacity 1.5s ease;';
+            'pointer-events:none;z-index:0;opacity:0;transition:opacity 1.5s ease;';
         document.body.insertBefore(canvas, document.body.firstChild);
 
         var ctx = canvas.getContext('2d');
         var W, H;
 
-        /* --- Yıldızlar --- */
+        /* T: saniye bazlı zaman — tüm iç fonksiyonlar buraya erişir */
+        var T         = 0;
+        var lastStamp = null;
+
+        /* ---- Yıldızlar ---- */
         var stars = [];
         function buildStars() {
             stars = [];
             for (var i = 0; i < 180; i++) {
                 stars.push({
-                    x: Math.random() * W,
-                    y: Math.random() * H * 0.72,
-                    r: Math.random() * 1.4 + 0.3,
-                    base: Math.random() * 0.6 + 0.2,
-                    speed: Math.random() * 0.9 + 0.3, /* rad/saniye — 0.3~1.2 */
+                    x:     Math.random() * W,
+                    y:     Math.random() * H * 0.72,
+                    r:     Math.random() * 1.4 + 0.3,
+                    base:  Math.random() * 0.6 + 0.2,
+                    speed: Math.random() * 0.9 + 0.3,
                     phase: Math.random() * Math.PI * 2
                 });
             }
         }
 
-        /* --- Kandiller --- */
+        /* ---- Kandiller: gerçek sarkaç fiziği, deltaTime ile FPS bağımsız ---- */
         var lanternCount = 6;
         var lanterns = [];
         function buildLanterns() {
             lanterns = [];
             for (var i = 0; i < lanternCount; i++) {
-                var t = i / (lanternCount - 1);
-                /* ip eğrisi üzerinde konum */
                 lanterns.push({
-                    t: t,
-                    swingAmp:   4 + Math.random() * 3,
-                    swingSpeed: 0.5 + Math.random() * 0.4,  /* rad/saniye — yumuşak sallantı ~0.5~0.9 */
-                    swingPhase: Math.random() * Math.PI * 2,
-                    glowPhase:  Math.random() * Math.PI * 2
+                    t:         i / (lanternCount - 1),
+                    angle:     (Math.random() - 0.5) * 0.18,   /* başlangıç açısı */
+                    velocity:  0,
+                    gravity:   1.6 + Math.random() * 0.6,      /* rad/s² — her kandil farklı */
+                    damping:   0.993,
+                    glowPhase: Math.random() * Math.PI * 2
                 });
             }
         }
@@ -152,113 +150,84 @@ var ThemeSystem = (function () {
         resize();
         window.addEventListener('resize', resize);
 
-        var startTime = null; /* performance.now() bazlı, FPS bağımsız */
-
-        /* --- Cami silüeti çiz --- */
+        /* ---- Cami silüeti ---- */
         function drawMosque() {
-            var cx  = W / 2;
-            var floorY = H;
-            var scale = Math.min(W, H * 1.3) / 900;
-
+            var cx    = W / 2;
+            var sc    = Math.min(W, H * 1.3) / 900;
+            var floor = H;
             ctx.save();
-            ctx.fillStyle = 'rgba(0, 12, 6, 0.92)';
+            ctx.fillStyle = 'rgba(0,10,5,0.93)';
 
-            /* --- Ana kubbe --- */
+            /* Ana kubbe */
+            var dR = 130 * sc;
+            var dY = floor - 310 * sc;
             ctx.beginPath();
-            var domeX = cx, domeY = floorY - 310 * scale, domeR = 130 * scale;
-            ctx.arc(domeX, domeY, domeR, Math.PI, 0, false);
-            ctx.lineTo(cx + domeR, floorY);
-            ctx.lineTo(cx - domeR, floorY);
-            ctx.closePath();
+            ctx.arc(cx, dY, dR, Math.PI, 0, false);
+            ctx.lineTo(cx + dR, floor); ctx.lineTo(cx - dR, floor);
+            ctx.closePath(); ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(cx - 12*sc, dY - dR + 10*sc);
+            ctx.quadraticCurveTo(cx, dY - dR - 28*sc, cx + 12*sc, dY - dR + 10*sc);
             ctx.fill();
+            ctx.beginPath(); ctx.arc(cx, dY - dR - 30*sc, 4*sc, 0, Math.PI*2); ctx.fill();
 
-            /* Ana kubbe sivri tepe */
+            /* Yan küçük kubbeler */
+            drawSmallDome(cx - 80*sc, floor, 55*sc, 80*sc);
+            drawSmallDome(cx + 80*sc, floor, 55*sc, 80*sc);
+
+            /* Minareler */
+            drawMinaret(cx - 180*sc, floor, 28*sc, 260*sc);
+            drawMinaret(cx + 180*sc, floor, 28*sc, 260*sc);
+
+            /* Gövde */
+            ctx.fillRect(cx - dR, floor - 160*sc, dR*2, 160*sc);
+
+            /* Kapı */
+            ctx.fillStyle = 'rgba(0,25,12,.97)';
+            var dw = 28*sc, dh = 55*sc;
             ctx.beginPath();
-            ctx.moveTo(cx - 12 * scale, domeY - domeR + 10 * scale);
-            ctx.quadraticCurveTo(cx, domeY - domeR - 28 * scale, cx + 12 * scale, domeY - domeR + 10 * scale);
-            ctx.fill();
-
-            /* Ana kubbe küçük topuz */
-            ctx.beginPath();
-            ctx.arc(cx, domeY - domeR - 30 * scale, 4 * scale, 0, Math.PI * 2);
-            ctx.fill();
-
-            /* --- Sol minare --- */
-            drawMinaret(ctx, cx - 180 * scale, floorY, 28 * scale, 260 * scale);
-            /* --- Sağ minare --- */
-            drawMinaret(ctx, cx + 180 * scale, floorY, 28 * scale, 260 * scale);
-
-            /* --- Yan küçük kubbeler --- */
-            drawSmallDome(ctx, cx - 80 * scale, floorY, 55 * scale, 80 * scale);
-            drawSmallDome(ctx, cx + 80 * scale, floorY, 55 * scale, 80 * scale);
-
-            /* --- Ana cami gövdesi --- */
-            ctx.fillRect(cx - domeR, floorY - 160 * scale, domeR * 2, 160 * scale);
-
-            /* --- Kapı --- */
-            ctx.fillStyle = 'rgba(0,30,15,.97)';
-            var doorW = 28 * scale, doorH = 55 * scale;
-            ctx.beginPath();
-            ctx.rect(cx - doorW / 2, floorY - doorH, doorW, doorH * 0.6);
-            ctx.arc(cx, floorY - doorH + doorH * 0.4, doorW / 2, Math.PI, 0, false);
+            ctx.rect(cx - dw/2, floor - dh, dw, dh*0.6);
+            ctx.arc(cx, floor - dh + dh*0.4, dw/2, Math.PI, 0, false);
             ctx.fill();
 
             ctx.restore();
         }
 
-        function drawMinaret(ctx, x, floorY, w, h) {
-            /* Gövde */
+        function drawMinaret(x, floor, w, h) {
+            ctx.beginPath(); ctx.rect(x - w/2, floor - h, w, h); ctx.fill();
+            ctx.beginPath(); ctx.rect(x - w*0.85, floor - h*0.72 - 6, w*1.7, 10); ctx.fill();
             ctx.beginPath();
-            ctx.rect(x - w / 2, floorY - h, w, h);
+            ctx.arc(x, floor - h - 18, w*0.55, Math.PI, 0, false);
+            ctx.lineTo(x + w*0.55, floor - h); ctx.lineTo(x - w*0.55, floor - h);
             ctx.fill();
-            /* Şerefe (balkon) */
-            var sherefeY = floorY - h * 0.72;
             ctx.beginPath();
-            ctx.rect(x - w * 0.85, sherefeY - 6, w * 1.7, 10);
+            ctx.moveTo(x - 5, floor - h - 18 - w*0.55 + 8);
+            ctx.lineTo(x, floor - h - 18 - w*0.55 - 22);
+            ctx.lineTo(x + 5, floor - h - 18 - w*0.55 + 8);
             ctx.fill();
-            /* Küçük kubbe */
-            ctx.beginPath();
-            ctx.arc(x, floorY - h - 18, w * 0.55, Math.PI, 0, false);
-            ctx.lineTo(x + w * 0.55, floorY - h);
-            ctx.lineTo(x - w * 0.55, floorY - h);
-            ctx.fill();
-            /* Sivri tepe */
-            ctx.beginPath();
-            ctx.moveTo(x - 5, floorY - h - 18 - w * 0.55 + 8);
-            ctx.lineTo(x, floorY - h - 18 - w * 0.55 - 22);
-            ctx.lineTo(x + 5, floorY - h - 18 - w * 0.55 + 8);
-            ctx.fill();
-            /* Alem topu */
-            ctx.beginPath();
-            ctx.arc(x, floorY - h - 18 - w * 0.55 - 24, 3, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(x, floor - h - 18 - w*0.55 - 24, 3, 0, Math.PI*2); ctx.fill();
         }
 
-        function drawSmallDome(ctx, x, floorY, r, bodyH) {
+        function drawSmallDome(x, floor, r, bodyH) {
             ctx.beginPath();
-            ctx.arc(x, floorY - bodyH, r, Math.PI, 0, false);
-            ctx.lineTo(x + r, floorY);
-            ctx.lineTo(x - r, floorY);
-            ctx.closePath();
-            ctx.fill();
+            ctx.arc(x, floor - bodyH, r, Math.PI, 0, false);
+            ctx.lineTo(x + r, floor); ctx.lineTo(x - r, floor);
+            ctx.closePath(); ctx.fill();
         }
 
-        /* --- İp ve kandil çiz --- */
-        function drawRope() {
-            var scale    = Math.min(W, H * 1.3) / 900;
-            var cx       = W / 2;
-            var mL       = cx - 180 * scale; /* sol minare x */
-            var mR       = cx + 180 * scale; /* sağ minare x */
-            var ropeTopY = (document.getElementById('season-banner') ? BANNER_H + 5 : 5);
-            var floorY   = document.querySelector('nav') ? BANNER_H + 96 : 96;
-            var ropeMidY = ropeTopY + 90 * scale;
-            var attachY  = ropeTopY + 20;
+        /* ---- İp ve kandiller — T closure değişkenini kullanır ---- */
+        function drawRope(dt) {
+            var sc      = Math.min(W, H * 1.3) / 900;
+            var cx      = W / 2;
+            var mL      = cx - 180*sc;
+            var mR      = cx + 180*sc;
+            var attachY = BANNER_H + 22;
+            var ropeMidY= attachY + 90*sc;
 
-            /* İp çizgisi (katenar eğrisi) */
+            /* İp */
             ctx.save();
-            ctx.strokeStyle = 'rgba(52, 211, 153, 0.18)';
+            ctx.strokeStyle = 'rgba(52,211,153,0.18)';
             ctx.lineWidth   = 1.2;
-            ctx.setLineDash([]);
             ctx.beginPath();
             ctx.moveTo(mL, attachY);
             ctx.quadraticCurveTo(cx, ropeMidY, mR, attachY);
@@ -267,119 +236,92 @@ var ThemeSystem = (function () {
 
             /* Kandiller */
             lanterns.forEach(function(l) {
-                /* Katenar üzerindeki konum (quadratic bezier) */
+                /* Sarkaç fiziği: deltaTime ile FPS bağımsız */
+                l.velocity += -l.gravity * Math.sin(l.angle) * dt;
+                l.velocity *= l.damping;
+                l.angle    += l.velocity * dt;
+
+                /* Bezier konum */
                 var bt = l.t;
-                var bx = (1 - bt) * (1 - bt) * mL + 2 * (1 - bt) * bt * cx + bt * bt * mR;
-                var by = (1 - bt) * (1 - bt) * attachY + 2 * (1 - bt) * bt * ropeMidY + bt * bt * attachY;
+                var bx = (1-bt)*(1-bt)*mL + 2*(1-bt)*bt*cx + bt*bt*mR;
+                var by = (1-bt)*(1-bt)*attachY + 2*(1-bt)*bt*ropeMidY + bt*bt*attachY;
 
-                /* Sallantı */
-                var swingOff = Math.sin(t * l.swingSpeed + l.swingPhase) * l.swingAmp;
-                var lx = bx + swingOff;
-                var ly = by + 24;
+                /* Sarkaç ofseti */
+                var lx = bx + Math.sin(l.angle) * 28;
+                var ly = by + 28;
 
-                /* Kandil ışığı (glow) */
-                var glowAlpha = 0.25 + Math.sin(t * 1.8 + l.glowPhase) * 0.15;
-                var grd = ctx.createRadialGradient(lx, ly, 0, lx, ly, 28);
-                grd.addColorStop(0,   'rgba(255, 210, 100, ' + (glowAlpha + 0.35) + ')');
-                grd.addColorStop(0.3, 'rgba(255, 160, 40,  ' + glowAlpha + ')');
-                grd.addColorStop(1,   'rgba(255, 100, 0, 0)');
+                /* Glow */
+                var ga = 0.25 + Math.sin(T * 1.8 + l.glowPhase) * 0.15;
+                var grd = ctx.createRadialGradient(lx, ly, 0, lx, ly, 30);
+                grd.addColorStop(0,   'rgba(255,210,100,' + (ga+0.35) + ')');
+                grd.addColorStop(0.3, 'rgba(255,160,40,'  + ga + ')');
+                grd.addColorStop(1,   'rgba(255,100,0,0)');
+                ctx.save(); ctx.fillStyle = grd;
+                ctx.beginPath(); ctx.arc(lx, ly, 30, 0, Math.PI*2); ctx.fill(); ctx.restore();
+
+                /* İp-kandil bağlantı çizgisi */
                 ctx.save();
-                ctx.fillStyle = grd;
-                ctx.beginPath();
-                ctx.arc(lx, ly, 28, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.strokeStyle = 'rgba(52,211,153,0.15)'; ctx.lineWidth = 0.8;
+                ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(lx, ly - 8); ctx.stroke();
                 ctx.restore();
 
-                /* İp-kandil bağlantısı */
-                ctx.save();
-                ctx.strokeStyle = 'rgba(52, 211, 153, 0.15)';
-                ctx.lineWidth   = 0.8;
-                ctx.beginPath();
-                ctx.moveTo(bx, by);
-                ctx.lineTo(lx, ly - 8);
-                ctx.stroke();
-                ctx.restore();
-
-                /* Kandil gövdesi */
-                ctx.save();
-                ctx.translate(lx, ly);
-                ctx.fillStyle = 'rgba(180, 130, 20, 0.9)';
+                /* Gövde */
+                ctx.save(); ctx.translate(lx, ly);
                 /* Üst kap */
-                ctx.beginPath();
-                ctx.moveTo(-5, -8);
-                ctx.lineTo(5, -8);
-                ctx.lineTo(3, 0);
-                ctx.lineTo(-3, 0);
-                ctx.closePath();
-                ctx.fill();
-                /* Ana gövde (altıgen benzeri) */
-                ctx.fillStyle = 'rgba(210, 160, 30, 0.85)';
-                ctx.beginPath();
-                ctx.moveTo(-4, 0);
-                ctx.lineTo(4, 0);
-                ctx.lineTo(5, 5);
-                ctx.lineTo(3, 12);
-                ctx.lineTo(-3, 12);
-                ctx.lineTo(-5, 5);
-                ctx.closePath();
-                ctx.fill();
+                ctx.fillStyle = 'rgba(180,130,20,0.9)';
+                ctx.beginPath(); ctx.moveTo(-5,-8); ctx.lineTo(5,-8); ctx.lineTo(3,0); ctx.lineTo(-3,0); ctx.closePath(); ctx.fill();
+                /* Gövde */
+                ctx.fillStyle = 'rgba(210,160,30,0.85)';
+                ctx.beginPath(); ctx.moveTo(-4,0); ctx.lineTo(4,0); ctx.lineTo(5,5); ctx.lineTo(3,12); ctx.lineTo(-3,12); ctx.lineTo(-5,5); ctx.closePath(); ctx.fill();
                 /* İç ışık */
-                var innerGrd = ctx.createRadialGradient(0, 6, 0, 0, 6, 7);
-                innerGrd.addColorStop(0,   'rgba(255, 230, 100, 0.9)');
-                innerGrd.addColorStop(1,   'rgba(255, 150, 0,   0.0)');
-                ctx.fillStyle = innerGrd;
-                ctx.beginPath();
-                ctx.ellipse(0, 6, 4, 6, 0, 0, Math.PI * 2);
-                ctx.fill();
-                /* Alt püskül */
-                ctx.strokeStyle = 'rgba(200, 150, 20, 0.7)';
-                ctx.lineWidth   = 0.8;
-                ctx.beginPath();
-                ctx.moveTo(-2, 12); ctx.lineTo(-2, 17);
-                ctx.moveTo(0,  12); ctx.lineTo(0,  18);
-                ctx.moveTo(2,  12); ctx.lineTo(2,  17);
-                ctx.stroke();
+                var ig = ctx.createRadialGradient(0,6,0,0,6,7);
+                ig.addColorStop(0,'rgba(255,230,100,0.9)'); ig.addColorStop(1,'rgba(255,150,0,0)');
+                ctx.fillStyle = ig; ctx.beginPath(); ctx.ellipse(0,6,4,6,0,0,Math.PI*2); ctx.fill();
+                /* Püskül */
+                ctx.strokeStyle = 'rgba(200,150,20,0.7)'; ctx.lineWidth = 0.8;
+                ctx.beginPath(); ctx.moveTo(-2,12); ctx.lineTo(-2,17); ctx.moveTo(0,12); ctx.lineTo(0,18); ctx.moveTo(2,12); ctx.lineTo(2,17); ctx.stroke();
                 ctx.restore();
             });
         }
 
-        /* --- Ana döngü --- */
+        /* ---- Ana döngü ---- */
         function draw(timestamp) {
-            if (!startTime) startTime = timestamp;
-            var t = (timestamp - startTime) / 1000; /* saniye — 60fps/120fps fark etmez */
+            /* deltaTime hesapla, max 50ms ile sınırla (sekme arka plana giderse patlamasın) */
+            var dt = lastStamp ? Math.min((timestamp - lastStamp) / 1000, 0.05) : 0.016;
+            lastStamp = timestamp;
+            T += dt;
+
             ctx.clearRect(0, 0, W, H);
 
-            /* Gece gökyüzü gradientı */
+            /* Gece gökyüzü */
             var sky = ctx.createLinearGradient(0, 0, 0, H * 0.75);
-            sky.addColorStop(0,   '#000d06');
-            sky.addColorStop(0.4, '#001a0d');
-            sky.addColorStop(0.75,'#002914');
-            sky.addColorStop(1,   'rgba(0,20,10,0)');
-            ctx.fillStyle = sky;
-            ctx.fillRect(0, 0, W, H);
+            sky.addColorStop(0,    '#000d06');
+            sky.addColorStop(0.4,  '#001a0d');
+            sky.addColorStop(0.75, '#002914');
+            sky.addColorStop(1,    'rgba(0,20,10,0)');
+            ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
 
             /* Yıldızlar */
             stars.forEach(function(s) {
-                var alpha = s.base + Math.sin(t * s.speed + s.phase) * 0.3;
+                var alpha = s.base + Math.sin(T * s.speed + s.phase) * 0.3;
                 var grd   = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 2.5);
-                grd.addColorStop(0,   'rgba(200,255,220,' + alpha + ')');
-                grd.addColorStop(1,   'rgba(200,255,220,0)');
+                grd.addColorStop(0, 'rgba(200,255,220,' + alpha + ')');
+                grd.addColorStop(1, 'rgba(200,255,220,0)');
                 ctx.fillStyle = grd;
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.r * 2.5, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.r * 2.5, 0, Math.PI*2); ctx.fill();
             });
 
-            /* Cami silüeti */
+            /* Cami */
             drawMosque();
 
-            /* Kandil ipi + kandiller */
-            drawRope();
+            /* Kandil ipi + kandiller — dt geçiyoruz */
+            drawRope(dt);
 
             bgAnimFrame = requestAnimationFrame(draw);
         }
 
-        draw();
+        /* İlk frame: requestAnimationFrame ile başlat — draw() DEĞİL */
+        requestAnimationFrame(draw);
 
         /* Fade in */
         requestAnimationFrame(function() {
@@ -438,7 +380,7 @@ var ThemeSystem = (function () {
     }
 
     /* ================================================
-       KAR
+       KAR EFEKTİ
     ================================================ */
     function startSnow() {
         var canvas = document.createElement('canvas');
@@ -446,25 +388,27 @@ var ThemeSystem = (function () {
         canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;opacity:0.5';
         document.body.appendChild(canvas);
         var ctx = canvas.getContext('2d'), W, H, flakes = [];
+        var lastSnow = null;
         function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-        resize();
-        window.addEventListener('resize', resize);
+        resize(); window.addEventListener('resize', resize);
         for (var i = 0; i < 120; i++) {
-            flakes.push({ x: Math.random()*1400, y: Math.random()*900, r: Math.random()*3+1, d: Math.random()*1.5+0.5, drift: Math.random()*.8-.4, opacity: Math.random()*.6+.3 });
+            flakes.push({ x: Math.random()*1400, y: Math.random()*900, r: Math.random()*3+1, vy: Math.random()*60+30, drift: Math.random()*30-15, opacity: Math.random()*.6+.3, phase: Math.random()*Math.PI*2 });
         }
-        var angle = 0;
-        function draw() {
-            ctx.clearRect(0,0,W,H); angle += 0.005;
+        function draw(ts) {
+            var dt = lastSnow ? Math.min((ts - lastSnow)/1000, 0.05) : 0.016;
+            lastSnow = ts;
+            ctx.clearRect(0,0,W,H);
             flakes.forEach(function(f,i) {
-                ctx.beginPath(); ctx.arc(f.x,f.y,f.r,0,Math.PI*2);
-                ctx.fillStyle='rgba(255,255,255,'+f.opacity+')'; ctx.fill();
-                f.y+=f.d; f.x+=f.drift+Math.sin(angle+i)*.3;
-                if(f.y>H){f.y=-5;f.x=Math.random()*W;}
-                if(f.x>W+5)f.x=-5; if(f.x<-5)f.x=W+5;
+                f.y += f.vy * dt;
+                f.x += (f.drift + Math.sin(ts/800 + f.phase) * 15) * dt;
+                if (f.y > H) { f.y = -5; f.x = Math.random()*W; }
+                if (f.x > W+5) f.x = -5; if (f.x < -5) f.x = W+5;
+                ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
+                ctx.fillStyle = 'rgba(255,255,255,' + f.opacity + ')'; ctx.fill();
             });
             snowAnimFrame = requestAnimationFrame(draw);
         }
-        draw();
+        requestAnimationFrame(draw);
     }
 
     /* ================================================
@@ -477,8 +421,7 @@ var ThemeSystem = (function () {
         return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 10 10"><polygon points="5,0 6.2,3.8 10,3.8 6.9,6.2 8.1,10 5,7.6 1.9,10 3.1,6.2 0,3.8 3.8,3.8" fill="#34d399"/></svg>';
     }
     function divider(color) {
-        var c = color || 'rgba(52,211,153,.4)';
-        return '<div style="width:1px;height:28px;background:linear-gradient(180deg,transparent,'+c+',transparent)"></div>';
+        return '<div style="width:1px;height:28px;background:linear-gradient(180deg,transparent,'+(color||'rgba(52,211,153,.4)')+',transparent)"></div>';
     }
     function starGroup(pos) {
         return '<div style="position:absolute;'+pos+';top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:9px">' +
