@@ -12,6 +12,24 @@
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#020408">
 
+    <!-- Open Graph -->
+    <meta property="og:type"        content="website">
+    <meta property="og:url"         content="https://arcanthproject.web.app/">
+    <meta property="og:title"       content="ArcanthProject | Minecraft Optimizasyon & Modlar">
+    <meta property="og:description" content="OptiFlow ile %40+ FPS artışı, Carbonium ile yeni oyun deneyimi. Minecraft için premium optimizasyon ve modlar.">
+    <meta property="og:image"       content="https://arcanthproject.web.app/logo.png">
+    <meta property="og:locale"      content="tr_TR">
+    <meta property="og:site_name"   content="ArcanthProject">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:title"       content="ArcanthProject | Minecraft Optimizasyon & Modlar">
+    <meta name="twitter:description" content="OptiFlow ile %40+ FPS artışı, Carbonium ile yeni oyun deneyimi.">
+    <meta name="twitter:image"       content="https://arcanthproject.web.app/logo.png">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://arcanthproject.web.app/">
+
     <link rel="icon" type="image/png" href="logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -57,7 +75,8 @@
     <div id="loading-screen">
         <img src="logo.png" class="w-16 h-16 rounded-2xl animate-pulse" onerror="this.style.display='none'">
         <div class="loader-ring"></div>
-        <p class="text-gray-500 text-sm font-bold tracking-[0.3em] uppercase">Yukleniyor</p>
+        <p class="text-gray-500 text-sm font-bold tracking-[0.3em] uppercase">Yükleniyor</p>
+        <p class="loader-brand">Arcanth Project</p>
     </div>
 
     <div id="scroll-progress"></div>
@@ -147,13 +166,13 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="font-bold text-sm" id="cookie-title">Bu site temel cerezler kullanir</p>
-                        <p class="text-xs text-gray-500 mt-1" id="cookie-description">Deneyiminizi gelistirmek icin temel cerezleri kullaniyoruz.</p>
+                        <p class="font-bold text-sm" id="cookie-title">Bu site temel çerezler kullanır</p>
+                        <p class="text-xs text-gray-500 mt-1" id="cookie-description">Deneyiminizi geliştirmek için temel çerezleri kullanıyoruz.</p>
                     </div>
                 </div>
                 <div class="flex gap-3">
                     <button onclick="rejectCookies()" id="cookie-reject-btn" class="px-6 py-3 bg-white/5 border border-white/10 text-gray-400 font-black rounded-xl text-xs uppercase tracking-widest hover:bg-white/10 transition-all whitespace-nowrap">Reddet</button>
-                    <button onclick="acceptCookies()" id="cookie-accept-btn" class="px-8 py-3 bg-blue-600 text-white font-black rounded-xl text-xs uppercase tracking-widest hover:bg-blue-500 transition-all whitespace-nowrap">Anladim</button>
+                    <button onclick="acceptCookies()" id="cookie-accept-btn" class="px-8 py-3 bg-blue-600 text-white font-black rounded-xl text-xs uppercase tracking-widest hover:bg-blue-500 transition-all whitespace-nowrap">Anladım</button>
                 </div>
             </div>
         </div>
@@ -169,7 +188,7 @@
         <button onclick="mobileNav('anasayfa')"   class="text-4xl font-black uppercase italic tracking-tighter hover:text-blue-500 transition-all hover:scale-110"  style="animation:slideUp .5s ease forwards;animation-delay:.1s;opacity:0">Anasayfa</button>
         <button onclick="mobileNav('duyurular')"  class="text-4xl font-black uppercase italic tracking-tighter hover:text-blue-500 transition-all hover:scale-110"  style="animation:slideUp .5s ease forwards;animation-delay:.2s;opacity:0">Duyurular</button>
         <button onclick="mobileNav('projeler')"   class="text-4xl font-black uppercase italic tracking-tighter hover:text-blue-500 transition-all hover:scale-110"  style="animation:slideUp .5s ease forwards;animation-delay:.3s;opacity:0">Projeler</button>
-        <button onclick="mobileNav('indirmeler')" class="text-4xl font-black uppercase italic tracking-tighter hover:text-blue-500 transition-all hover:scale-110"  style="animation:slideUp .5s ease forwards;animation-delay:.4s;opacity:0">Indirmeler</button>
+        <button onclick="mobileNav('indirmeler')" class="text-4xl font-black uppercase italic tracking-tighter hover:text-blue-500 transition-all hover:scale-110"  style="animation:slideUp .5s ease forwards;animation-delay:.4s;opacity:0">İndirmeler</button>
         <button onclick="mobileNav('sponsor')"    class="text-4xl font-black uppercase italic tracking-tighter text-orange-500 hover:scale-110 transition-all"      style="animation:slideUp .5s ease forwards;animation-delay:.5s;opacity:0">Sponsor</button>
         <button onclick="mobileNav('discord')"    class="text-4xl font-black uppercase italic tracking-tighter text-blue-500 hover:scale-110 transition-all"         style="animation:slideUp .5s ease forwards;animation-delay:.6s;opacity:0">Discord</button>
         <a href="blog.html"                       class="text-4xl font-black uppercase italic tracking-tighter hover:text-purple-500 transition-all hover:scale-110" style="animation:slideUp .5s ease forwards;animation-delay:.65s;opacity:0">Blog</a>
@@ -194,7 +213,7 @@
                 <button onclick="showTab('anasayfa')"   class="nav-btn hover:text-white transition-all active-link" id="btn-anasayfa">Anasayfa</button>
                 <button onclick="showTab('duyurular')"  class="nav-btn hover:text-white transition-all" id="btn-duyurular">Duyurular</button>
                 <button onclick="showTab('projeler')"   class="nav-btn hover:text-white transition-all" id="btn-projeler">Projeler</button>
-                <button onclick="showTab('indirmeler')" class="nav-btn hover:text-white transition-all" id="btn-indirmeler">Indirmeler</button>
+                <button onclick="showTab('indirmeler')" class="nav-btn hover:text-white transition-all" id="btn-indirmeler">İndirmeler</button>
                 <button onclick="showTab('sponsor')"    class="nav-btn text-orange-500 hover:scale-110 transition-transform font-black" id="btn-sponsor">Sponsor</button>
                 <button onclick="showTab('discord')"    class="nav-btn text-blue-500 hover:scale-110 transition-transform font-black" id="btn-discord">Discord</button>
                 <a href="blog.html" class="nav-btn hover:text-white transition-all">Blog</a>
@@ -228,7 +247,7 @@
                     </div>
                 </div>
 
-                <button id="authButton" onclick="handleAuth()" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider transition-all">Giris Yap</button>
+                <button id="authButton" onclick="handleAuth()" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider transition-all">Giriş Yap</button>
                 <button onclick="openSearch()" class="w-11 h-11 rounded-2xl flex items-center justify-center border border-white/10 hover:bg-blue-500/10 transition-all active:scale-90" title="Ara (Ctrl+K)">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                 </button>
@@ -257,15 +276,15 @@
                     <span id="hero-badge-text">Carbonium Beta Yayinda!</span>
                 </div>
                 <h1 id="hero-title" class="text-5xl md:text-7xl lg:text-8xl xl:text-[130px] font-black tracking-tight leading-[0.9] uppercase italic reveal reveal-delay-1 px-4">
-                    <span class="dark:text-white block">YENI BIR</span>
-                    <span class="text-gradient block mt-4">VIZYON.</span>
+                    <span class="dark:text-white block">YENİ BİR</span>
+                    <span class="text-gradient block mt-4">VİZYON.</span>
                 </h1>
                 <p id="hero-subtitle" class="text-gray-500 dark:text-gray-400 text-base md:text-xl lg:text-2xl xl:text-3xl max-w-3xl mx-auto font-medium italic leading-relaxed opacity-80 reveal reveal-delay-2 px-6">
                     "Siradanligi sorgulayan, gelecegi bugunden insa edenlerin kalesi."
                 </p>
                 <div class="flex flex-col sm:flex-row flex-wrap justify-center gap-4 md:gap-6 pt-8 reveal reveal-delay-3 px-4 w-full max-w-2xl">
-                    <button onclick="showTab('projeler')" class="btn-shine px-10 md:px-16 py-5 md:py-6 bg-blue-600 text-white font-black rounded-2xl md:rounded-3xl text-xs tracking-[0.2em] md:tracking-[0.3em] uppercase hover:bg-blue-500 shadow-2xl transform hover:-translate-y-1 active:scale-95 w-full sm:w-auto transition-all">PROJELERI KESFET</button>
-                    <button onclick="showTab('sponsor')"  class="px-10 md:px-16 py-5 md:py-6 glass-card border-orange-500/30 text-orange-500 font-black rounded-2xl md:rounded-3xl text-xs tracking-[0.2em] md:tracking-[0.3em] uppercase shadow-2xl hover:bg-white/10 transition-all transform hover:-translate-y-1 active:scale-95 w-full sm:w-auto">SPONSORIMIZE GOZ AT</button>
+                    <button onclick="showTab('projeler')" class="btn-shine px-10 md:px-16 py-5 md:py-6 bg-blue-600 text-white font-black rounded-2xl md:rounded-3xl text-xs tracking-[0.2em] md:tracking-[0.3em] uppercase hover:bg-blue-500 shadow-2xl transform hover:-translate-y-1 active:scale-95 w-full sm:w-auto transition-all">PROJELERİ KEŞFET</button>
+                    <button onclick="showTab('sponsor')"  class="px-10 md:px-16 py-5 md:py-6 glass-card border-orange-500/30 text-orange-500 font-black rounded-2xl md:rounded-3xl text-xs tracking-[0.2em] md:tracking-[0.3em] uppercase shadow-2xl hover:bg-white/10 transition-all transform hover:-translate-y-1 active:scale-95 w-full sm:w-auto">SPONSORLARIMIZA GÖZ AT</button>
                 </div>
             </div>
 
@@ -278,8 +297,8 @@
 
             <div class="mt-32 reveal" id="homepage-projects-preview">
                 <div class="flex items-center justify-between mb-12">
-                    <h2 class="text-3xl md:text-5xl lg:text-7xl font-black italic uppercase tracking-tighter"><span class="text-blue-500">ONE CIKAN</span> PROJELER</h2>
-                    <button onclick="showTab('projeler')" class="text-blue-500 text-sm font-bold hover:underline hidden md:block">Tumunu Gor &rarr;</button>
+                    <h2 class="text-3xl md:text-5xl lg:text-7xl font-black italic uppercase tracking-tighter"><span class="text-blue-500">ÖNE ÇIKAN</span> PROJELER</h2>
+                    <button onclick="showTab('projeler')" class="text-blue-500 text-sm font-bold hover:underline hidden md:block">Tümünü Gör &rarr;</button>
                 </div>
                 <div id="homepage-projects-grid" class="grid lg:grid-cols-2 gap-8"></div>
             </div>
@@ -289,8 +308,8 @@
                     <div class="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-transparent to-purple-600/5"></div>
                     <div class="relative z-10">
                         <h2 class="text-3xl md:text-5xl lg:text-7xl font-black italic uppercase tracking-tighter mb-6">HAZIR MISIN?</h2>
-                        <p class="text-gray-400 text-lg mb-10 max-w-lg mx-auto">Minecraft deneyimini bir ust seviyeye tasimak icin projelerimize goz at.</p>
-                        <button onclick="showTab('projeler')" class="btn-shine px-16 py-7 bg-blue-600 text-white font-black rounded-3xl text-sm tracking-[0.3em] uppercase hover:bg-blue-500 shadow-2xl transform hover:-translate-y-2 active:scale-95 transition-all">PROJELERI GORUNTULE</button>
+                        <p class="text-gray-400 text-lg mb-10 max-w-lg mx-auto">Minecraft deneyimini bir üst seviyeye taşımak için projelerimize göz at.</p>
+                        <button onclick="showTab('projeler')" class="btn-shine px-16 py-7 bg-blue-600 text-white font-black rounded-3xl text-sm tracking-[0.3em] uppercase hover:bg-blue-500 shadow-2xl transform hover:-translate-y-2 active:scale-95 transition-all">PROJELERİ GÖRÜNTÜLE</button>
                     </div>
                 </div>
             </div>
@@ -300,7 +319,7 @@
         <section id="sponsor" class="tab-content space-y-20">
             <div class="text-center space-y-8 reveal">
                 <div class="inline-block px-8 py-3 bg-orange-500/10 border border-orange-500/30 rounded-full">
-                    <span class="text-orange-500 font-black text-xs uppercase tracking-[0.3em]">Resmi Isbirligi</span>
+                    <span class="text-orange-500 font-black text-xs uppercase tracking-[0.3em]">Resmî İşbirliği</span>
                 </div>
                 <h2 class="text-4xl md:text-6xl lg:text-8xl font-black italic uppercase tracking-tighter"><span class="text-orange-500">SPONSOR</span></h2>
             </div>
@@ -311,10 +330,10 @@
         <section id="projeler" class="tab-content space-y-16">
             <div class="text-center space-y-6 reveal">
                 <h2 class="text-4xl md:text-6xl lg:text-8xl font-black italic uppercase tracking-tighter"><span class="text-blue-500">PROJE</span>LER</h2>
-                <p class="text-gray-500 max-w-lg mx-auto text-lg">Minecraft deneyimini gelistirmek icin olusturulmus tum projelerimiz.</p>
+                <p class="text-gray-500 max-w-lg mx-auto text-lg">Minecraft deneyimini geliştirmek için oluşturulmuş tüm projelerimiz.</p>
             </div>
             <div class="flex flex-wrap justify-center gap-3 reveal" id="project-filters">
-                <button onclick="filterProjects('all')"      class="filter-btn active px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-wider border border-white/10 hover:bg-blue-500/10 hover:border-blue-500/30 transition-all">Tumu</button>
+                <button onclick="filterProjects('all')"      class="filter-btn active px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-wider border border-white/10 hover:bg-blue-500/10 hover:border-blue-500/30 transition-all">Tümü</button>
                 <button onclick="filterProjects('modpack')"  class="filter-btn px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-wider border border-white/10 hover:bg-blue-500/10 hover:border-blue-500/30 transition-all">ModPack</button>
                 <button onclick="filterProjects('mod')"      class="filter-btn px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-wider border border-white/10 hover:bg-blue-500/10 hover:border-blue-500/30 transition-all">Mod</button>
                 <button onclick="filterProjects('texture')"  class="filter-btn px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-wider border border-white/10 hover:bg-blue-500/10 hover:border-blue-500/30 transition-all">Texture Pack</button>
@@ -327,7 +346,7 @@
         <section id="duyurular" class="tab-content space-y-16">
             <div class="text-center space-y-6 reveal">
                 <h2 class="text-4xl md:text-6xl lg:text-8xl font-black italic uppercase tracking-tighter"><span class="text-green-500">DUYURU</span>LAR</h2>
-                <p class="text-gray-500 max-w-lg mx-auto text-lg">En son gelismeler ve duyurular.</p>
+                <p class="text-gray-500 max-w-lg mx-auto text-lg">En son gelişmeler ve duyurular.</p>
             </div>
             <div id="announcements-grid" class="grid md:grid-cols-2 gap-8 reveal"></div>
         </section>
@@ -335,8 +354,8 @@
         <!-- ========== DOWNLOADS ========== -->
         <section id="indirmeler" class="tab-content space-y-16">
             <div class="text-center space-y-6 reveal">
-                <h2 class="text-4xl md:text-6xl lg:text-8xl font-black italic uppercase tracking-tighter"><span class="text-blue-500">INDIRME</span>LER</h2>
-                <p class="text-gray-500 max-w-lg mx-auto text-lg">Projelerimizin en guncel surumleri.</p>
+                <h2 class="text-4xl md:text-6xl lg:text-8xl font-black italic uppercase tracking-tighter"><span class="text-blue-500">İNDİRME</span>LER</h2>
+                <p class="text-gray-500 max-w-lg mx-auto text-lg">Projelerimizin en güncel sürümleri.</p>
             </div>
             <div id="downloads-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto reveal"></div>
         </section>
@@ -344,7 +363,7 @@
         <!-- ========== DISCORD ========== -->
         <section id="discord" class="tab-content space-y-16">
             <div class="text-center space-y-6 reveal">
-                <h2 class="text-4xl md:text-6xl lg:text-8xl font-black italic uppercase tracking-tighter"><span class="text-[#5865F2]">TOPLULUGA</span> KATIL</h2>
+                <h2 class="text-4xl md:text-6xl lg:text-8xl font-black italic uppercase tracking-tighter"><span class="text-[#5865F2]">TOPLULUĞA</span> KATIL</h2>
             </div>
             <div class="grid lg:grid-cols-2 gap-8 reveal">
                 <div class="glass-card p-10 md:p-14 rounded-[3rem] text-center space-y-10 group relative overflow-hidden border-[#5865F2]/20 hover:border-[#5865F2]/50 transition-all">
@@ -354,7 +373,7 @@
                             <svg class="w-10 h-10 text-[#5865F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
                         </div>
                         <h3 class="text-4xl font-black uppercase italic tracking-tighter">Arcanth Project</h3>
-                        <p class="text-gray-400">Toplulugumuzun merkezi. Destek, sohbet ve daha fazlasi.</p>
+                        <p class="text-gray-400">Topluluğumuzun merkezi. Destek, sohbet ve daha fazlası.</p>
                         <a href="https://discord.gg/y4tAHYGzC6" target="_blank" class="btn-shine inline-block w-full px-8 py-5 bg-[#5865F2] text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:bg-[#4752c4] transition-all shadow-2xl">SUNUCUYA KATIL</a>
                     </div>
                 </div>
@@ -375,7 +394,7 @@
         <!-- ========== CONTACT ========== -->
         <section id="iletisim" class="tab-content space-y-16">
             <div class="text-center space-y-6 reveal">
-                <h2 class="text-4xl md:text-6xl lg:text-8xl font-black italic uppercase tracking-tighter"><span class="text-blue-500">ILETISIME</span> GEC</h2>
+                <h2 class="text-4xl md:text-6xl lg:text-8xl font-black italic uppercase tracking-tighter"><span class="text-blue-500">İLETİŞİME</span> GEÇ</h2>
             </div>
             <div class="grid lg:grid-cols-5 gap-10 items-start reveal">
                 <div class="lg:col-span-2 space-y-6">
@@ -386,10 +405,10 @@
                             </div>
                             <div>
                                 <p class="text-xs font-black uppercase text-blue-500 tracking-widest mb-1">DESTEK</p>
-                                <p class="text-sm text-gray-400">Destek talebi olusturun, 48 saat icinde yanitlanir</p>
+                                <p class="text-sm text-gray-400">Destek talebi oluşturun, 48 saat içinde yanıtlanır</p>
                             </div>
                         </div>
-                        <a href="destek.html" class="block w-full text-center bg-blue-600 py-4 rounded-xl font-black text-xs uppercase tracking-widest text-white hover:opacity-90 transition-all">Destek Talebi Ac</a>
+                        <a href="destek.html" class="block w-full text-center bg-blue-600 py-4 rounded-xl font-black text-xs uppercase tracking-widest text-white hover:opacity-90 transition-all">Destek Talebi Aç</a>
                     </div>
                     <div class="glass-card p-8 rounded-[2rem] space-y-5">
                         <div class="flex items-center gap-4">
@@ -404,7 +423,7 @@
                         <a href="https://discord.gg/y4tAHYGzC6" target="_blank" class="block w-full text-center bg-[#5865F2] py-4 rounded-xl font-black text-xs uppercase tracking-widest text-white hover:opacity-90 transition-all">Sunucuya Git</a>
                     </div>
                     <div class="glass-card p-8 rounded-[2rem] space-y-4">
-                        <h4 class="text-lg font-black uppercase italic tracking-wider"><span class="text-blue-500">Yanit</span> Suresi</h4>
+                        <h4 class="text-lg font-black uppercase italic tracking-wider"><span class="text-blue-500">Yanıt</span> Suresi</h4>
                         <div class="space-y-3">
                             <div class="flex items-center justify-between"><span class="text-gray-400">Discord:</span><span class="font-black text-green-500">~24 saat</span></div>
                             <div class="flex items-center justify-between"><span class="text-gray-400">E-Posta:</span><span class="font-black text-blue-500">~48 saat</span></div>
@@ -415,7 +434,7 @@
                     <div class="space-y-8">
                         <div class="text-center space-y-3">
                             <h3 class="text-3xl font-black uppercase italic tracking-tighter">Mesaj <span class="text-blue-500">Gonder</span></h3>
-                            <p class="text-gray-400 italic">Formunu doldur, size geri donelim</p>
+                            <p class="text-gray-400 italic">Formu doldur, size geri dönelim</p>
                         </div>
                         <form id="contactForm" class="space-y-5" action="https://formspree.io/f/xnnqewqb" method="POST">
                             <div class="grid md:grid-cols-2 gap-5">
@@ -438,8 +457,8 @@
                             </div>
                             <input type="hidden" name="_subject" value="Arcanth Project - Yeni Iletisim Mesaji">
                             <input type="hidden" name="_next" value="https://arcanth00.github.io/arcanthproject/">
-                            <button type="submit" class="btn-shine w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-5 rounded-xl font-black text-sm tracking-widest uppercase hover:opacity-90 transition-all shadow-2xl">MESAJI GONDER</button>
-                            <p class="text-xs text-gray-500 text-center italic">E-posta 48 saat icinde yanitlanir. Acil durumlar icin Discord'u tercih edin.</p>
+                            <button type="submit" class="btn-shine w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-5 rounded-xl font-black text-sm tracking-widest uppercase hover:opacity-90 transition-all shadow-2xl">MESAJI GÖNDER</button>
+                            <p class="text-xs text-gray-500 text-center italic">E-posta 48 saat içinde yanıtlanır. Acil durumlar için Discord'u tercih edin.</p>
                         </form>
                     </div>
                 </div>
@@ -448,25 +467,85 @@
 
     </main>
 
-    <footer class="border-t border-white/10 py-12">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div class="flex items-center gap-3">
-                    <img src="logo.png" class="w-8 h-8 rounded-lg" onerror="this.style.display='none'">
-                    <span class="text-xl font-black uppercase italic">Arcanth Project</span>
+    <!-- FOOTER -->
+    <footer class="relative border-t border-white/08 mt-8">
+        <div class="footer-glow"></div>
+        <div class="max-w-7xl mx-auto px-6 pt-16 pb-10">
+            <div class="grid md:grid-cols-4 gap-12 mb-14">
+                <!-- Marka -->
+                <div class="md:col-span-1 space-y-5">
+                    <div class="flex items-center gap-3">
+                        <img src="logo.png" class="w-10 h-10 rounded-xl border border-white/10" onerror="this.style.display='none'">
+                        <div>
+                            <p class="text-lg font-black uppercase italic tracking-tighter">ARCANTH</p>
+                            <p class="text-[9px] font-extrabold tracking-[0.5em] text-blue-500 uppercase">Project</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-500 text-sm leading-relaxed">Minecraft deneyimini yeniden tanımlayan özgün modlar ve optimizasyon araçları.</p>
+                    <div class="flex gap-3 flex-wrap" id="footer-social"></div>
                 </div>
-                <p class="text-sm text-gray-500">&copy; 2026 Arcanth Project. Tum haklari saklidir.</p>
-                <div class="flex gap-4" id="footer-social">
-                    <a href="https://discord.gg/y4tAHYGzC6" target="_blank" class="text-gray-500 hover:text-[#5865F2] transition-colors">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-                    </a>
-                    <a href="https://github.com/arcanth00" target="_blank" class="text-gray-500 hover:text-white transition-colors">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                    </a>
+                <!-- Gezinti -->
+                <div class="space-y-4">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-600">Gezinti</p>
+                    <ul class="space-y-3">
+                        <li><button onclick="showTab('anasayfa')"   class="text-gray-500 hover:text-white text-sm font-semibold transition-all hover:translate-x-1 inline-block">Anasayfa</button></li>
+                        <li><button onclick="showTab('projeler')"   class="text-gray-500 hover:text-white text-sm font-semibold transition-all hover:translate-x-1 inline-block">Projeler</button></li>
+                        <li><button onclick="showTab('duyurular')"  class="text-gray-500 hover:text-white text-sm font-semibold transition-all hover:translate-x-1 inline-block">Duyurular</button></li>
+                        <li><button onclick="showTab('indirmeler')" class="text-gray-500 hover:text-white text-sm font-semibold transition-all hover:translate-x-1 inline-block">İndirmeler</button></li>
+                    </ul>
+                </div>
+                <!-- Topluluk -->
+                <div class="space-y-4">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-600">Topluluk</p>
+                    <ul class="space-y-3">
+                        <li><button onclick="showTab('discord')" class="text-gray-500 hover:text-[#5865F2] text-sm font-semibold transition-all hover:translate-x-1 inline-block">Discord</button></li>
+                        <li><button onclick="showTab('sponsor')" class="text-gray-500 hover:text-orange-500 text-sm font-semibold transition-all hover:translate-x-1 inline-block">Sponsor</button></li>
+                        <li><a href="blog.html"    class="text-gray-500 hover:text-purple-500 text-sm font-semibold transition-all hover:translate-x-1 inline-block">Blog</a></li>
+                        <li><a href="destek.html"  class="text-gray-500 hover:text-white text-sm font-semibold transition-all hover:translate-x-1 inline-block">Destek</a></li>
+                    </ul>
+                </div>
+                <!-- Durum -->
+                <div class="space-y-4">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-600">Sistem</p>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981] animate-pulse flex-shrink-0"></span>
+                            <span class="text-sm text-gray-400 font-semibold">Tüm sistemler çalışıyor</span>
+                        </div>
+                        <div class="footer-stat-card p-4 rounded-2xl">
+                            <p class="text-xs text-gray-600 font-bold uppercase tracking-wider mb-1">Toplam Proje</p>
+                            <p class="text-2xl font-black text-blue-400" id="footer-stat-projects">—</p>
+                        </div>
+                        <div class="footer-stat-card p-4 rounded-2xl">
+                            <p class="text-xs text-gray-600 font-bold uppercase tracking-wider mb-1">İndirme</p>
+                            <p class="text-2xl font-black text-purple-400">1K+</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Alt çizgi -->
+            <div class="footer-divider pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-xs text-gray-600 font-semibold">© 2026 Arcanth Project. Tüm hakları saklıdır.</p>
+                <div class="flex items-center gap-5 text-xs text-gray-700 font-semibold">
+                    <a href="#" class="hover:text-gray-400 transition-colors">Gizlilik Politikası</a>
+                    <span class="text-gray-800">·</span>
+                    <a href="#" class="hover:text-gray-400 transition-colors">Kullanım Koşulları</a>
+                    <span class="text-gray-800">·</span>
+                    <a href="admin_panel.html" class="hover:text-gray-400 transition-colors">Admin</a>
                 </div>
             </div>
         </div>
     </footer>
+
+
+
+    <!-- PROJE DETAY MODALı -->
+    <div id="project-modal">
+        <div class="absolute inset-0" onclick="closeProjectModal()"></div>
+        <div class="project-modal-box relative z-10" id="pm-body">
+            <!-- JS ile doldurulur -->
+        </div>
+    </div>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
