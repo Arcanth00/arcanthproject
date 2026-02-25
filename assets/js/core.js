@@ -266,52 +266,187 @@ function rejectCookies() {
     var n = document.getElementById('cookie-notice'); if (n) n.classList.remove('show');
 }
 
-/* === PARTICLES === */
+/* === PARTICLES — Premium === */
 function initParticles() {
     var canvas = document.getElementById('particles-canvas'); if (!canvas) return;
     var ctx = canvas.getContext('2d');
-    var w, h, particles = [], mouse = { x: null, y: null };
+    var w, h;
+    var mouse = { x: -9999, y: -9999 };
+    var startTime = null;
 
-    function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+    /* ---- Yeniden boyutlandır ---- */
+    function resize() {
+        w = canvas.width  = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+    }
     resize();
     window.addEventListener('resize', resize);
-    window.addEventListener('mousemove', function (e) { mouse.x = e.clientX; mouse.y = e.clientY; });
+    window.addEventListener('mousemove', function(e) { mouse.x = e.clientX; mouse.y = e.clientY; });
+    window.addEventListener('mouseleave', function()  { mouse.x = -9999; mouse.y = -9999; });
 
-    for (var i = 0; i < 60; i++) {
-        particles.push({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4, r: Math.random() * 2 + 0.5 });
+    /* ---- Aurora orb'ları (statik konum, zaman ile pulse) ---- */
+    var orbs = [
+        { cx: 0.20, cy: 0.25, rx: 0.45, ry: 0.30, r: 120, g: 80,  b: 255, speed: 0.28, phase: 0.0 },
+        { cx: 0.75, cy: 0.18, rx: 0.50, ry: 0.28, r: 80,  g: 180, b: 255, speed: 0.22, phase: 1.8 },
+        { cx: 0.50, cy: 0.55, rx: 0.40, ry: 0.35, r: 160, g: 60,  b: 255, speed: 0.18, phase: 3.5 }
+    ];
+
+    /* ---- Partiküller: 3 derinlik katmanı ---- */
+    var layers = [
+        { count: 35, speed: 0.15, rMin: 1.0, rMax: 2.0, alpha: 0.55, connDist: 140, lineAlpha: 0.12 }, /* arka */
+        { count: 25, speed: 0.28, rMin: 1.5, rMax: 2.8, alpha: 0.75, connDist: 120, lineAlpha: 0.18 }, /* orta */
+        { count: 15, speed: 0.50, rMin: 2.0, rMax: 3.8, alpha: 0.90, connDist:  90, lineAlpha: 0.25 }  /* ön  */
+    ];
+    var particles = [];
+    layers.forEach(function(layer) {
+        for (var i = 0; i < layer.count; i++) {
+            var angle = Math.random() * Math.PI * 2;
+            var speed = layer.speed * (0.6 + Math.random() * 0.8);
+            particles.push({
+                x:      Math.random() * (w || 1200),
+                y:      Math.random() * (h || 800),
+                vx:     Math.cos(angle) * speed,
+                vy:     Math.sin(angle) * speed,
+                r:      layer.rMin + Math.random() * (layer.rMax - layer.rMin),
+                alpha:  layer.alpha * (0.7 + Math.random() * 0.3),
+                pulse:  Math.random() * Math.PI * 2,
+                pSpeed: 0.5 + Math.random() * 1.0,
+                layer:  layer
+            });
+        }
+    });
+
+    /* ---- Kayan yıldızlar ---- */
+    var shooters = [];
+    function spawnShooter() {
+        var side = Math.random() < 0.5; /* sol veya üst */
+        shooters.push({
+            x:      side ? -20 : Math.random() * w,
+            y:      side ? Math.random() * h * 0.5 : -20,
+            vx:     side ? 3.5 + Math.random() * 3 : 1.5 + Math.random() * 2,
+            vy:     side ? 1.0 + Math.random() * 1.5 : 3.5 + Math.random() * 3,
+            len:    80 + Math.random() * 120,
+            alpha:  0.9,
+            life:   1.0
+        });
     }
+    var nextShoot = 3 + Math.random() * 5; /* ilk kayan yıldız 3-8 sn sonra */
 
-    function draw() {
+    /* ---- Ana döngü ---- */
+    function draw(ts) {
+        if (!startTime) startTime = ts;
+        var t = (ts - startTime) / 1000;
         ctx.clearRect(0, 0, w, h);
+
+        /* --- Aurora arka plan --- */
+        orbs.forEach(function(o) {
+            var pulse = 0.04 + Math.sin(t * o.speed + o.phase) * 0.025;
+            var grd = ctx.createRadialGradient(
+                o.cx * w, o.cy * h, 0,
+                o.cx * w, o.cy * h, Math.min(w, h) * (o.rx + o.ry) / 2
+            );
+            grd.addColorStop(0,   'rgba(' + o.r + ',' + o.g + ',' + o.b + ',' + (pulse * 1.8) + ')');
+            grd.addColorStop(0.4, 'rgba(' + o.r + ',' + o.g + ',' + o.b + ',' + (pulse * 0.5) + ')');
+            grd.addColorStop(1,   'rgba(' + o.r + ',' + o.g + ',' + o.b + ',0)');
+            ctx.save();
+            ctx.scale(o.rx / o.ry, 1);
+            ctx.fillStyle = grd;
+            ctx.beginPath();
+            ctx.arc(o.cx * w / (o.rx / o.ry), o.cy * h, Math.min(w, h) * o.ry, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        });
+
+        /* --- Partiküller --- */
         for (var i = 0; i < particles.length; i++) {
             var p = particles[i];
+
+            /* Hareket */
+            /* Fare itme */
+            var fdx = p.x - mouse.x, fdy = p.y - mouse.y;
+            var fd2 = fdx * fdx + fdy * fdy;
+            if (fd2 < 22500) { /* 150px */
+                var fd = Math.sqrt(fd2);
+                var force = (1 - fd / 150) * 0.6;
+                p.vx += (fdx / fd) * force;
+                p.vy += (fdy / fd) * force;
+            }
+            /* Hız sınırı */
+            var spd = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+            var maxSpd = p.layer.speed * 2.5;
+            if (spd > maxSpd) { p.vx = (p.vx / spd) * maxSpd; p.vy = (p.vy / spd) * maxSpd; }
+
             p.x += p.vx; p.y += p.vy;
-            if (p.x < 0 || p.x > w) p.vx *= -1;
-            if (p.y < 0 || p.y > h) p.vy *= -1;
+            if (p.x < -10) p.x = w + 10; if (p.x > w + 10) p.x = -10;
+            if (p.y < -10) p.y = h + 10; if (p.y > h + 10) p.y = -10;
+
+            /* Pulse */
+            var pa = p.alpha * (0.7 + Math.sin(t * p.pSpeed + p.pulse) * 0.3);
+
+            /* Çizim — glow */
+            var grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
+            grd.addColorStop(0,   'rgba(180,160,255,' + pa + ')');
+            grd.addColorStop(0.4, 'rgba(120,100,255,' + (pa * 0.5) + ')');
+            grd.addColorStop(1,   'rgba(80,60,255,0)');
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
+            ctx.fillStyle = grd; ctx.fill();
+            /* Merkez nokta */
             ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(59,130,246,0.5)'; ctx.fill();
+            ctx.fillStyle = 'rgba(220,210,255,' + pa + ')'; ctx.fill();
+
+            /* Bağlantı çizgileri (aynı katmandaki partiküller) */
             for (var j = i + 1; j < particles.length; j++) {
+                if (particles[j].layer !== p.layer) continue;
                 var dx = p.x - particles[j].x, dy = p.y - particles[j].y;
                 var dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 150) {
+                if (dist < p.layer.connDist) {
+                    var la = p.layer.lineAlpha * (1 - dist / p.layer.connDist);
                     ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.strokeStyle = 'rgba(59,130,246,' + (0.1 * (1 - dist / 150)) + ')';
-                    ctx.lineWidth = 0.5; ctx.stroke();
+                    ctx.strokeStyle = 'rgba(150,120,255,' + la + ')';
+                    ctx.lineWidth = 0.6; ctx.stroke();
                 }
             }
-            if (mouse.x !== null) {
-                var mdx = p.x - mouse.x, mdy = p.y - mouse.y;
-                var mdist = Math.sqrt(mdx * mdx + mdy * mdy);
-                if (mdist < 200) {
-                    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y);
-                    ctx.strokeStyle = 'rgba(139,92,246,' + (0.15 * (1 - mdist / 200)) + ')';
-                    ctx.lineWidth = 0.8; ctx.stroke();
-                }
+
+            /* Fare bağlantısı */
+            var mdx = p.x - mouse.x, mdy = p.y - mouse.y;
+            var md2 = mdx * mdx + mdy * mdy;
+            if (md2 < 90000) { /* 300px */
+                var md = Math.sqrt(md2);
+                ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y);
+                ctx.strokeStyle = 'rgba(200,150,255,' + (0.2 * (1 - md / 300)) + ')';
+                ctx.lineWidth = 0.8; ctx.stroke();
             }
         }
+
+        /* --- Kayan yıldızlar --- */
+        if (t > nextShoot) {
+            spawnShooter();
+            nextShoot = t + 4 + Math.random() * 8;
+        }
+        for (var si = shooters.length - 1; si >= 0; si--) {
+            var s = shooters[si];
+            s.x += s.vx; s.y += s.vy;
+            s.life -= 0.012;
+            if (s.life <= 0 || s.x > w + 50 || s.y > h + 50) { shooters.splice(si, 1); continue; }
+            var tailX = s.x - s.vx * (s.len / Math.sqrt(s.vx * s.vx + s.vy * s.vy));
+            var tailY = s.y - s.vy * (s.len / Math.sqrt(s.vx * s.vx + s.vy * s.vy));
+            var sg = ctx.createLinearGradient(tailX, tailY, s.x, s.y);
+            sg.addColorStop(0,   'rgba(255,255,255,0)');
+            sg.addColorStop(0.7, 'rgba(200,180,255,' + (s.life * 0.3) + ')');
+            sg.addColorStop(1,   'rgba(255,255,255,' + (s.life * 0.9) + ')');
+            ctx.beginPath(); ctx.moveTo(tailX, tailY); ctx.lineTo(s.x, s.y);
+            ctx.strokeStyle = sg; ctx.lineWidth = 1.5; ctx.stroke();
+            /* Başlık parıltı */
+            var hg = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 6);
+            hg.addColorStop(0, 'rgba(255,255,255,' + (s.life * 0.9) + ')');
+            hg.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.beginPath(); ctx.arc(s.x, s.y, 6, 0, Math.PI * 2);
+            ctx.fillStyle = hg; ctx.fill();
+        }
+
         requestAnimationFrame(draw);
     }
-    draw();
+    requestAnimationFrame(draw);
 }
 
 /* === SCROLL ANIMATIONS === */
