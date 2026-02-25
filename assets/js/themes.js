@@ -98,7 +98,7 @@ var ThemeSystem = (function () {
         canvas.id  = 'ramadan-bg';
         canvas.style.cssText =
             'position:fixed;top:0;left:0;width:100%;height:100%;' +
-            'pointer-events:none;z-index:0;opacity:0;transition:opacity 1.5s ease;';
+            'pointer-events:none;z-index:0;opacity:0;transition:opacity 1.5s ease;will-change:opacity;';
         document.body.insertBefore(canvas, document.body.firstChild);
 
         var ctx = canvas.getContext('2d');
@@ -323,10 +323,8 @@ var ThemeSystem = (function () {
         /* İlk frame: requestAnimationFrame ile başlat — draw() DEĞİL */
         requestAnimationFrame(draw);
 
-        /* Fade in */
-        requestAnimationFrame(function() {
-            requestAnimationFrame(function() { canvas.style.opacity = '1'; });
-        });
+        /* Fade in — setTimeout Chromium'da daha güvenilir */
+        setTimeout(function() { canvas.style.opacity = '1'; }, 150);
     }
 
     /* ================================================
