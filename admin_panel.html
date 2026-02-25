@@ -489,12 +489,12 @@
                     </svg>
                     Çerezler
                 </div>
-                <div class="nav-item" onclick="go('activity',this)">
+                <div class="nav-item" onclick="go('events',this)">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
                     </svg>
-                    Aktivite
+                    Özel Günler
                 </div>
             </nav>
             <div class="p-4 border-t border-white/5">
@@ -840,6 +840,47 @@
                             <button onclick="saveSiteSettings()" class="btn-p w-full mt-3">KAYDET</button>
                         </div>
                     </div>
+
+                    <!-- SOSYAL MEDYA YÖNETİMİ -->
+                    <div class="glass p-8 space-y-6">
+                        <h3 class="font-bold text-lg flex items-center gap-2">
+                            <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                            </svg>
+                            Sosyal Medya Linkleri
+                        </h3>
+                        <p class="text-sm text-gray-400">Sadece doldurulanlar footer'da görünür. Boş bırakılan platformlar gizlenir.</p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="flex items-center gap-3 p-4 bg-white/5 rounded-xl">
+                                <svg class="w-6 h-6 flex-shrink-0 text-[#5865F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+                                <input type="text" id="sm-discord" class="input-f flex-1" placeholder="Discord davet linki (https://discord.gg/...)">
+                            </div>
+                            <div class="flex items-center gap-3 p-4 bg-white/5 rounded-xl">
+                                <svg class="w-6 h-6 flex-shrink-0 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                                <input type="text" id="sm-github" class="input-f flex-1" placeholder="GitHub linki (https://github.com/...)">
+                            </div>
+                            <div class="flex items-center gap-3 p-4 bg-white/5 rounded-xl">
+                                <svg class="w-6 h-6 flex-shrink-0 text-pink-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                                <input type="text" id="sm-instagram" class="input-f flex-1" placeholder="Instagram linki (https://instagram.com/...)">
+                            </div>
+                            <div class="flex items-center gap-3 p-4 bg-white/5 rounded-xl">
+                                <svg class="w-6 h-6 flex-shrink-0 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                                <input type="text" id="sm-youtube" class="input-f flex-1" placeholder="YouTube linki (https://youtube.com/...)">
+                            </div>
+                            <div class="flex items-center gap-3 p-4 bg-white/5 rounded-xl">
+                                <svg class="w-6 h-6 flex-shrink-0 text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                <input type="text" id="sm-twitter" class="input-f flex-1" placeholder="X (Twitter) linki (https://x.com/...)">
+                            </div>
+                            <div class="flex items-center gap-3 p-4 bg-white/5 rounded-xl">
+                                <svg class="w-6 h-6 flex-shrink-0 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                                <input type="text" id="sm-facebook" class="input-f flex-1" placeholder="Facebook linki (https://facebook.com/...)">
+                            </div>
+                        </div>
+                        <button onclick="saveSocialMedia()" class="btn-p w-full py-4">
+                            💾 SOSYAL MEDYA LİNKLERİNİ KAYDET
+                        </button>
+                        <p class="text-xs text-gray-500 text-center">Kaydettikten sonra site footer'ında anında güncellenir.</p>
+                    </div>
                     <div class="p-6 bg-blue-500/10 border border-blue-500/20 rounded-xl">
                         <h4 class="font-bold text-blue-400 mb-3">🛠️ Sistem Yönetimi</h4>
                         <p class="text-sm text-gray-400 mb-4">Sistem genelindeki işlemler. Dikkatli kullanın.</p>
@@ -906,16 +947,69 @@
                 <div id="actList" class="space-y-2"></div>
             </div>
 
-            <div id="t-settings" class="tab-c space-y-6">
-                <h2 class="text-2xl font-black">Ayarlar</h2>
-                <div class="glass p-6 space-y-4">
-                    <h3 class="font-bold text-sm uppercase text-gray-500">Sosyal Medya</h3>
-                    <input type="url" id="sDiscord" class="input-f" placeholder="Discord URL">
-                    <input type="url" id="sGithub" class="input-f" placeholder="GitHub URL">
-                    <input type="url" id="sInstagram" class="input-f" placeholder="Instagram URL">
-                    <input type="url" id="sYoutube" class="input-f" placeholder="YouTube URL">
-                    <input type="url" id="sTwitter" class="input-f" placeholder="Twitter/X URL">
-                    <button onclick="saveSettings()" class="btn-p w-full">Kaydet</button>
+            <div id="t-events" class="tab-c space-y-6">
+                <h2 class="text-2xl font-black">Özel Gün Temaları</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="glass p-6 flex flex-col items-center text-center space-y-4 border-blue-500/20">
+                        <div class="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">Normal Tema</h3>
+                            <p class="text-xs text-gray-500">Sitenin standart modern görünümü</p>
+                        </div>
+                        <button onclick="setEventTheme('normal')" class="btn-s w-full py-3" id="btn-theme-normal">AKTİF
+                            ET</button>
+                    </div>
+
+                    <div class="glass p-6 flex flex-col items-center text-center space-y-4 border-emerald-500/20">
+                        <div class="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">Ramazan Modu</h3>
+                            <p class="text-xs text-gray-500">Hilal, kandil ve özel tebrik mesajları</p>
+                        </div>
+                        <button onclick="setEventTheme('ramadan')"
+                            class="btn-p w-full py-3 !from-emerald-600 !to-teal-600" id="btn-theme-ramadan">AKTİF
+                            ET</button>
+                    </div>
+
+                    <div class="glass p-6 flex flex-col items-center text-center space-y-4 border-red-500/20">
+                        <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">Yılbaşı Modu</h3>
+                            <p class="text-xs text-gray-500">Kar efekti ve yeni yıl kutlaması</p>
+                        </div>
+                        <button onclick="setEventTheme('newyear')" class="btn-p w-full py-3 !from-red-600 !to-rose-600"
+                            id="btn-theme-newyear">AKTİF ET</button>
+                    </div>
+                </div>
+
+                <div class="glass p-8 space-y-4">
+                    <h3 class="font-bold text-lg flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Tema Hakkında
+                    </h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Özel gün temaları aktif edildiğinde, tüm kullanıcıların ekranında üst kısımda özel bir banner,
+                        farklı bir arka plan animasyonu ve o güne özel tebrik mesajları belirecektir. Temalar gerçek
+                        zamanlı olarak tüm cihazlarda güncellenir.
+                    </p>
                 </div>
             </div>
         </div>
@@ -1086,19 +1180,62 @@
 
     <!-- Bakım Modal -->
     <div id="m-bakim" class="modal">
-        <div class="modal-box">
-            <h3 class="text-xl font-black mb-4">Bakım Modunu Aç</h3>
-            <div class="space-y-3">
-                <textarea id="bakimMessage" class="input-f" rows="3"
-                    placeholder="Bakım mesajı">Sitemizi sizin için daha iyi hale getiriyoruz. Kısa süre içinde yeniden hizmetinizde olacağız.</textarea>
-                <input type="number" id="bakimDuration" class="input-f" placeholder="Tahmini süre (dakika)" value="30">
-                <div class="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-xl">
-                    <p class="text-xs text-yellow-400">⚠️ Bakım modu açıldığında site ziyaretçileri bakım sayfasına
-                        yönlendirilecek.</p>
+        <div class="modal-box" style="max-width: 500px;">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-black italic uppercase">Bakım <span class="text-blue-500">MODU</span></h3>
+                <button onclick="closeBakimModal()" class="w-8 h-8 rounded-lg hover:bg-white/10 transition-all">
+                    <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-[10px] font-black text-gray-500 mb-2 uppercase tracking-[0.2em]">BAKIM
+                        MESAJI</label>
+                    <textarea id="bakimMsgInput" class="input-f !bg-white/5 border-white/10" rows="3"
+                        placeholder="Ziyaretçilere gösterilecek mesaj...">Sitemizi sizin için daha iyi hale getiriyoruz. Kısa süre içinde yeniden hizmetinizde olacağız.</textarea>
                 </div>
-                <div class="flex gap-3">
-                    <button onclick="startBakim()" class="btn-p flex-1">BAKIMI BAŞLAT</button>
-                    <button onclick="closeBakimModal()" class="btn-s flex-1">İptal</button>
+
+                <div>
+                    <label class="block text-[10px] font-black text-gray-500 mb-2 uppercase tracking-[0.2em]">BAKIM
+                        SÜRESİ (DAKİKA)</label>
+                    <input type="number" id="bakimTimeInput" class="input-f !bg-white/5 border-white/10 mb-3"
+                        placeholder="Örn: 30" value="30">
+                    <div class="flex gap-2">
+                        <button onclick="g('bakimTimeInput').value=15"
+                            class="flex-1 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-bold border border-white/5 transition-all">15
+                            DK</button>
+                        <button onclick="g('bakimTimeInput').value=30"
+                            class="flex-1 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-bold border border-white/5 transition-all">30
+                            DK</button>
+                        <button onclick="g('bakimTimeInput').value=60"
+                            class="flex-1 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-bold border border-white/5 transition-all">1
+                            SAAT</button>
+                        <button onclick="g('bakimTimeInput').value=120"
+                            class="flex-1 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-bold border border-white/5 transition-all">2
+                            SAAT</button>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex items-start gap-4">
+                    <svg class="w-6 h-6 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="text-xs text-blue-400 font-medium leading-relaxed">Bakım modu açıldığında, siz hariç tüm
+                        ziyaretçiler otomatik olarak bakım sayfasına yönlendirilir.</p>
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button onclick="startBakim()"
+                        class="flex-1 py-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black rounded-2xl text-[10px] uppercase tracking-widest hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] transition-all transform hover:-translate-y-1">BAKIMI
+                        BAŞLAT</button>
+                    <button onclick="closeBakimModal()"
+                        class="flex-1 py-5 bg-white/5 hover:bg-white/10 text-gray-400 font-black rounded-2xl text-[10px] uppercase tracking-widest border border-white/5 transition-all">İPTAL</button>
                 </div>
             </div>
         </div>
@@ -1134,6 +1271,7 @@
                 await loadUsers();
                 loadAnalytics();
                 loadBakimStatus();
+            loadSocialMedia();
                 stats();
                 checkConnection();
             } catch (e) {
@@ -1341,7 +1479,7 @@
         function openNewPost() { editBlogId = null; g('blogTitle').value = ''; g('blogContent').value = ''; g('blogCategory').value = 'genel'; g('blogAuthor').value = ''; g('blogImage').value = ''; g('m-blog').classList.add('active'); }
         function closeBlogModal() { g('m-blog').classList.remove('active'); editBlogId = null; }
         function editBlogPost(id) {
-            db.ref('blog/' + id).once('value').then(snap => {
+            db.ref('site_data/blog/' + id).once('value').then(snap => {
                 const p = snap.val(); if (!p) return;
                 editBlogId = id;
                 g('blogTitle').value = p.title || '';
@@ -1370,8 +1508,8 @@
             // Remove undefined keys
             Object.keys(post).forEach(k => { if (post[k] === undefined) delete post[k]; });
             try {
-                if (editBlogId) { await db.ref('blog/' + id).update(post); }
-                else { await db.ref('blog/' + id).set(post); }
+                if (editBlogId) { await db.ref('site_data/blog/' + id).update(post); }
+                else { await db.ref('site_data/blog/' + id).set(post); }
                 closeBlogModal();
                 loadBlog();
                 log(editBlogId ? 'Blog yazısı düzenlendi' : 'Yeni blog yazısı eklendi');
@@ -1381,14 +1519,14 @@
         async function deleteBlogPost(id) {
             if (!confirm('Bu blog yazısını silmek istediğinize emin misiniz?')) return;
             try {
-                await db.ref('blog/' + id).remove();
+                await db.ref('site_data/blog/' + id).remove();
                 await db.ref('comments/' + id).remove();
                 loadBlog();
                 log('Blog yazısı silindi');
             } catch (e) { alert('Hata: ' + e.message); }
         }
         function loadBlog() {
-            db.ref('blog').once('value').then(snap => {
+            db.ref('site_data/blog').once('value').then(snap => {
                 const el = g('blogList');
                 const posts = [];
                 snap.forEach(c => posts.push(c.val()));
@@ -1414,6 +1552,30 @@
         }
 
         // ============== SITE SETTINGS ==============
+
+        function saveSocialMedia() {
+            const settings = ls(K.settings) || {};
+            const fields = ['discord','github','instagram','youtube','twitter','facebook'];
+            fields.forEach(function(f) {
+                const val = g('sm-' + f) ? g('sm-' + f).value.trim() : '';
+                if (val) settings[f] = val;
+                else delete settings[f];
+            });
+            ls(K.settings, settings);
+            sync();
+            log('Sosyal medya linkleri güncellendi');
+            alert('✓ Sosyal medya linkleri kaydedildi! Footer anında güncellendi.');
+        }
+
+        function loadSocialMedia() {
+            const settings = ls(K.settings) || {};
+            const fields = ['discord','github','instagram','youtube','twitter','facebook'];
+            fields.forEach(function(f) {
+                const el = g('sm-' + f);
+                if (el) el.value = settings[f] || '';
+            });
+        }
+
         function saveSiteSettings() {
             const title = g('siteTitle') ? g('siteTitle').value : '';
             const desc = g('siteDesc') ? g('siteDesc').value : '';
@@ -1430,8 +1592,8 @@
         function openBakimModal() { g('m-bakim').classList.add('active'); }
         function closeBakimModal() { g('m-bakim').classList.remove('active'); }
         async function startBakim() {
-            const message = g('bakimMessage').value.trim();
-            const duration = parseInt(g('bakimDuration').value) || 30;
+            const message = g('bakimMsgInput').value.trim();
+            const duration = parseInt(g('bakimTimeInput').value) || 30;
             const endTime = new Date(Date.now() + duration * 60 * 1000).toISOString();
             try {
                 await db.ref('site_data/settings/maintenance').set({
@@ -1443,6 +1605,7 @@
                 });
                 closeBakimModal();
                 loadBakimStatus();
+            loadSocialMedia();
                 log('Bakım modu açıldı (' + duration + ' dk)');
                 alert('✓ Bakım modu açıldı! Süre: ' + duration + ' dakika');
             } catch (e) { alert('Hata: ' + e.message); }
@@ -1452,6 +1615,7 @@
             try {
                 await db.ref('site_data/settings/maintenance').set({ enabled: false });
                 loadBakimStatus();
+            loadSocialMedia();
                 log('Bakım modu kapatıldı');
                 alert('✓ Bakım modu kapatıldı!');
             } catch (e) { alert('Hata: ' + e.message); }
@@ -1604,9 +1768,53 @@
                     tkTable.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-4">Henüz veri yok</td></tr>';
                 }
 
+                // Load event theme status
+                loadEventThemeStatus();
+
             } catch (e) {
                 console.error('Analytics error:', e);
             }
+        }
+
+        // ============== EVENT THEMES ==============
+        async function setEventTheme(theme) {
+            try {
+                const btn = g('btn-theme-' + theme);
+                const originalText = btn.textContent;
+                btn.textContent = 'GÜNCELLENİYOR...';
+                btn.disabled = true;
+
+                await db.ref('site_data/settings/active_theme').set(theme);
+
+                log('Site teması değiştirildi: ' + theme);
+                loadEventThemeStatus();
+                alert('✓ Site teması başarıyla güncellendi: ' + theme.toUpperCase());
+            } catch (e) {
+                alert('Hata: ' + e.message);
+                loadEventThemeStatus();
+            }
+        }
+
+        function loadEventThemeStatus() {
+            db.ref('site_data/settings/active_theme').on('value', snap => {
+                const activeTheme = snap.val() || 'normal';
+
+                // Reset all buttons
+                ['normal', 'ramadan', 'newyear'].forEach(t => {
+                    const btn = g('btn-theme-' + t);
+                    if (!btn) return;
+                    btn.disabled = false;
+                    if (t === activeTheme) {
+                        btn.textContent = 'ŞU AN AKTİF';
+                        btn.className = 'btn-p w-full py-3 !from-gray-600 !to-gray-700 opacity-50 cursor-default';
+                    } else {
+                        btn.textContent = 'AKTİF ET';
+                        if (t === 'normal') btn.className = 'btn-s w-full py-3';
+                        else if (t === 'ramadan') btn.className = 'btn-p w-full py-3 !from-emerald-600 !to-teal-600';
+                        else if (t === 'newyear') btn.className = 'btn-p w-full py-3 !from-red-600 !to-rose-600';
+                    }
+                });
+            });
         }
     </script>
 </body>
