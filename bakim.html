@@ -85,15 +85,21 @@
         // Bakım bilgilerini yükle
         db.ref('site_data/settings/maintenance').once('value').then(snap=>{
             const data=snap.val();
-            if(data){
-                if(data.message)document.getElementById('bakimMessage').textContent=data.message;
-                if(data.duration)document.getElementById('bakimSure').textContent=data.duration+' dakika';
-                if(data.endTime){
-                    const end=new Date(data.endTime);
-                    updateCountdown(end);
-                    setInterval(()=>updateCountdown(end),1000);
-                }
+            // Bakım kapalıysa veya hiç ayarlanmamışsa — bakim.html'e erişim engelle
+            if(!data || !data.enabled){
+                window.location.replace('index.html');
+                return;
             }
+            if(data.message)document.getElementById('bakimMessage').textContent=data.message;
+            if(data.duration)document.getElementById('bakimSure').textContent=data.duration+' dakika';
+            if(data.endTime){
+                const end=new Date(data.endTime);
+                updateCountdown(end);
+                setInterval(()=>updateCountdown(end),1000);
+            }
+        }).catch(()=>{
+            // Firebase erişilemiyorsa ana sayfaya gönder
+            window.location.replace('index.html');
         });
         
         function updateCountdown(end){
