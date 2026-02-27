@@ -3,244 +3,473 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Destek - Arcanth Project</title>
+    <title>Destek — Arcanth Project</title>
+    <meta name="description" content="Arcanth Project destek merkezi. Sorularınız için destek talebi oluşturun.">
     <link rel="icon" type="image/png" href="logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <style>
-        body{font-family:'Inter',system-ui,sans-serif;background:#0a0a0f;color:white}
-        #loading-screen{position:fixed;inset:0;z-index:10000;background:#0a0a0f;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2rem;transition:opacity .8s ease}
-        #loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
-        .loader-ring{width:56px;height:56px;border:3px solid rgba(59,130,246,.15);border-top-color:#3b82f6;border-radius:50%;animation:spin .8s linear infinite}
+        *{box-sizing:border-box;}
+        body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#030508;color:#e2e8f0;margin:0;min-height:100vh;}
+        .glass{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:1rem;transition:all .3s;}
+        .input-f{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:white;padding:.7rem 1rem;border-radius:.75rem;width:100%;outline:none;font-family:inherit;font-size:.875rem;transition:border .2s;}
+        .input-f:focus{border-color:#3b82f6;}
+        .btn-p{background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;padding:.7rem 1.25rem;border-radius:.75rem;font-weight:700;border:none;cursor:pointer;font-family:inherit;font-size:.875rem;transition:all .2s;}
+        .btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(59,130,246,.3);}
+        .btn-s{background:rgba(255,255,255,.06);color:white;padding:.7rem 1.25rem;border-radius:.75rem;font-weight:700;border:1px solid rgba(255,255,255,.08);cursor:pointer;font-family:inherit;font-size:.875rem;transition:all .2s;}
+        .btn-s:hover{background:rgba(255,255,255,.1);}
+        .tab-btn{padding:.6rem 1.25rem;border-radius:.75rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,.04);color:#9ca3af;border:1px solid rgba(255,255,255,.06);font-size:.875rem;transition:all .2s;}
+        .tab-btn.active{background:rgba(59,130,246,.15);color:#60a5fa;border-color:rgba(59,130,246,.3);}
+        #loading-screen{position:fixed;inset:0;z-index:10000;background:#030508;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem;transition:opacity .6s ease,visibility .6s ease;}
+        #loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none;}
+        .loader-ring{width:44px;height:44px;border:3px solid rgba(59,130,246,.15);border-top-color:#3b82f6;border-radius:50%;animation:spin .8s linear infinite;}
         @keyframes spin{to{transform:rotate(360deg)}}
-        .glass{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:1rem}
-        .input-f{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:white;padding:.75rem 1rem;border-radius:.75rem;width:100%;outline:none}
-        .input-f:focus{border-color:#3b82f6}
-        .btn-p{background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;padding:.75rem 1.5rem;border-radius:.75rem;font-weight:700;border:none;cursor:pointer}
-        .btn-s{background:rgba(255,255,255,.06);color:white;padding:.75rem 1.5rem;border-radius:.75rem;font-weight:700;cursor:pointer}
-        .tab-btn{padding:.75rem 1.5rem;border-radius:.75rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,.05);color:#9ca3af}
-        .tab-btn.active{background:#3b82f6;color:white}
-        .ticket-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:1rem;padding:1.5rem;cursor:pointer}
-        .status-aktif{background:rgba(34,197,94,.15);color:#22c55e;padding:.25rem .75rem;border-radius:9999px;font-size:.75rem;font-weight:700}
-        @media (max-width:768px){.container{padding:1rem!important}}
+        .ticket-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:1rem;padding:1.25rem;cursor:pointer;transition:all .2s;}
+        .ticket-card:hover{border-color:rgba(59,130,246,.3);background:rgba(59,130,246,.04);}
+        .status-badge{padding:.25rem .75rem;border-radius:9999px;font-size:.6875rem;font-weight:700;}
+        ::-webkit-scrollbar{width:5px;}
+        ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px;}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+        .fade-in{animation:fadeIn .4s ease forwards;}
+        /* FAQ Accordion */
+        .faq-item details summary{cursor:pointer;list-style:none;padding:1rem 0;}
+        .faq-item details summary::-webkit-details-marker{display:none;}
+        .faq-item details[open] summary .faq-arrow{transform:rotate(180deg);}
+        .faq-arrow{transition:transform .2s;}
     </style>
 </head>
 <body>
-    <div id="loading-screen">
-        <img src="logo.png" class="w-16 h-16 rounded-2xl animate-pulse" onerror="this.style.display='none'">
-        <div class="loader-ring"></div>
-        <p class="text-gray-500 text-sm font-bold">Yükleniyor</p>
-    </div>
 
-    <div id="login-screen" class="hidden min-h-screen p-4 md:p-6 flex items-center justify-center">
-        <div class="max-w-md w-full">
-            <div class="text-center mb-8">
-                <a href="index.html"><img src="logo.png" class="w-16 h-16 rounded-2xl mx-auto mb-4" onerror="this.style.display='none'"></a>
-                <h1 class="text-3xl md:text-4xl font-black uppercase mb-2">DESTEK</h1>
-                <p class="text-gray-400">Giriş yapın veya kayıt olun</p>
-            </div>
+<div id="loading-screen">
+    <img src="logo.png" class="w-14 h-14 rounded-2xl opacity-90" onerror="this.style.display='none'">
+    <div class="loader-ring"></div>
+</div>
 
-            <div class="glass p-6 md:p-8 space-y-4">
-                <button onclick="loginWithGoogle()" class="w-full btn-p py-3 flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/></svg>
-                    Google ile Giriş
-                </button>
-                <button onclick="loginWithGithub()" class="w-full btn-s py-3 flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                    GitHub ile Giriş
-                </button>
-                <div class="relative"><div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/10"></div></div><div class="relative flex justify-center text-xs uppercase"><span class="bg-[#0a0a0f] px-2 text-gray-500">veya</span></div></div>
-                <div id="email-form" class="space-y-3">
-                    <input type="text" id="nameInput" class="input-f" placeholder="Ad Soyad">
-                    <input type="email" id="emailInput" class="input-f" placeholder="E-posta">
-                    <input type="tel" id="phoneInput" class="input-f" placeholder="Telefon (Opsiyonel)">
-                    <input type="password" id="passwordInput" class="input-f" placeholder="Şifre (min 6 karakter)">
-                    <button onclick="registerUser()" class="w-full btn-p py-3">Kayıt Ol</button>
-                    <button onclick="showLogin()" class="w-full text-sm text-gray-400 hover:text-white">Zaten hesabınız var mı? Giriş yapın</button>
-                </div>
-                <p id="authError" class="text-red-500 text-xs text-center hidden"></p>
-            </div>
-            <div class="text-center mt-6"><a href="index.html" class="text-gray-500 hover:text-white text-sm">← Ana Sayfa</a></div>
+<!-- Giriş Ekranı -->
+<div id="login-screen" class="hidden min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full">
+        <div class="text-center mb-8">
+            <a href="index.html"><img src="logo.png" class="w-16 h-16 rounded-2xl mx-auto mb-4" onerror="this.style.display='none'"></a>
+            <h1 class="text-3xl font-black mb-2">Destek Merkezi</h1>
+            <p class="text-gray-500 text-sm">Destek taleplerini görüntülemek için giriş yapın</p>
         </div>
+        <div class="glass p-8 space-y-4">
+            <button onclick="loginGoogle()" class="w-full btn-s py-3.5 flex items-center justify-center gap-3 hover:border-white/20">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/></svg>
+                Google ile Giriş
+            </button>
+            <button onclick="loginGithub()" class="w-full btn-s py-3.5 flex items-center justify-center gap-3 hover:border-white/20">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                GitHub ile Giriş
+            </button>
+            <div class="relative"><div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/[0.08]"></div></div><div class="relative flex justify-center"><span class="bg-[#030508] px-3 text-xs text-gray-600 font-bold uppercase tracking-wider">veya</span></div></div>
+            <div id="emailFormWrap" class="space-y-3">
+                <input type="text" id="nameInput" class="input-f" placeholder="Ad Soyad *">
+                <input type="email" id="emailInput" class="input-f" placeholder="E-posta *">
+                <input type="password" id="passwordInput" class="input-f" placeholder="Şifre (min. 6 karakter) *">
+                <button onclick="registerUser()" class="w-full btn-p py-3.5">Kayıt Ol</button>
+                <button onclick="toggleLoginMode()" class="w-full text-sm text-gray-500 hover:text-white transition-colors py-1">Hesabınız var mı? Giriş yapın</button>
+            </div>
+            <p id="authError" class="text-red-400 text-xs text-center hidden"></p>
+        </div>
+        <div class="text-center mt-4"><a href="index.html" class="text-gray-600 hover:text-white text-sm transition-colors">← Ana Sayfa</a></div>
     </div>
+</div>
 
-    <div id="main-app" class="hidden min-h-screen p-4 md:p-6">
-        <div class="max-w-6xl mx-auto">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                <div class="flex items-center gap-4">
-                    <a href="index.html"><img src="logo.png" class="w-12 h-12 rounded-xl" onerror="this.style.display='none'"></a>
-                    <div>
-                        <h1 class="text-2xl md:text-3xl font-black uppercase">Destek Talepleri</h1>
-                        <p class="text-gray-400 text-sm" id="userEmail"></p>
-                    </div>
-                </div>
-                <div class="flex gap-3">
-                    <a href="index.html" class="px-6 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-bold hover:bg-white/10 transition-all">← Ana Sayfa</a>
-                    <div class="relative">
-                        <button id="profileBtn" class="w-11 h-11 rounded-xl flex items-center justify-center border border-white/10 hover:bg-white/5 transition-all">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                        </button>
-                        <div id="profileDropdown" class="hidden absolute right-0 top-14 w-56 bg-[#0f1419] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
-                            <div class="p-4 border-b border-white/10">
-                                <p class="font-bold text-sm truncate" id="dropdownUserEmail"></p>
-                                <p class="text-xs text-gray-500">Kullanıcı</p>
-                            </div>
-                            <a href="profil.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                <span class="text-sm font-semibold">Profili Yönet</span>
-                            </a>
-                            <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-500/10 text-red-400 transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                                <span class="text-sm font-semibold">Çıkış Yap</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+<!-- Ana Uygulama -->
+<div id="main-app" class="hidden min-h-screen">
+    <!-- NAV -->
+    <nav class="sticky top-0 z-50 backdrop-blur-xl border-b border-white/[0.06]" style="background:rgba(3,5,8,.92)">
+        <div class="max-w-5xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <a href="index.html"><img src="logo.png" class="w-8 h-8 rounded-xl" onerror="this.style.display='none'"></a>
+                <span class="text-gray-600 hidden sm:block">/</span>
+                <span class="font-bold text-sm hidden sm:block">Destek Merkezi</span>
             </div>
+            <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-400 hidden md:block" id="userEmailNav"></span>
+                <a href="index.html" class="btn-s py-2 px-4 text-xs hidden sm:block">← Ana Sayfa</a>
+                <button onclick="logout()" class="text-sm text-red-400 hover:text-red-300 transition-colors">Çıkış</button>
+            </div>
+        </div>
+    </nav>
 
-            <div class="glass p-4 md:p-6 mb-6">
-                <div class="flex items-center gap-3">
-                    <svg class="w-6 h-6 text-[#5865F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-                    <div>
-                        <p class="font-bold text-sm">Hızlı Yanıt için Discord'a Katılın</p>
-                        <p class="text-xs text-gray-400">Discord: ~24 saat • E-posta: ~48 saat</p>
-                    </div>
-                    <a href="https://discord.gg/y4tAHYGzC6" target="_blank" class="ml-auto px-4 py-2 bg-[#5865F2] rounded-lg text-sm font-bold hover:opacity-90">Katıl</a>
+    <div class="max-w-5xl mx-auto px-4 md:px-6 py-8">
+
+        <!-- Discord Banner -->
+        <div class="glass p-4 md:p-5 mb-8 flex items-center gap-4 border-[#5865F2]/30 bg-[#5865F2]/[0.05]">
+            <div class="w-10 h-10 bg-[#5865F2]/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-[#7289da]" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="font-bold text-sm">Hızlı Yanıt için Discord</p>
+                <p class="text-xs text-gray-500 mt-0.5">Discord: ~2 saat &nbsp;·&nbsp; Destek Talebi: ~24 saat</p>
+            </div>
+            <a href="https://discord.gg/y4tAHYGzC6" target="_blank" class="flex-shrink-0 px-5 py-2.5 bg-[#5865F2] hover:bg-[#4752c4] rounded-xl font-bold text-sm transition-all">Discord'a Katıl</a>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex flex-wrap gap-2 mb-6">
+            <button class="tab-btn active" onclick="showTab('taleplerim',this)">
+                <span class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    Taleplerim
+                    <span id="ticketCountBadge" class="bg-blue-500/20 text-blue-400 text-[10px] font-black px-2 py-0.5 rounded-full">0</span>
+                </span>
+            </button>
+            <button class="tab-btn" onclick="showTab('yeni',this)">
+                <span class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    Yeni Talep
+                </span>
+            </button>
+            <button class="tab-btn" onclick="showTab('faq',this)">
+                <span class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    SSS
+                </span>
+            </button>
+        </div>
+
+        <!-- TAB: Taleplerim -->
+        <div id="tab-taleplerim" class="tab-content fade-in">
+            <div id="ticketsList"></div>
+        </div>
+
+        <!-- TAB: Yeni Talep -->
+        <div id="tab-yeni" class="tab-content hidden">
+            <div class="glass p-6 md:p-8 space-y-5">
+                <div>
+                    <h2 class="text-xl font-black mb-1">Yeni Destek Talebi</h2>
+                    <p class="text-sm text-gray-500">Talepler genellikle 24 saat içinde yanıtlanır.</p>
                 </div>
-            </div>
-
-            <div class="flex flex-wrap gap-3 mb-6">
-                <button class="tab-btn active" onclick="showTab('taleplerim')">Taleplerim</button>
-                <button class="tab-btn" onclick="showTab('yeni')">Yeni Talep</button>
-            </div>
-
-            <div id="tab-yeni" class="tab-content hidden">
-                <div class="glass p-4 md:p-8 space-y-4 md:space-y-6">
-                    <input type="text" id="ticketSubject" class="input-f" placeholder="Konu *">
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2">Konu *</label>
+                    <input type="text" id="ticketSubject" class="input-f" placeholder="Sorununuzu kısaca açıklayın">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2">Kategori *</label>
                     <select id="ticketCategory" class="input-f">
-                        <option value="">Kategori Seçin *</option>
-                        <option value="teknik">Teknik Destek</option>
-                        <option value="genel">Genel Soru</option>
-                        <option value="oneri">Öneri</option>
-                        <option value="sikayet">Şikayet</option>
-                        <option value="diger">Diğer</option>
+                        <option value="">Kategori seçin...</option>
+                        <option value="teknik">🔧 Teknik Destek</option>
+                        <option value="genel">💬 Genel Soru</option>
+                        <option value="oneri">💡 Öneri</option>
+                        <option value="sikayet">⚠️ Şikayet</option>
+                        <option value="odeme">💳 Ödeme & Sponsor</option>
+                        <option value="diger">📌 Diğer</option>
                     </select>
-                    <textarea id="ticketMessage" class="input-f" rows="6" placeholder="Mesajınız *"></textarea>
-                    <button onclick="createTicket()" class="btn-p w-full">Destek Talebi Oluştur</button>
-                    <p id="createStatus" class="text-center text-sm hidden"></p>
                 </div>
-            </div>
-
-            <div id="tab-taleplerim" class="tab-content">
-                <div id="ticketsList"></div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2">Öncelik</label>
+                    <div class="flex gap-2">
+                        <button onclick="setPriority('dusuk',this)" class="priority-btn flex-1 py-2.5 rounded-xl border border-white/08 text-xs font-bold text-gray-400 hover:border-green-500/30 hover:text-green-400 transition-all">🟢 Düşük</button>
+                        <button onclick="setPriority('orta',this)" class="priority-btn flex-1 py-2.5 rounded-xl border border-yellow-500/30 text-yellow-400 text-xs font-bold transition-all">🟡 Orta</button>
+                        <button onclick="setPriority('yuksek',this)" class="priority-btn flex-1 py-2.5 rounded-xl border border-white/08 text-xs font-bold text-gray-400 hover:border-red-500/30 hover:text-red-400 transition-all">🔴 Yüksek</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2">Mesaj *</label>
+                    <textarea id="ticketMessage" class="input-f min-h-[140px] resize-none" placeholder="Sorununuzu detaylı açıklayın. Ne denediğinizi, ne tür bir hata aldığınızı belirtin..."></textarea>
+                    <div class="flex justify-between mt-1">
+                        <p class="text-[10px] text-gray-600">Min. 20 karakter</p>
+                        <p id="msgLength" class="text-[10px] text-gray-600">0 / 2000</p>
+                    </div>
+                </div>
+                <button onclick="createTicket()" class="btn-p w-full py-3.5">Destek Talebi Gönder</button>
+                <p id="createStatus" class="text-center text-sm hidden"></p>
             </div>
         </div>
-    </div>
 
-    <script>
-        const firebaseConfig={apiKey:"AIzaSyCnkk6j1CGsi4sNXJ8FA9Gd2B6_VDptVDg",authDomain:"arcanthproject.firebaseapp.com",databaseURL:"https://arcanthproject-default-rtdb.firebaseio.com",projectId:"arcanthproject",storageBucket:"arcanthproject.firebasestorage.app",messagingSenderId:"826341954149",appId:"1:826341954149:web:6429d61a5b40810009ac8c"};
-        firebase.initializeApp(firebaseConfig);
-        const auth=firebase.auth(),db=firebase.database(),googleProvider=new firebase.auth.GoogleAuthProvider(),githubProvider=new firebase.auth.GithubAuthProvider();
-        let currentUser=null,isLoginMode=false,loginInProgress=false;
-
-        auth.onAuthStateChanged(user=>{setTimeout(()=>{document.getElementById('loading-screen').classList.add('hidden');if(user){currentUser=user;document.getElementById('login-screen').classList.add('hidden');document.getElementById('main-app').classList.remove('hidden');document.getElementById('userEmail').textContent=user.email;document.getElementById('dropdownUserEmail').textContent=user.email;loadUserTickets()}else{document.getElementById('login-screen').classList.remove('hidden');document.getElementById('main-app').classList.add('hidden')}},800)});
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const profileBtn = document.getElementById('profileBtn');
-            const dropdown = document.getElementById('profileDropdown');
-            if (profileBtn) {
-                profileBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    dropdown.classList.toggle('hidden');
-                });
-            }
-            document.addEventListener('click', () => {
-                if (dropdown) dropdown.classList.add('hidden');
-            });
-        });
-
-        function loginWithGoogle(){if(loginInProgress)return;loginInProgress=true;auth.signInWithPopup(googleProvider).catch(err=>{loginInProgress=false;if(err.code==='auth/popup-cancelled-by-user'||err.code==='auth/cancelled-popup-request')return;if(err.code==='auth/account-exists-with-different-credential'){document.getElementById('authError').textContent='Bu e-posta başka bir giriş yöntemiyle kayıtlı. Lütfen o yöntemi kullanın.';document.getElementById('authError').classList.remove('hidden');return}document.getElementById('authError').textContent='Hata: '+err.message;document.getElementById('authError').classList.remove('hidden')})}
-
-        function loginWithGithub(){if(loginInProgress)return;loginInProgress=true;auth.signInWithPopup(githubProvider).catch(err=>{loginInProgress=false;if(err.code==='auth/popup-cancelled-by-user'||err.code==='auth/cancelled-popup-request')return;if(err.code==='auth/account-exists-with-different-credential'){document.getElementById('authError').textContent='Bu e-posta başka bir giriş yöntemiyle kayıtlı. Lütfen o yöntemi kullanın.';document.getElementById('authError').classList.remove('hidden');return}document.getElementById('authError').textContent='Hata: '+err.message;document.getElementById('authError').classList.remove('hidden')})}
-        
-        function showLogin(){isLoginMode=!isLoginMode;const form=document.getElementById('email-form');if(isLoginMode){form.innerHTML='<input type="email" id="emailInput" class="input-f" placeholder="E-posta"><input type="password" id="passwordInput" class="input-f" placeholder="Şifre"><button onclick="loginUser()" class="w-full btn-p py-3">Giriş Yap</button><button onclick="showLogin()" class="w-full text-sm text-gray-400 hover:text-white">Hesabınız yok mu? Kayıt olun</button>'}else{form.innerHTML='<input type="text" id="nameInput" class="input-f" placeholder="Ad Soyad"><input type="email" id="emailInput" class="input-f" placeholder="E-posta"><input type="tel" id="phoneInput" class="input-f" placeholder="Telefon (Opsiyonel)"><input type="password" id="passwordInput" class="input-f" placeholder="Şifre (min 6 karakter)"><button onclick="registerUser()" class="w-full btn-p py-3">Kayıt Ol</button><button onclick="showLogin()" class="w-full text-sm text-gray-400 hover:text-white">Zaten hesabınız var mı? Giriş yapın</button>'}}
-
-        function registerUser(){const name=document.getElementById('nameInput').value.trim(),email=document.getElementById('emailInput').value.trim(),phone=document.getElementById('phoneInput').value.trim(),password=document.getElementById('passwordInput').value,err=document.getElementById('authError');if(!name||!email||!password){err.textContent='Tüm zorunlu alanları doldurun!';err.classList.remove('hidden');return}if(password.length<6){err.textContent='Şifre en az 6 karakter olmalı!';err.classList.remove('hidden');return}auth.createUserWithEmailAndPassword(email,password).then(cred=>{return db.ref('users/'+cred.user.uid).set({name:name,email:email,phone:phone||'',created:new Date().toISOString()})}).catch(e=>{if(e.code==='auth/email-already-in-use'){err.textContent='Bu e-posta zaten kayıtlı. Giriş yapmayı deneyin.';err.classList.remove('hidden');return}err.textContent='Hata: '+e.message;err.classList.remove('hidden')})}
-
-        function loginUser(){const email=document.getElementById('emailInput').value.trim(),password=document.getElementById('passwordInput').value,err=document.getElementById('authError');if(!email||!password){err.textContent='E-posta ve şifre gerekli!';err.classList.remove('hidden');return}auth.signInWithEmailAndPassword(email,password).catch(e=>{err.textContent='Hata: '+e.message;err.classList.remove('hidden')})}
-
-        function logout(){if(confirm('Çıkış yapmak istediğinize emin misiniz?'))auth.signOut()}
-
-        function showTab(tab){document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(content=>content.classList.add('hidden'));event.target.classList.add('active');document.getElementById('tab-'+tab).classList.remove('hidden');if(tab==='taleplerim')loadUserTickets()}
-
-        async function createTicket(){const subject=document.getElementById('ticketSubject').value.trim(),category=document.getElementById('ticketCategory').value,message=document.getElementById('ticketMessage').value.trim(),status=document.getElementById('createStatus');if(!subject||!category||!message){status.textContent='Lütfen tüm alanları doldurun!';status.className='text-center text-sm text-red-500';status.classList.remove('hidden');return}status.textContent='Oluşturuluyor...';status.className='text-center text-sm text-yellow-500';status.classList.remove('hidden');try{const ticketId=Date.now();await db.ref('support_tickets/'+ticketId).set({id:ticketId,userId:currentUser.uid,userEmail:currentUser.email,subject:subject,category:category,message:message,status:'aktif',created:new Date().toISOString()});status.textContent='✓ Talep oluşturuldu! 48 saat içinde yanıt vereceğiz.';status.className='text-center text-sm text-green-500';document.getElementById('ticketSubject').value='';document.getElementById('ticketCategory').value='';document.getElementById('ticketMessage').value='';setTimeout(()=>showTab('taleplerim'),2000)}catch(error){status.textContent='Hata: '+error.message;status.className='text-center text-sm text-red-500'}}
-
-        async function loadUserTickets(){if(!currentUser)return;const container=document.getElementById('ticketsList');container.innerHTML='<p class="text-center text-gray-500">Yükleniyor...</p>';try{const snapshot=await db.ref('support_tickets').orderByChild('userId').equalTo(currentUser.uid).once('value');const tickets=[];snapshot.forEach(child=>{tickets.push(child.val())});if(tickets.length===0){container.innerHTML='<div class="glass p-8 text-center"><p class="text-gray-500 text-lg font-bold">Destek bulunamadı!</p><p class="text-gray-600 text-sm mt-2">Henüz destek talebiniz yok</p></div>';return}tickets.sort((a,b)=>b.created.localeCompare(a.created));container.innerHTML=tickets.map(t=>`<div class="ticket-card mb-4 cursor-pointer hover:border-blue-500/50 transition-all" onclick="showTicketDetail(${t.id})"><div class="flex flex-col md:flex-row md:items-start justify-between gap-3 mb-3"><div class="flex-1"><h3 class="font-bold text-lg">${t.subject}</h3><p class="text-xs text-gray-500">${new Date(t.created).toLocaleString('tr-TR')}</p></div><span class="px-3 py-1 rounded-full text-xs font-bold ${t.status==='aktif'?'bg-green-500/15 text-green-400':t.status==='beklemede'?'bg-yellow-500/15 text-yellow-400':'bg-gray-500/15 text-gray-400'} self-start">${t.status}</span></div><p class="text-sm text-gray-400 mb-3">${t.message.substring(0,100)}${t.message.length>100?'...':''}</p><div class="flex items-center justify-between"><span class="text-xs px-3 py-1 bg-white/5 rounded-full">${t.category}</span><span class="text-xs text-blue-400">Tıklayın →</span></div></div>`).join('')}catch(error){container.innerHTML='<div class="glass p-8 text-center"><p class="text-red-500">Hata: '+error.message+'</p></div>'}}
-
-        async function showTicketDetail(ticketId){
-            try{
-                const snapshot=await db.ref('support_tickets/'+ticketId).once('value');
-                const ticket=snapshot.val();
-                if(!ticket)return alert('Ticket bulunamadı!');
-                
-                let repliesHTML='';
-                if(ticket.replies){
-                    Object.values(ticket.replies).sort((a,b)=>a.created.localeCompare(b.created)).forEach(r=>{
-                        repliesHTML+=`
-                        <div class="mb-4 p-4 rounded-xl ${r.author==='Admin'?'bg-blue-500/10 border border-blue-500/20':'bg-white/5'}">
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="font-bold text-sm ${r.author==='Admin'?'text-blue-400':'text-gray-300'}">${r.author}</span>
-                                <span class="text-xs text-gray-500">${new Date(r.created).toLocaleString('tr-TR')}</span>
-                            </div>
-                            <p class="text-sm text-gray-300">${r.message}</p>
-                        </div>`;
-                    });
-                }
-                
-                const modal=`
-                <div id="ticketModal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm" onclick="closeTicketModal()">
-                    <div class="relative max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
-                        <div class="glass p-8 rounded-[2rem]">
-                            <div class="flex items-start justify-between mb-6">
-                                <div class="flex-1">
-                                    <h2 class="text-2xl font-black mb-2">${ticket.subject}</h2>
-                                    <p class="text-sm text-gray-500">${new Date(ticket.created).toLocaleString('tr-TR')}</p>
-                                </div>
-                                <button onclick="closeTicketModal()" class="ml-4 w-10 h-10 rounded-xl flex items-center justify-center hover:bg-white/10 transition-all">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                </button>
-                            </div>
-                            
-                            <div class="mb-6 p-6 bg-white/5 rounded-xl">
-                                <p class="text-xs text-gray-500 mb-2">Mesajınız:</p>
-                                <p class="text-gray-300">${ticket.message}</p>
-                            </div>
-                            
-                            <div class="mb-6">
-                                <h3 class="font-bold mb-4">Yanıtlar</h3>
-                                ${repliesHTML||'<p class="text-gray-500 text-center py-8">Henüz yanıt yok. Destek ekibimiz en kısa sürede yanıt verecek.</p>'}
-                            </div>
-                            
-                            <div class="flex gap-3">
-                                <span class="px-4 py-2 rounded-xl text-xs font-bold ${ticket.status==='aktif'?'bg-green-500/15 text-green-400':ticket.status==='beklemede'?'bg-yellow-500/15 text-yellow-400':'bg-gray-500/15 text-gray-400'}">${ticket.status}</span>
-                                <span class="px-4 py-2 rounded-xl text-xs font-bold bg-purple-500/15 text-purple-400">${ticket.category}</span>
-                            </div>
-                        </div>
+        <!-- TAB: SSS -->
+        <div id="tab-faq" class="tab-content hidden space-y-4">
+            <div class="glass p-6">
+                <h2 class="text-xl font-black mb-5">Sık Sorulan Sorular</h2>
+                <div class="space-y-0 divide-y divide-white/[0.05]">
+                    <!-- FAQ Items -->
+                    <div class="faq-item">
+                        <details>
+                            <summary class="flex items-center justify-between font-bold text-sm">
+                                Modpack'i nasıl indiririm?
+                                <svg class="faq-arrow w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </summary>
+                            <p class="text-sm text-gray-400 pb-4 leading-relaxed">Sitemizdeki İndirmeler sayfasına gidin, istediğiniz modpack'i seçin ve "İndir" butonuna tıklayın. Ardından talimatları takip edin.</p>
+                        </details>
                     </div>
-                </div>`;
-                
-                document.body.insertAdjacentHTML('beforeend',modal);
-            }catch(e){
-                alert('Hata: '+e.message);
-            }
-        }
+                    <div class="faq-item">
+                        <details>
+                            <summary class="flex items-center justify-between font-bold text-sm">
+                                Oyun sürekli çöküyor, ne yapmalıyım?
+                                <svg class="faq-arrow w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </summary>
+                            <p class="text-sm text-gray-400 pb-4 leading-relaxed">Öncelikle Java sürümünüzü ve ayrılan RAM miktarını kontrol edin. Modpack için en az 4GB RAM önerilir. Hâlâ sorun yaşıyorsanız destek talebi açın.</p>
+                        </details>
+                    </div>
+                    <div class="faq-item">
+                        <details>
+                            <summary class="flex items-center justify-between font-bold text-sm">
+                                Sponsor olmak istiyorum, nasıl iletişime geçebilirim?
+                                <svg class="faq-arrow w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </summary>
+                            <p class="text-sm text-gray-400 pb-4 leading-relaxed">Discord sunucumuza katılarak sponsorluk kanalından bize ulaşabilirsiniz veya bu sayfadan "Ödeme & Sponsor" kategorisinde destek talebi oluşturabilirsiniz.</p>
+                        </details>
+                    </div>
+                    <div class="faq-item">
+                        <details>
+                            <summary class="flex items-center justify-between font-bold text-sm">
+                                Sunucuya bağlanamıyorum, IP nedir?
+                                <svg class="faq-arrow w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </summary>
+                            <p class="text-sm text-gray-400 pb-4 leading-relaxed">Sunucu bilgileri ana sayfamızda ve Discord sunucumuzda paylaşılmaktadır. Bakım modunda olup olmadığını kontrol etmeyi unutmayın.</p>
+                        </details>
+                    </div>
+                    <div class="faq-item">
+                        <details>
+                            <summary class="flex items-center justify-between font-bold text-sm">
+                                Yanıt süresi ne kadar?
+                                <svg class="faq-arrow w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </summary>
+                            <p class="text-sm text-gray-400 pb-4 leading-relaxed">Discord üzerinden ~2 saat, destek talebi sistemi üzerinden ~24 saat içinde yanıt verilmektedir. Yüksek öncelikli talepler daha hızlı yanıtlanır.</p>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        function closeTicketModal(){
-            const modal=document.getElementById('ticketModal');
-            if(modal)modal.remove();
+    </div>
+</div>
+
+<!-- Ticket Detail Modal -->
+<div id="ticketModal" class="fixed inset-0 z-[200] hidden bg-black/85 backdrop-blur-lg flex items-center justify-center p-4">
+    <div class="bg-[#080d14] border border-white/[0.08] w-full max-w-2xl max-h-[88vh] rounded-2xl flex flex-col overflow-hidden shadow-2xl">
+        <div class="px-6 py-4 border-b border-white/[0.06] flex items-center justify-between flex-shrink-0">
+            <h3 class="font-black" id="modalTicketSubject">Talep Detayı</h3>
+            <button onclick="closeTicketModal()" class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-white/10 transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-6 space-y-6">
+            <div id="modalTicketBody"></div>
+            <div id="modalReplies" class="space-y-3"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const FC = {apiKey:"AIzaSyCnkk6j1CGsi4sNXJ8FA9Gd2B6_VDptVDg",authDomain:"arcanthproject.firebaseapp.com",databaseURL:"https://arcanthproject-default-rtdb.firebaseio.com",projectId:"arcanthproject",storageBucket:"arcanthproject.firebasestorage.app",messagingSenderId:"826341954149",appId:"1:826341954149:web:6429d61a5b40810009ac8c"};
+    firebase.initializeApp(FC);
+    const auth = firebase.auth(), db = firebase.database();
+    const gProv = new firebase.auth.GoogleAuthProvider();
+    const ghProv = new firebase.auth.GithubAuthProvider();
+    let currentUser = null, isLoginMode = false, selectedPriority = 'orta';
+
+    /* ── AUTH STATE ── */
+    auth.onAuthStateChanged(u => {
+        setTimeout(() => {
+            document.getElementById('loading-screen').classList.add('hidden');
+            if (u) {
+                currentUser = u;
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                document.getElementById('userEmailNav').textContent = u.email;
+                loadUserTickets();
+            } else {
+                document.getElementById('login-screen').classList.remove('hidden');
+                document.getElementById('main-app').classList.add('hidden');
+            }
+        }, 600);
+    });
+
+    function loginGoogle(){ auth.signInWithPopup(gProv).catch(showAuthErr); }
+    function loginGithub(){ auth.signInWithPopup(ghProv).catch(showAuthErr); }
+    function showAuthErr(e){ 
+        const el = document.getElementById('authError');
+        if(e.code==='auth/popup-cancelled-by-user') return;
+        if(e.code==='auth/account-exists-with-different-credential') el.textContent='Bu e-posta farklı bir yöntemle kayıtlı.';
+        else el.textContent = e.message;
+        el.classList.remove('hidden');
+    }
+    function toggleLoginMode(){
+        isLoginMode = !isLoginMode;
+        const wrap = document.getElementById('emailFormWrap');
+        if (isLoginMode) {
+            wrap.innerHTML = `<input type="email" id="emailInput" class="input-f" placeholder="E-posta *">
+            <input type="password" id="passwordInput" class="input-f" placeholder="Şifre *">
+            <button onclick="loginUser()" class="w-full btn-p py-3.5">Giriş Yap</button>
+            <button onclick="toggleLoginMode()" class="w-full text-sm text-gray-500 hover:text-white transition-colors py-1">Hesabınız yok mu? Kayıt olun</button>`;
+        } else {
+            wrap.innerHTML = `<input type="text" id="nameInput" class="input-f" placeholder="Ad Soyad *">
+            <input type="email" id="emailInput" class="input-f" placeholder="E-posta *">
+            <input type="password" id="passwordInput" class="input-f" placeholder="Şifre (min. 6 karakter) *">
+            <button onclick="registerUser()" class="w-full btn-p py-3.5">Kayıt Ol</button>
+            <button onclick="toggleLoginMode()" class="w-full text-sm text-gray-500 hover:text-white transition-colors py-1">Hesabınız var mı? Giriş yapın</button>`;
         }
-    </script>
+    }
+    function registerUser(){
+        const name=g('nameInput')?.value.trim(), email=g('emailInput')?.value.trim(), pass=g('passwordInput')?.value;
+        if(!name||!email||!pass){return showAuthErrMsg('Tüm alanları doldurun!');}
+        if(pass.length<6){return showAuthErrMsg('Şifre en az 6 karakter olmalı!');}
+        auth.createUserWithEmailAndPassword(email,pass)
+            .then(c=>db.ref('users/'+c.user.uid).set({name,email,created:new Date().toISOString()}))
+            .catch(e=>{
+                if(e.code==='auth/email-already-in-use') showAuthErrMsg('Bu e-posta zaten kayıtlı.');
+                else showAuthErrMsg(e.message);
+            });
+    }
+    function loginUser(){
+        const email=g('emailInput')?.value.trim(), pass=g('passwordInput')?.value;
+        if(!email||!pass) return showAuthErrMsg('E-posta ve şifre gerekli!');
+        auth.signInWithEmailAndPassword(email,pass).catch(e=>showAuthErrMsg(e.message));
+    }
+    function showAuthErrMsg(msg){ const el=document.getElementById('authError'); el.textContent=msg; el.classList.remove('hidden'); }
+    function logout(){ if(confirm('Çıkış yapmak istediğinize emin misiniz?')) auth.signOut(); }
+    function g(id){ return document.getElementById(id); }
+
+    /* ── TABS ── */
+    function showTab(tab, btn) {
+        document.querySelectorAll('.tab-content').forEach(el=>el.classList.add('hidden'));
+        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+        const el = document.getElementById('tab-'+tab);
+        if (el) el.classList.remove('hidden');
+        if (btn) btn.classList.add('active');
+        if (tab==='taleplerim') loadUserTickets();
+    }
+
+    /* ── PRIORITY ── */
+    function setPriority(p, btn) {
+        selectedPriority = p;
+        document.querySelectorAll('.priority-btn').forEach(b => {
+            b.className = 'priority-btn flex-1 py-2.5 rounded-xl border border-white/08 text-xs font-bold text-gray-400 hover:border-white/20 transition-all';
+        });
+        const colorMap = {dusuk:'border-green-500/40 text-green-400', orta:'border-yellow-500/40 text-yellow-400', yuksek:'border-red-500/40 text-red-400'};
+        btn.className = 'priority-btn flex-1 py-2.5 rounded-xl border text-xs font-bold transition-all ' + (colorMap[p]||'');
+    }
+
+    /* ── TICKET CHAR COUNT ── */
+    const msgEl = document.getElementById('ticketMessage');
+    if (msgEl) msgEl.addEventListener('input', function(){
+        document.getElementById('msgLength').textContent = this.value.length + ' / 2000';
+    });
+
+    /* ── CREATE TICKET ── */
+    async function createTicket() {
+        const subject  = (g('ticketSubject')?.value||'').trim();
+        const category = g('ticketCategory')?.value||'';
+        const message  = (g('ticketMessage')?.value||'').trim();
+        const status   = g('createStatus');
+        if (!subject||!category||!message) {
+            showStatus(status,'Lütfen tüm zorunlu alanları doldurun!','error'); return;
+        }
+        if (message.length < 20) { showStatus(status,'Mesaj en az 20 karakter olmalı.','error'); return; }
+        showStatus(status,'Gönderiliyor...','info');
+        try {
+            const id = Date.now();
+            await db.ref('support_tickets/'+id).set({
+                id, userId:currentUser.uid, userEmail:currentUser.email,
+                subject, category, message,
+                priority: selectedPriority,
+                status:'aktif',
+                created: new Date().toISOString()
+            });
+            showStatus(status,'✓ Talebiniz alındı! En kısa sürede yanıt vereceğiz.','success');
+            g('ticketSubject').value=''; g('ticketCategory').value=''; g('ticketMessage').value='';
+            setTimeout(()=>{
+                document.querySelector('[onclick*="taleplerim"]').click();
+            },2000);
+        } catch(e){ showStatus(status,'Hata: '+e.message,'error'); }
+    }
+    function showStatus(el,msg,type){
+        if(!el)return;
+        const colors={success:'text-green-400',error:'text-red-400',info:'text-blue-400'};
+        el.className='text-center text-sm '+(colors[type]||'text-gray-400');
+        el.textContent=msg; el.classList.remove('hidden');
+    }
+
+    /* ── LOAD TICKETS ── */
+    async function loadUserTickets() {
+        const el = g('ticketsList'); if(!el) return;
+        el.innerHTML = '<div class="text-center py-12"><div class="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div><p class="text-gray-500 text-sm">Talepler yükleniyor...</p></div>';
+        try {
+            const snap = await db.ref('support_tickets').orderByChild('userId').equalTo(currentUser.uid).once('value');
+            const tickets = []; snap.forEach(c=>tickets.push(c.val()));
+            tickets.sort((a,b)=>b.created.localeCompare(a.created));
+            g('ticketCountBadge').textContent = tickets.length;
+            if (!tickets.length) {
+                el.innerHTML = `<div class="glass p-10 text-center">
+                    <div class="text-5xl mb-4">📭</div>
+                    <p class="font-bold text-gray-400">Henüz destek talebiniz yok</p>
+                    <p class="text-sm text-gray-600 mt-1">Yeni Talep sekmesinden destek oluşturabilirsiniz.</p>
+                </div>`; return;
+            }
+            const statusColors = {
+                aktif:'bg-green-500/15 text-green-400 border-green-500/20',
+                beklemede:'bg-yellow-500/15 text-yellow-400 border-yellow-500/20',
+                kapali:'bg-gray-500/15 text-gray-400 border-gray-500/20'
+            };
+            const prioColors = {yuksek:'text-red-400',orta:'text-yellow-400',dusuk:'text-green-400'};
+            el.innerHTML = tickets.map(t => `
+                <div class="ticket-card mb-3 fade-in" onclick="showTicketDetail(${t.id})">
+                    <div class="flex items-start justify-between gap-3 mb-2">
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-bold truncate">${t.subject}</h3>
+                            <p class="text-[11px] text-gray-500 mt-0.5">${new Date(t.created).toLocaleString('tr-TR')}</p>
+                        </div>
+                        <span class="status-badge border flex-shrink-0 ${statusColors[t.status]||statusColors.aktif}">${t.status}</span>
+                    </div>
+                    <p class="text-sm text-gray-400 line-clamp-2 mb-3">${t.message.substring(0,100)}...</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] font-bold px-2.5 py-1 bg-white/[0.05] rounded-full">${t.category}</span>
+                            ${t.priority ? `<span class="text-[10px] font-bold ${prioColors[t.priority]||''}">${{yuksek:'🔴',orta:'🟡',dusuk:'🟢'}[t.priority]||''} ${t.priority}</span>` : ''}
+                        </div>
+                        <span class="text-[11px] text-blue-400">Detaylar →</span>
+                    </div>
+                </div>`).join('');
+        } catch(e){ el.innerHTML='<div class="glass p-8 text-center text-red-400 text-sm">Hata: '+e.message+'</div>'; }
+    }
+
+    /* ── TICKET DETAIL ── */
+    async function showTicketDetail(id) {
+        const modal = g('ticketModal');
+        g('modalTicketBody').innerHTML = '<div class="text-center py-8"><div class="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div></div>';
+        g('modalReplies').innerHTML = '';
+        modal.classList.remove('hidden');
+        try {
+            const snap = await db.ref('support_tickets/'+id).once('value');
+            const t = snap.val(); if(!t) return;
+            g('modalTicketSubject').textContent = t.subject;
+            const statusColors = {aktif:'text-green-400 bg-green-500/15',beklemede:'text-yellow-400 bg-yellow-500/15',kapali:'text-gray-400 bg-gray-500/15'};
+            g('modalTicketBody').innerHTML = `
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="status-badge ${statusColors[t.status]||statusColors.aktif}">${t.status}</span>
+                    <span class="status-badge bg-purple-500/15 text-purple-400">${t.category}</span>
+                    ${t.priority ? `<span class="status-badge bg-white/05 text-gray-400">${t.priority}</span>` : ''}
+                </div>
+                <div class="bg-white/[0.04] rounded-xl p-4 mb-4">
+                    <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-2">Mesajınız</p>
+                    <p class="text-sm text-gray-300 leading-relaxed">${t.message}</p>
+                </div>
+                <p class="text-[10px] text-gray-600">${new Date(t.created).toLocaleString('tr-TR')}</p>`;
+
+            if (t.replies && Object.keys(t.replies).length) {
+                const replies = Object.values(t.replies).sort((a,b)=>a.created.localeCompare(b.created));
+                g('modalReplies').innerHTML = '<p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Yanıtlar</p>' +
+                    replies.map(r => `<div class="p-4 rounded-xl ${r.author==='Admin'?'bg-blue-500/10 border border-blue-500/20':'bg-white/[0.04]'}">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="font-bold text-sm ${r.author==='Admin'?'text-blue-400':'text-gray-300'}">${r.author}</span>
+                            <span class="text-[10px] text-gray-600">${new Date(r.created).toLocaleString('tr-TR')}</span>
+                        </div>
+                        <p class="text-sm text-gray-300 leading-relaxed">${r.message}</p>
+                    </div>`).join('');
+            } else {
+                g('modalReplies').innerHTML = '<p class="text-sm text-gray-600 text-center py-4">Henüz yanıt yok. Destek ekibimiz en kısa sürede yanıt verecek.</p>';
+            }
+        } catch(e){ g('modalTicketBody').innerHTML='<p class="text-red-400 text-sm">Hata: '+e.message+'</p>'; }
+    }
+    function closeTicketModal(){ g('ticketModal').classList.add('hidden'); }
+    document.getElementById('ticketModal').addEventListener('click', function(e){ if(e.target===this) closeTicketModal(); });
+</script>
 </body>
 </html>
