@@ -24,19 +24,6 @@
             background: #020408;
             color: #e2e8f0;
         }
-        .top-progress-bar {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4, #3b82f6);
-            background-size: 200% 100%;
-            animation: barFlow 3s linear infinite;
-            z-index: 10001;
-        }
-        @keyframes barFlow {
-            0%   { background-position: 0% 0%; }
-            100% { background-position: 200% 0%; }
-        }
 
         #loading-screen {
             position: fixed;
@@ -73,55 +60,36 @@
         }
 
         .sidebar {
-            background: rgba(6, 10, 20, 0.98);
-            border-right: 1px solid rgba(255,255,255,0.05);
-            backdrop-filter: blur(24px);
+            background: rgba(10, 15, 26, 0.95);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
         }
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.14); }
 
         .glass {
-            background: rgba(255,255,255,0.025);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 1.25rem;
-            transition: all 0.25s ease;
-            position: relative;
-            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 1rem;
+            transition: all 0.3s;
         }
-        .glass::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-            pointer-events: none;
-        }
+
         .glass:hover {
-            border-color: rgba(59,130,246,0.25);
-            background: rgba(255,255,255,0.035);
-            transform: translateY(-1px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            border-color: rgba(59, 130, 246, 0.2);
         }
 
         .input-f {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            color: #e2e8f0;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: white;
             padding: 0.75rem 1rem;
             border-radius: 0.75rem;
             width: 100%;
             outline: none;
-            transition: all 0.2s ease;
+            transition: border-color 0.2s;
             font-size: 0.875rem;
-            font-family: 'Plus Jakarta Sans', sans-serif;
         }
-        .input-f::placeholder { color: #374151; }
+
         .input-f:focus {
-            border-color: rgba(59,130,246,0.6);
-            background: rgba(59,130,246,0.05);
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+            border-color: #3b82f6;
         }
 
         .btn-p {
@@ -132,26 +100,16 @@
             font-weight: 700;
             font-size: 0.75rem;
             cursor: pointer;
-            border: 1px solid rgba(99,102,241,0.3);
+            border: none;
             text-transform: uppercase;
-            letter-spacing: 0.06em;
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
+            letter-spacing: 0.05em;
+            transition: all 0.2s;
         }
-        .btn-p::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.4s ease;
-        }
-        .btn-p:hover::before { left: 100%; }
+
         .btn-p:hover {
             transform: translateY(-1px);
-            box-shadow: 0 8px 24px rgba(59,130,246,0.4), 0 0 0 1px rgba(99,102,241,0.4);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
         }
-        .btn-p:active { transform: translateY(0); }
 
         .btn-d {
             background: rgba(239, 68, 68, 0.1);
@@ -198,47 +156,38 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0.7rem 1rem;
-            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.625rem;
             font-size: 0.8rem;
             font-weight: 600;
-            color: #6b7280;
+            color: #9ca3af;
             cursor: pointer;
-            transition: all 0.18s ease;
+            transition: all 0.2s;
             border: 1px solid transparent;
-            position: relative;
         }
+
         .nav-item:hover {
-            background: rgba(255,255,255,0.05);
-            color: #d1d5db;
-            border-color: rgba(255,255,255,0.06);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
         }
+
         .nav-item.active {
-            background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(99,102,241,0.1));
+            background: rgba(59, 130, 246, 0.15);
             color: #60a5fa;
-            border-color: rgba(59,130,246,0.25);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+            border-color: rgba(59, 130, 246, 0.2);
         }
 
         .stat {
-            background: linear-gradient(135deg, rgba(59,130,246,0.07), rgba(99,102,241,0.05));
-            border: 1px solid rgba(59,130,246,0.12);
-            border-radius: 1.25rem;
-            padding: 1.5rem;
-            transition: all 0.25s ease;
-            position: relative;
-            overflow: hidden;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(99, 102, 241, 0.08));
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            transition: all 0.2s;
         }
-        .stat::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(59,130,246,0.3), transparent);
-        }
+
         .stat:hover {
-            transform: translateY(-4px);
-            border-color: rgba(59,130,246,0.3);
-            box-shadow: 0 12px 32px rgba(59,130,246,0.15);
+            transform: translateY(-3px);
+            border-color: rgba(59, 130, 246, 0.3);
         }
 
         .modal {
@@ -257,49 +206,37 @@
         }
 
         .modal-box {
-            background: #080d18;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 1.5rem;
+            background: #0a0f1a;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.25rem;
             padding: 2rem;
-            max-width: 520px;
+            max-width: 500px;
             width: 90%;
             max-height: 85vh;
             overflow-y: auto;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(59,130,246,0.08);
-            position: relative;
-        }
-        .modal-box::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(59,130,246,0.4), transparent);
         }
 
         table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
+            border-collapse: collapse;
         }
+
         th {
-            padding: 0.75rem 1rem;
+            padding: 0.75rem;
             text-align: left;
-            font-size: 0.62rem;
+            font-size: 0.65rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #4b5563;
-            background: rgba(255,255,255,0.02);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
-        th:first-child { border-radius: 8px 0 0 0; }
-        th:last-child  { border-radius: 0 8px 0 0; }
+
         td {
-            padding: 0.875rem 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             font-size: 0.8rem;
-            transition: background 0.15s;
         }
-        tr:hover td { background: rgba(255,255,255,0.02); }
 
         .sync-dot {
             width: 8px;
@@ -310,16 +247,17 @@
 
         .sync-ok {
             background: #22c55e;
-            box-shadow: 0 0 8px rgba(34,197,94,0.6), 0 0 20px rgba(34,197,94,0.2);
+            box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
             animation: pulse-green 2s infinite;
         }
+
         .sync-err {
             background: #ef4444;
-            box-shadow: 0 0 8px rgba(239,68,68,0.6), 0 0 20px rgba(239,68,68,0.2);
+            box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
         }
+
         .sync-loading {
-            background: #f59e0b;
-            box-shadow: 0 0 8px rgba(245,158,11,0.6);
+            background: #eab308;
             animation: pulse 1s infinite;
         }
 
@@ -416,7 +354,6 @@
 </head>
 
 <body>
-    <div class="top-progress-bar"></div>
     <div id="loading-screen">
         <img src="logo.png" class="w-16 h-16 rounded-2xl animate-pulse" onerror="this.style.display='none'">
         <div class="loader-ring"></div>
@@ -903,54 +840,45 @@
                             <button onclick="saveSiteSettings()" class="btn-p w-full mt-3">KAYDET</button>
                         </div>
                     </div>
-
-                    <!-- SOSYAL MEDYA YÖNETİMİ -->
-                    <div class="glass p-8 space-y-6">
-                        <h3 class="font-bold text-lg flex items-center gap-2">
-                            <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
-                            </svg>
+                    <!-- SOSYAL MEDYA -->
+                    <div class="p-6 bg-white/[0.03] border border-white/[0.06] rounded-xl space-y-4">
+                        <h4 class="font-bold text-sm flex items-center gap-2">
+                            <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
                             Sosyal Medya Linkleri
-                        </h3>
-                        <p class="text-sm text-gray-400">Sadece doldurulanlar footer'da görünür. Boş bırakılan platformlar gizlenir.</p>
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div class="flex items-center gap-3 p-4 bg-white/5 rounded-xl">
-                                <svg class="w-6 h-6 flex-shrink-0 text-[#5865F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
-                                <input type="text" id="sm-discord" class="input-f flex-1" placeholder="Discord davet linki (https://discord.gg/...)">
-                            </div>
-                            <div class="flex items-center gap-3 p-4 bg-white/5 rounded-xl">
-                                <svg class="w-6 h-6 flex-shrink-0 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                                <input type="text" id="sm-github" class="input-f flex-1" placeholder="GitHub linki (https://github.com/...)">
-                            </div>
-                            <div class="flex items-center gap-3 p-4 bg-white/5 rounded-xl">
-                                <svg class="w-6 h-6 flex-shrink-0 text-pink-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                                <input type="text" id="sm-instagram" class="input-f flex-1" placeholder="Instagram linki (https://instagram.com/...)">
-                            </div>
-                            <div class="flex items-center gap-3 p-4 bg-white/5 rounded-xl">
-                                <svg class="w-6 h-6 flex-shrink-0 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                                <input type="text" id="sm-youtube" class="input-f flex-1" placeholder="YouTube linki (https://youtube.com/...)">
-                            </div>
-                            <div class="flex items-center gap-3 p-4 bg-white/5 rounded-xl">
-                                <svg class="w-6 h-6 flex-shrink-0 text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                                <input type="text" id="sm-twitter" class="input-f flex-1" placeholder="X (Twitter) linki (https://x.com/...)">
-                            </div>
-                            <div class="flex items-center gap-3 p-4 bg-white/5 rounded-xl">
-                                <svg class="w-6 h-6 flex-shrink-0 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                                <input type="text" id="sm-facebook" class="input-f flex-1" placeholder="Facebook linki (https://facebook.com/...)">
-                            </div>
+                        </h4>
+                        <div class="grid md:grid-cols-2 gap-3">
+                            <div><label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Discord</label><input type="url" id="sm-discord" class="input-f" placeholder="https://discord.gg/..."></div>
+                            <div><label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">GitHub</label><input type="url" id="sm-github" class="input-f" placeholder="https://github.com/..."></div>
+                            <div><label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Instagram</label><input type="url" id="sm-instagram" class="input-f" placeholder="https://instagram.com/..."></div>
+                            <div><label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">YouTube</label><input type="url" id="sm-youtube" class="input-f" placeholder="https://youtube.com/..."></div>
+                            <div><label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Twitter / X</label><input type="url" id="sm-twitter" class="input-f" placeholder="https://twitter.com/..."></div>
+                            <div><label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">TikTok</label><input type="url" id="sm-tiktok" class="input-f" placeholder="https://tiktok.com/@..."></div>
                         </div>
-                        <button onclick="saveSocialMedia()" class="btn-p w-full py-4">
-                            💾 SOSYAL MEDYA LİNKLERİNİ KAYDET
-                        </button>
-                        <p class="text-xs text-gray-500 text-center">Kaydettikten sonra site footer'ında anında güncellenir.</p>
+                        <button onclick="saveSocialLinks()" class="btn-p w-full">KAYDET</button>
                     </div>
-                    <div class="p-6 bg-blue-500/10 border border-blue-500/20 rounded-xl">
-                        <h4 class="font-bold text-blue-400 mb-3">🛠️ Sistem Yönetimi</h4>
-                        <p class="text-sm text-gray-400 mb-4">Sistem genelindeki işlemler. Dikkatli kullanın.</p>
+
+                    <!-- MOBİL ENTEGRASYON -->
+                    <div class="p-6 bg-white/[0.03] border border-white/[0.06] rounded-xl space-y-4">
+                        <h4 class="font-bold text-sm flex items-center gap-2">
+                            <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                            Mobil Entegrasyon
+                        </h4>
+                        <div class="grid md:grid-cols-2 gap-3">
+                            <div><label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">App Store Linki</label><input type="url" id="mob-appstore" class="input-f" placeholder="https://apps.apple.com/..."></div>
+                            <div><label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Google Play Linki</label><input type="url" id="mob-playstore" class="input-f" placeholder="https://play.google.com/..."></div>
+                            <div><label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">PWA Kısa Ad</label><input type="text" id="mob-pwaname" class="input-f" placeholder="ArcanthProject"></div>
+                            <div><label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Mobil Tema Rengi</label><input type="color" id="mob-themecolor" class="input-f h-10" value="#020408"></div>
+                        </div>
+                        <button onclick="saveMobileSettings()" class="btn-p w-full">KAYDET</button>
+                    </div>
+
+                    <div class="p-6 bg-red-500/[0.05] border border-red-500/[0.15] rounded-xl">
+                        <h4 class="font-bold text-red-400 mb-3 text-sm">⚠️ Sistem Yönetimi</h4>
+                        <p class="text-xs text-gray-500 mb-4">Tehlikeli işlemler — dikkatli kullanın.</p>
                         <div class="grid md:grid-cols-3 gap-3">
-                            <button onclick="clearAllCache()" class="btn-s">Cache Temizle</button>
-                            <button onclick="exportData()" class="btn-s">Yedekle</button>
-                            <button onclick="resetToDefaults()" class="btn-d">Sıfırla</button>
+                            <button onclick="clearAllCache()" class="btn-s text-xs">Cache Temizle</button>
+                            <button onclick="exportData()" class="btn-s text-xs">Yedekle</button>
+                            <button onclick="resetToDefaults()" class="btn-d text-xs">Sıfırla</button>
                         </div>
                     </div>
                 </div>
@@ -1011,72 +939,78 @@
             </div>
 
             <div id="t-events" class="tab-c space-y-6">
-                <h2 class="text-2xl font-black">Özel Gün Temaları</h2>
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="glass p-6 flex flex-col items-center text-center space-y-4 border-blue-500/20">
-                        <div class="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center">
-                            <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                            </svg>
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-black">Özel Gün Temaları</h2>
+                    <span class="text-[10px] text-gray-500 bg-white/5 border border-white/[0.08] px-3 py-1.5 rounded-lg font-bold uppercase tracking-wider">Gerçek zamanlı · Tüm cihazlar</span>
+                </div>
+                <!-- Normal -->
+                <div class="glass p-4 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3"><div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-xl">🌐</div><div><p class="font-bold text-sm">Normal Tema</p><p class="text-[10px] text-gray-500">Standart görünüm, efekt yok</p></div></div>
+                    <button onclick="setEventTheme('normal')" class="btn-s px-5 py-2 text-xs" id="btn-theme-normal">Aktif Et</button>
+                </div>
+                <!-- Dini Bayramlar -->
+                <div>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-gray-600 mb-3">Dini Bayramlar</p>
+                    <div class="grid md:grid-cols-2 gap-3">
+                        <div class="glass p-4 flex items-center justify-between gap-3 hover:border-emerald-500/30 transition-all">
+                            <div class="flex items-center gap-3"><div class="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center text-lg">🌙</div><div><p class="font-bold text-sm">Ramazan</p><p class="text-[10px] text-gray-500">Hilal, kandil, yeşil efekt</p></div></div>
+                            <button onclick="setEventTheme('ramadan')" class="btn-p px-4 py-2 !from-emerald-600 !to-teal-600 text-xs" id="btn-theme-ramadan">Aktif Et</button>
                         </div>
-                        <div>
-                            <h3 class="font-bold text-lg">Normal Tema</h3>
-                            <p class="text-xs text-gray-500">Sitenin standart modern görünümü</p>
+                        <div class="glass p-4 flex items-center justify-between gap-3 hover:border-teal-500/30 transition-all">
+                            <div class="flex items-center gap-3"><div class="w-10 h-10 bg-teal-500/10 rounded-xl flex items-center justify-center text-lg">🌟</div><div><p class="font-bold text-sm">Ramazan Bayramı</p><p class="text-[10px] text-gray-500">Şeker bayramı, altın konfeti</p></div></div>
+                            <button onclick="setEventTheme('eid')" class="btn-p px-4 py-2 !from-teal-600 !to-cyan-600 text-xs" id="btn-theme-eid">Aktif Et</button>
                         </div>
-                        <button onclick="setEventTheme('normal')" class="btn-s w-full py-3" id="btn-theme-normal">AKTİF
-                            ET</button>
-                    </div>
-
-                    <div class="glass p-6 flex flex-col items-center text-center space-y-4 border-emerald-500/20">
-                        <div class="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center">
-                            <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                            </svg>
+                        <div class="glass p-4 flex items-center justify-between gap-3 hover:border-green-500/30 transition-all">
+                            <div class="flex items-center gap-3"><div class="w-10 h-10 bg-green-500/10 rounded-xl flex items-center justify-center text-lg">🐑</div><div><p class="font-bold text-sm">Kurban Bayramı</p><p class="text-[10px] text-gray-500">Yeşil tema, bayram konfeti</p></div></div>
+                            <button onclick="setEventTheme('kurban')" class="btn-p px-4 py-2 !from-green-600 !to-emerald-700 text-xs" id="btn-theme-kurban">Aktif Et</button>
                         </div>
-                        <div>
-                            <h3 class="font-bold text-lg">Ramazan Modu</h3>
-                            <p class="text-xs text-gray-500">Hilal, kandil ve özel tebrik mesajları</p>
+                        <div class="glass p-4 flex items-center justify-between gap-3 hover:border-lime-500/30 transition-all">
+                            <div class="flex items-center gap-3"><div class="w-10 h-10 bg-lime-500/10 rounded-xl flex items-center justify-center text-lg">🌿</div><div><p class="font-bold text-sm">Hıdrellez</p><p class="text-[10px] text-gray-500">6 Mayıs, bahar efektleri</p></div></div>
+                            <button onclick="setEventTheme('hidrellez')" class="btn-p px-4 py-2 !from-green-500 !to-lime-600 text-xs" id="btn-theme-hidrellez">Aktif Et</button>
                         </div>
-                        <button onclick="setEventTheme('ramadan')"
-                            class="btn-p w-full py-3 !from-emerald-600 !to-teal-600" id="btn-theme-ramadan">AKTİF
-                            ET</button>
-                    </div>
-
-                    <div class="glass p-6 flex flex-col items-center text-center space-y-4 border-red-500/20">
-                        <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center">
-                            <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg">Yılbaşı Modu</h3>
-                            <p class="text-xs text-gray-500">Kar efekti ve yeni yıl kutlaması</p>
-                        </div>
-                        <button onclick="setEventTheme('newyear')" class="btn-p w-full py-3 !from-red-600 !to-rose-600"
-                            id="btn-theme-newyear">AKTİF ET</button>
                     </div>
                 </div>
-
-                <div class="glass p-8 space-y-4">
-                    <h3 class="font-bold text-lg flex items-center gap-2">
-                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Tema Hakkında
-                    </h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">
-                        Özel gün temaları aktif edildiğinde, tüm kullanıcıların ekranında üst kısımda özel bir banner,
-                        farklı bir arka plan animasyonu ve o güne özel tebrik mesajları belirecektir. Temalar gerçek
-                        zamanlı olarak tüm cihazlarda güncellenir.
-                    </p>
+                <!-- Millî Bayramlar -->
+                <div>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-gray-600 mb-3">Millî Bayramlar</p>
+                    <div class="grid md:grid-cols-2 gap-3">
+                        <div class="glass p-4 flex items-center justify-between gap-3 hover:border-red-500/30 transition-all">
+                            <div class="flex items-center gap-3"><div class="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center text-lg">🎈</div><div><p class="font-bold text-sm">23 Nisan</p><p class="text-[10px] text-gray-500">Ulusal Egemenlik ve Çocuk Bayramı</p></div></div>
+                            <button onclick="setEventTheme('april23')" class="btn-p px-4 py-2 !from-red-600 !to-red-700 text-xs" id="btn-theme-april23">Aktif Et</button>
+                        </div>
+                        <div class="glass p-4 flex items-center justify-between gap-3 hover:border-red-700/30 transition-all">
+                            <div class="flex items-center gap-3"><div class="w-10 h-10 bg-red-700/10 rounded-xl flex items-center justify-center text-lg">⭐</div><div><p class="font-bold text-sm">19 Mayıs</p><p class="text-[10px] text-gray-500">Gençlik ve Spor Bayramı</p></div></div>
+                            <button onclick="setEventTheme('may19')" class="btn-p px-4 py-2 !from-red-700 !to-rose-700 text-xs" id="btn-theme-may19">Aktif Et</button>
+                        </div>
+                        <div class="glass p-4 flex items-center justify-between gap-3 hover:border-orange-500/30 transition-all">
+                            <div class="flex items-center gap-3"><div class="w-10 h-10 bg-orange-500/10 rounded-xl flex items-center justify-center text-lg">🎆</div><div><p class="font-bold text-sm">29 Ekim Cumhuriyet</p><p class="text-[10px] text-gray-500">Havai fişek, bayrak efekti</p></div></div>
+                            <button onclick="setEventTheme('oct29')" class="btn-p px-4 py-2 !from-red-600 !to-orange-600 text-xs" id="btn-theme-oct29">Aktif Et</button>
+                        </div>
+                        <div class="glass p-4 flex items-center justify-between gap-3 hover:border-pink-500/30 transition-all">
+                            <div class="flex items-center gap-3"><div class="w-10 h-10 bg-pink-500/10 rounded-xl flex items-center justify-center text-lg">💐</div><div><p class="font-bold text-sm">Anneler Günü</p><p class="text-[10px] text-gray-500">Mayıs 2. Pazar, pembe çiçek</p></div></div>
+                            <button onclick="setEventTheme('anneler')" class="btn-p px-4 py-2 !from-pink-500 !to-rose-500 text-xs" id="btn-theme-anneler">Aktif Et</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Diğer -->
+                <div>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-gray-600 mb-3">Yılbaşı & Diğer</p>
+                    <div class="grid md:grid-cols-2 gap-3">
+                        <div class="glass p-4 flex items-center justify-between gap-3 hover:border-red-500/30 transition-all">
+                            <div class="flex items-center gap-3"><div class="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center text-lg">🎄</div><div><p class="font-bold text-sm">Yılbaşı</p><p class="text-[10px] text-gray-500">Kar efekti, yeni yıl kutlaması</p></div></div>
+                            <button onclick="setEventTheme('newyear')" class="btn-p px-4 py-2 !from-red-600 !to-rose-600 text-xs" id="btn-theme-newyear">Aktif Et</button>
+                        </div>
+                        <div class="glass p-4 flex items-center justify-between gap-3 hover:border-orange-500/30 transition-all">
+                            <div class="flex items-center gap-3"><div class="w-10 h-10 bg-orange-500/10 rounded-xl flex items-center justify-center text-lg">🎃</div><div><p class="font-bold text-sm">Halloween</p><p class="text-[10px] text-gray-500">31 Ekim, balkabağı & yarasa</p></div></div>
+                            <button onclick="setEventTheme('halloween')" class="btn-p px-4 py-2 !from-orange-600 !to-amber-700 text-xs" id="btn-theme-halloween">Aktif Et</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 bg-blue-500/[0.05] border border-blue-500/[0.1] rounded-xl flex gap-3 items-start">
+                    <svg class="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <p class="text-xs text-gray-400">Seçilen tema anında tüm ziyaretçilerin ekranına yansır. Firebase gerçek zamanlı günceller.</p>
                 </div>
             </div>
-        </div>
-    </div>
 
     <div id="m-ann" class="modal">
         <div class="modal-box">
@@ -1334,12 +1268,16 @@
                 await loadUsers();
                 loadAnalytics();
                 loadBakimStatus();
-            loadSocialMedia();
                 stats();
                 checkConnection();
+                /* F5 sonrası tüm UI'yi Firebase verileriyle yenile */
+                loadSettings();
+                loadCMS();
+                loadCookies();
+                loadEventThemeStatus();
             } catch (e) {
                 console.error('InitApp error:', e);
-                alert('Admin panel yüklenirken hata: ' + e.message);
+                showAT('Yükleme hatası: ' + e.message, 'error');
             }
         }
 
@@ -1525,11 +1463,50 @@
         function editSponsor(s) { editId.sponsor = s.id; g('spName').value = s.name; g('spTag').value = s.tagline || ''; g('spDesc').value = s.description || ''; g('spLogo').value = s.logo || ''; g('spWeb').value = s.website || ''; g('spDiscord').value = s.discord || ''; g('spIP').value = s.ip || ''; g('spFeatures').value = (s.features || []).join('\n'); g('m-sponsor').classList.add('active') }
         function delSponsor(id) { if (confirm('Silmek istediğinize emin misiniz?')) { ls(K.sponsor, ls(K.sponsor).filter(x => x.id !== id)); loadSponsors(); sync(); log('Sponsor silindi'); stats() } }
         function loadCMS() { var d = ls(K.cms); if (d.hero) { g('cmsBadge').value = d.hero.badge || ''; g('cmsTitle').value = d.hero.title || ''; g('cmsSub').value = d.hero.subtitle || '' } }
-        function saveCMS() { var d = ls(K.cms); d.hero = { badge: g('cmsBadge').value, title: g('cmsTitle').value, subtitle: g('cmsSub').value }; ls(K.cms, d); sync(); log('CMS güncellendi'); alert('CMS kaydedildi!') }
+        function saveCMS() { var d = ls(K.cms); d.hero = { badge: g('cmsBadge').value, title: g('cmsTitle').value, subtitle: g('cmsSub').value }; ls(K.cms, d); sync(); log('CMS güncellendi'); showAT('✓ CMS güncellendi!','success') }
         function loadCookies() { var c = ls(K.cookies); g('cookieTitle').value = c.title || 'Bu site temel cerezler kullanir'; g('cookieDesc').value = c.description || 'Deneyiminizi gelistirmek icin temel cerezleri kullaniyoruz.'; g('cookieAccept').value = c.acceptText || 'Anladim'; g('cookieReject').value = c.rejectText || 'Reddet' }
-        function saveCookies() { var c = { title: g('cookieTitle').value, description: g('cookieDesc').value, acceptText: g('cookieAccept').value, rejectText: g('cookieReject').value }; ls(K.cookies, c); sync(); log('Çerez ayarları güncellendi'); alert('Çerez ayarları kaydedildi!') }
-        function loadSettings() { var s = ls(K.settings); g('sDiscord').value = s.discord || 'https://discord.gg/y4tAHYGzC6'; g('sGithub').value = s.github || 'https://github.com/arcanth00'; g('sInstagram').value = s.instagram || ''; g('sYoutube').value = s.youtube || ''; g('sTwitter').value = s.twitter || '' }
-        function saveSettings() { var s = { discord: g('sDiscord').value, github: g('sGithub').value, instagram: g('sInstagram').value, youtube: g('sYoutube').value, twitter: g('sTwitter').value }; ls(K.settings, s); sync(); log('Ayarlar güncellendi'); alert('Ayarlar kaydedildi!') }
+        function saveCookies() { var c = { title: g('cookieTitle').value, description: g('cookieDesc').value, acceptText: g('cookieAccept').value, rejectText: g('cookieReject').value }; ls(K.cookies, c); sync(); log('Çerez ayarları güncellendi'); showAT('✓ Çerez ayarları kaydedildi!','success') }
+        function loadSettings(){
+            var s=ls(K.settings)||{};
+            if(g('siteTitle'))  g('siteTitle').value  = s.siteTitle||'';
+            if(g('siteDesc'))   g('siteDesc').value   = s.siteDescription||'';
+            ['discord','github','instagram','youtube','twitter','tiktok'].forEach(function(f){
+                var el=g('sm-'+f); if(el) el.value=s[f]||'';
+            });
+            if(g('mob-appstore'))   g('mob-appstore').value   = s.appStore||'';
+            if(g('mob-playstore'))  g('mob-playstore').value  = s.playStore||'';
+            if(g('mob-pwaname'))    g('mob-pwaname').value    = s.pwaName||'ArcanthProject';
+            if(g('mob-themecolor')) g('mob-themecolor').value = s.themeColor||'#020408';
+        }
+        function saveSocialLinks(){
+            var s=ls(K.settings)||{};
+            ['discord','github','instagram','youtube','twitter','tiktok'].forEach(function(f){var el=g('sm-'+f);if(el)s[f]=el.value.trim();});
+            ls(K.settings,s); sync(); log('Sosyal medya güncellendi'); showAT('✓ Sosyal medya linkleri kaydedildi!','success');
+        }
+        function saveMobileSettings(){
+            var s=ls(K.settings)||{};
+            if(g('mob-appstore'))   s.appStore  =g('mob-appstore').value.trim();
+            if(g('mob-playstore'))  s.playStore =g('mob-playstore').value.trim();
+            if(g('mob-pwaname'))    s.pwaName   =g('mob-pwaname').value.trim();
+            if(g('mob-themecolor')) s.themeColor=g('mob-themecolor').value;
+            ls(K.settings,s); sync(); log('Mobil ayarlar güncellendi'); showAT('✓ Mobil ayarlar kaydedildi!','success');
+        }
+        function saveSiteSettings(){
+            var s=ls(K.settings)||{};
+            s.siteTitle=g('siteTitle')?g('siteTitle').value.trim():'';
+            s.siteDescription=g('siteDesc')?g('siteDesc').value.trim():'';
+            ls(K.settings,s); sync(); log('Site başlığı güncellendi'); showAT('✓ Site ayarları kaydedildi!','success');
+        }
+        function showAT(msg,type){
+            var cols={success:'#4ade80',error:'#f87171',info:'#60a5fa'};
+            var bgs={success:'#0a2d14',error:'#2d0a0a',info:'#0a142d'};
+            var d=document.createElement('div');
+            d.style.cssText='position:fixed;bottom:1.5rem;right:1.5rem;z-index:99999;padding:12px 20px;background:'+(bgs[type]||bgs.info)+';border:1px solid '+(cols[type]||cols.info)+'44;border-radius:12px;color:'+(cols[type]||cols.info)+';font-weight:700;font-size:13px;font-family:Plus Jakarta Sans,sans-serif;box-shadow:0 8px 32px rgba(0,0,0,.6);display:flex;align-items:center;gap:10px;cursor:pointer;max-width:320px;';
+            d.innerHTML='<span style="font-size:16px">'+(type==='error'?'⚠':'✓')+'</span><span>'+msg+'</span>';
+            d.onclick=function(){d.remove();};
+            document.body.appendChild(d);
+            setTimeout(function(){d.style.transition='opacity .4s';d.style.opacity='0';setTimeout(function(){d.remove();},400);},4000);
+        }
         function log(m) { var arr = ls(K.act); arr.unshift({ message: m, time: new Date().toLocaleTimeString('tr-TR') }); if (arr.length > 20) arr.pop(); ls(K.act, arr); loadAct() }
         function loadAct() { var arr = ls(K.act); g('actList').innerHTML = arr.map(a => `<div class="glass p-3 flex items-center justify-between text-xs"><span class="font-semibold">${a.message}</span><span class="text-gray-500">${a.time}</span></div>`).join('') || '<div class="glass p-6 text-center text-gray-500">Henüz aktivite yok</div>' }
         function clearAct() { if (confirm('Tüm aktivite günlüğünü temizlemek istediğinize emin misiniz?')) { ls(K.act, []); loadAct() } }
@@ -1615,30 +1592,6 @@
         }
 
         // ============== SITE SETTINGS ==============
-
-        function saveSocialMedia() {
-            const settings = ls(K.settings) || {};
-            const fields = ['discord','github','instagram','youtube','twitter','facebook'];
-            fields.forEach(function(f) {
-                const val = g('sm-' + f) ? g('sm-' + f).value.trim() : '';
-                if (val) settings[f] = val;
-                else delete settings[f];
-            });
-            ls(K.settings, settings);
-            sync();
-            log('Sosyal medya linkleri güncellendi');
-            alert('✓ Sosyal medya linkleri kaydedildi! Footer anında güncellendi.');
-        }
-
-        function loadSocialMedia() {
-            const settings = ls(K.settings) || {};
-            const fields = ['discord','github','instagram','youtube','twitter','facebook'];
-            fields.forEach(function(f) {
-                const el = g('sm-' + f);
-                if (el) el.value = settings[f] || '';
-            });
-        }
-
         function saveSiteSettings() {
             const title = g('siteTitle') ? g('siteTitle').value : '';
             const desc = g('siteDesc') ? g('siteDesc').value : '';
@@ -1668,9 +1621,8 @@
                 });
                 closeBakimModal();
                 loadBakimStatus();
-            loadSocialMedia();
                 log('Bakım modu açıldı (' + duration + ' dk)');
-                alert('✓ Bakım modu açıldı! Süre: ' + duration + ' dakika');
+                showAT('✓ Bakım modu açıldı! Süre: '+duration+' dk','success');
             } catch (e) { alert('Hata: ' + e.message); }
         }
         async function closeBakim() {
@@ -1678,9 +1630,8 @@
             try {
                 await db.ref('site_data/settings/maintenance').set({ enabled: false });
                 loadBakimStatus();
-            loadSocialMedia();
                 log('Bakım modu kapatıldı');
-                alert('✓ Bakım modu kapatıldı!');
+                showAT('✓ Bakım modu kapatıldı','success');
             } catch (e) { alert('Hata: ' + e.message); }
         }
         function loadBakimStatus() {
@@ -1706,7 +1657,7 @@
             if (!confirm('Tüm önbellek temizlenecek. Emin misiniz?')) return;
             [K.ann, K.proj, K.dl, K.sponsor, K.cms, K.cookies, K.settings, K.act].forEach(k => localStorage.removeItem(k));
             log('Önbellek temizlendi');
-            alert('✓ Önbellek temizlendi! Sayfa yenilenecek.');
+            showAT('✓ Önbellek temizlendi, yenileniyor...','success');
             location.reload();
         }
         function exportData() {
@@ -1734,7 +1685,7 @@
             if (!confirm('Son onay: Gerçekten tüm verileri silmek istediğinize emin misiniz?')) return;
             [K.ann, K.proj, K.dl, K.sponsor, K.cms, K.cookies, K.settings, K.act].forEach(k => localStorage.removeItem(k));
             log('Sistem sıfırlandı');
-            alert('✓ Sistem sıfırlandı. Sayfa yenilenecek.');
+            showAT('✓ Sistem sıfırlandı','success');
             location.reload();
         }
 
@@ -1851,33 +1802,42 @@
 
                 log('Site teması değiştirildi: ' + theme);
                 loadEventThemeStatus();
-                alert('✓ Site teması başarıyla güncellendi: ' + theme.toUpperCase());
+                showAT('✓ Tema değiştirildi: ' + theme.toUpperCase(),'success');
             } catch (e) {
                 alert('Hata: ' + e.message);
                 loadEventThemeStatus();
             }
         }
 
+        var THEME_BTNS_MAP = {
+            normal:   'btn-s px-5 py-2 text-xs',
+            ramadan:  'btn-p px-5 py-2 !from-emerald-600 !to-teal-600 text-xs',
+            eid:      'btn-p px-5 py-2 !from-teal-600 !to-cyan-600 text-xs',
+            kurban:   'btn-p px-5 py-2 !from-green-600 !to-emerald-700 text-xs',
+            april23:  'btn-p px-5 py-2 !from-red-600 !to-red-700 text-xs',
+            may19:    'btn-p px-5 py-2 !from-red-700 !to-rose-700 text-xs',
+            oct29:    'btn-p px-5 py-2 !from-red-600 !to-orange-600 text-xs',
+            hidrellez:'btn-p px-5 py-2 !from-green-500 !to-lime-600 text-xs',
+            anneler:  'btn-p px-5 py-2 !from-pink-500 !to-rose-500 text-xs',
+            newyear:  'btn-p px-5 py-2 !from-red-600 !to-rose-600 text-xs',
+            halloween:'btn-p px-5 py-2 !from-orange-600 !to-amber-700 text-xs'
+        };
         function loadEventThemeStatus() {
-            db.ref('site_data/settings/active_theme').on('value', snap => {
+            db.ref('site_data/settings/active_theme').once('value').then(snap => {
                 const activeTheme = snap.val() || 'normal';
-
-                // Reset all buttons
-                ['normal', 'ramadan', 'newyear'].forEach(t => {
+                Object.keys(THEME_BTNS_MAP).forEach(t => {
                     const btn = g('btn-theme-' + t);
                     if (!btn) return;
                     btn.disabled = false;
                     if (t === activeTheme) {
-                        btn.textContent = 'ŞU AN AKTİF';
-                        btn.className = 'btn-p w-full py-3 !from-gray-600 !to-gray-700 opacity-50 cursor-default';
+                        btn.innerHTML = '<span>✓</span> Aktif';
+                        btn.className = 'px-5 py-2 rounded-lg font-black text-[10px] bg-white/[0.06] border border-white/[0.12] text-gray-400 opacity-70 cursor-default';
                     } else {
-                        btn.textContent = 'AKTİF ET';
-                        if (t === 'normal') btn.className = 'btn-s w-full py-3';
-                        else if (t === 'ramadan') btn.className = 'btn-p w-full py-3 !from-emerald-600 !to-teal-600';
-                        else if (t === 'newyear') btn.className = 'btn-p w-full py-3 !from-red-600 !to-rose-600';
+                        btn.textContent = 'Aktif Et';
+                        btn.className = THEME_BTNS_MAP[t];
                     }
                 });
-            });
+            }).catch(function(e){ console.error('Theme status error:', e); });
         }
     </script>
 </body>
