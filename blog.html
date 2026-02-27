@@ -1,317 +1,433 @@
 <!DOCTYPE html>
 <html lang="tr" class="dark">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arcanth Project - Blog</title>
-    <meta name="description" content="Arcanth Project güncellemeleri, rehberler ve haberler.">
+    <title>Blog — Arcanth Project</title>
+    <meta name="description" content="Arcanth Project blog — güncellemeler, rehberler ve haberler.">
+    <link rel="icon" type="image/png" href="logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <style>
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: #0a0a0f;
-            color: white;
-            margin: 0;
-            padding: 0
-        }
-
-        .glass {
-            background: rgba(255, 255, 255, .03);
-            border: 1px solid rgba(255, 255, 255, .06);
-            border-radius: 1rem;
-            transition: all .3s
-        }
-
-        .glass:hover {
-            border-color: rgba(59, 130, 246, 0.2);
-            background: rgba(255, 255, 255, .05)
-        }
-
-        .input-f {
-            background: rgba(255, 255, 255, .04);
-            border: 1px solid rgba(255, 255, 255, .08);
-            color: white;
-            padding: .75rem 1rem;
-            border-radius: .75rem;
-            width: 100%;
-            outline: none;
-            transition: border .2s
-        }
-
-        .input-f:focus {
-            border-color: #3b82f6
-        }
-
-        .btn-p {
-            background: linear-gradient(135deg, #3b82f6, #6366f1);
-            color: white;
-            padding: .75rem 1.5rem;
-            border-radius: .75rem;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            transition: all .2s
-        }
-
-        .btn-p:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3)
-        }
-
-        .ql-editor {
-            padding: 0 !important;
-        }
-
-        .ql-editor img {
-            max-width: 100%;
-            border-radius: 0.5rem;
-        }
+        *{box-sizing:border-box;}
+        body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#030508;color:#e2e8f0;margin:0;padding:0;}
+        .glass{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:1rem;transition:all .3s;}
+        .glass:hover{border-color:rgba(59,130,246,.25);background:rgba(255,255,255,.05);}
+        .input-f{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:white;padding:.65rem 1rem;border-radius:.75rem;width:100%;outline:none;font-family:inherit;font-size:.875rem;transition:border .2s;}
+        .input-f:focus{border-color:#3b82f6;}
+        .btn-p{background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;padding:.65rem 1.25rem;border-radius:.75rem;font-weight:700;border:none;cursor:pointer;font-family:inherit;font-size:.875rem;transition:all .2s;}
+        .btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(59,130,246,.3);}
+        .cat-chip{display:inline-flex;align-items:center;padding:.25rem .75rem;border-radius:9999px;font-size:.6875rem;font-weight:700;cursor:pointer;transition:all .2s;border:1px solid transparent;}
+        .cat-chip.active{border-color:currentColor!important;}
+        #loading-screen{position:fixed;inset:0;z-index:10000;background:#030508;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem;transition:opacity .6s ease,visibility .6s ease;}
+        #loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none;}
+        .loader-ring{width:44px;height:44px;border:3px solid rgba(59,130,246,.15);border-top-color:#3b82f6;border-radius:50%;animation:spin .8s linear infinite;}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        /* READ MODAL */
+        #readModal{display:none;}
+        #readModal.open{display:flex;}
+        .prose-content h1,.prose-content h2,.prose-content h3{color:#f1f5f9;margin-top:1.5rem;margin-bottom:.75rem;font-weight:800;}
+        .prose-content p{color:#94a3b8;line-height:1.8;margin-bottom:1rem;}
+        .prose-content img{max-width:100%;border-radius:.75rem;margin:1rem 0;}
+        .prose-content a{color:#60a5fa;text-decoration:underline;}
+        .prose-content code{background:rgba(59,130,246,.12);color:#93c5fd;padding:.15rem .4rem;border-radius:.3rem;font-size:.875rem;}
+        .prose-content pre{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:.75rem;padding:1.25rem;overflow-x:auto;margin:1rem 0;}
+        .prose-content blockquote{border-left:3px solid #3b82f6;padding:.75rem 1rem;background:rgba(59,130,246,.07);border-radius:0 .5rem .5rem 0;margin:1rem 0;color:#93c5fd;}
+        .prose-content ul,.prose-content ol{color:#94a3b8;padding-left:1.5rem;margin-bottom:1rem;}
+        .prose-content li{margin-bottom:.4rem;line-height:1.7;}
+        /* SCROLL BAR */
+        ::-webkit-scrollbar{width:6px;}
+        ::-webkit-scrollbar-track{background:transparent;}
+        ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px;}
+        /* CARD ANIMATIONS */
+        @keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        .blog-card{animation:fadeIn .5s ease forwards;opacity:0;}
+        /* CATEGORY COLORS */
+        .chip-genel{background:rgba(59,130,246,.12);color:#60a5fa;}
+        .chip-guncelleme{background:rgba(168,85,247,.12);color:#c084fc;}
+        .chip-rehber{background:rgba(34,197,94,.12);color:#4ade80;}
+        .chip-haber{background:rgba(251,191,36,.12);color:#fbbf24;}
+        .chip-duyuru{background:rgba(239,68,68,.12);color:#f87171;}
+        /* READING PROGRESS */
+        #readProgress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#3b82f6,#6366f1);z-index:9999;transition:width .1s;}
     </style>
 </head>
+<body class="min-h-screen">
 
-<body class="min-h-screen p-6">
-    <div class="max-w-5xl mx-auto">
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-8">
-            <div>
-                <h1 class="text-4xl font-black uppercase tracking-tight">Blog & Haberler</h1>
-                <p class="text-gray-400 text-sm mt-1">Gelişmeler, rehberler ve daha fazlası</p>
-            </div>
-            <a href="index.html" class="px-6 py-3 glass rounded-xl text-sm font-bold hover:bg-white/5 transition-all">←
-                Ana Sayfa</a>
+<div id="loading-screen">
+    <img src="logo.png" class="w-14 h-14 rounded-2xl opacity-90" onerror="this.style.display='none'">
+    <div class="loader-ring"></div>
+</div>
+
+<div id="readProgress" style="width:0%"></div>
+
+<!-- NAV -->
+<nav class="sticky top-0 z-50 backdrop-blur-xl border-b border-white/[0.06]" style="background:rgba(3,5,8,.9)">
+    <div class="max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <a href="index.html" class="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+                <img src="logo.png" class="w-8 h-8 rounded-xl" onerror="this.style.display='none'">
+                <span class="font-black text-sm hidden sm:block">ARCANTH PROJECT</span>
+            </a>
+            <span class="text-gray-600 hidden sm:block">/</span>
+            <span class="font-bold text-sm text-gray-400 hidden sm:block">Blog</span>
         </div>
-
-        <!-- Blog List -->
-        <div id="blogList" class="grid md:grid-cols-2 gap-6">
-            <div class="col-span-2 text-center py-20">
-                <div
-                    class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4">
-                </div>
-                <p class="text-gray-500">Yazılar yükleniyor...</p>
+        <div class="flex items-center gap-3">
+            <div class="relative hidden md:block">
+                <svg class="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/></svg>
+                <input id="searchInput" type="text" placeholder="Ara..." oninput="filterPosts()"
+                    class="input-f pl-9 w-52 text-sm" style="padding-top:.5rem;padding-bottom:.5rem;">
             </div>
-        </div>
-
-        <!-- Read Modal -->
-        <div id="readModal"
-            class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-            <div
-                class="bg-[#0f1419] border border-white/10 w-full max-w-4xl max-h-[90vh] rounded-2xl flex flex-col overflow-hidden shadow-2xl">
-                <!-- Modal Header -->
-                <div class="p-6 border-b border-white/5 flex items-center justify-between bg-[#131820]">
-                    <div class="flex items-center gap-3">
-                        <button onclick="closeModal()"
-                            class="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                            </svg>
-                        </button>
-                        <div>
-                            <p class="text-xs text-blue-400 font-bold uppercase tracking-wider mb-0.5" id="mDate">Date
-                            </p>
-                            <h2 class="text-xl font-black leading-none" id="mTitle">Title</h2>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs text-gray-500 font-bold uppercase px-2 py-1 bg-white/5 rounded"
-                            id="mAuthor">Author</span>
-                    </div>
-                </div>
-
-                <!-- Modal Content -->
-                <div class="flex-1 overflow-y-auto custom-scrollbar">
-                    <img id="mImage" class="w-full h-64 object-cover hidden">
-                    <div class="p-8 prose prose-invert prose-blue max-w-none" id="mContent"></div>
-
-                    <!-- Comments Section -->
-                    <div class="p-8 border-t border-white/5 bg-black/20">
-                        <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                            </svg>
-                            Yorumlar
-                        </h3>
-
-                        <div id="commentForm" class="mb-8 hidden">
-                            <div class="flex gap-4">
-                                <img id="userAvatar" src="" class="w-10 h-10 rounded-xl object-cover bg-white/5">
-                                <div class="flex-1">
-                                    <textarea id="commentText" class="input-f mb-2 min-h-[100px]"
-                                        placeholder="Düşüncelerini paylaş..."></textarea>
-                                    <div class="flex justify-end">
-                                        <button onclick="postComment()" class="btn-p text-sm">Yorum Yap</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="loginWarning"
-                            class="mb-8 p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl text-center hidden">
-                            <p class="text-blue-200 text-sm">Yorum yapmak için <a href="index.html"
-                                    class="font-bold underline">giriş yapmalısınız</a>.</p>
-                        </div>
-
-                        <div id="commentsList" class="space-y-6">
-                            <!-- Comments will load here -->
-                        </div>
-                    </div>
-                </div>
+            <div id="authBtn" class="hidden">
+                <button onclick="showAuthModal()" class="btn-p py-2 px-4 text-xs">Giriş Yap</button>
+            </div>
+            <div id="userInfo" class="hidden items-center gap-2">
+                <img id="userAvatar" src="" class="w-8 h-8 rounded-xl object-cover bg-white/5">
+                <button onclick="auth.signOut()" class="text-xs text-gray-500 hover:text-white transition-colors">Çıkış</button>
             </div>
         </div>
     </div>
+</nav>
 
-    <script>
-        const firebaseConfig = { apiKey: "AIzaSyCnkk6j1CGsi4sNXJ8FA9Gd2B6_VDptVDg", authDomain: "arcanthproject.firebaseapp.com", databaseURL: "https://arcanthproject-default-rtdb.firebaseio.com", projectId: "arcanthproject", storageBucket: "arcanthproject.firebasestorage.app", messagingSenderId: "826341954149", appId: "1:826341954149:web:6429d61a5b40810009ac8c" };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth(), db = firebase.database();
-        let currentUser = null;
-        let currentPostId = null;
+<main class="max-w-6xl mx-auto px-4 md:px-6 py-10">
 
-        auth.onAuthStateChanged(user => {
-            currentUser = user;
-            if (user) {
-                document.getElementById('commentForm').classList.remove('hidden');
-                document.getElementById('loginWarning').classList.add('hidden');
-                document.getElementById('userAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.email[0]}&background=3b82f6&color=fff`;
-            } else {
-                document.getElementById('commentForm').classList.add('hidden');
-                document.getElementById('loginWarning').classList.remove('hidden');
-            }
-        });
+    <!-- HERO -->
+    <div class="mb-10">
+        <div class="flex items-center gap-2 mb-3">
+            <div class="w-1.5 h-6 bg-blue-500 rounded-full"></div>
+            <span class="text-xs font-black uppercase tracking-widest text-blue-400">Blog & Haberler</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-black leading-tight mb-3">Gelişmeler, Rehberler<br>ve Daha Fazlası</h1>
+        <p class="text-gray-500 max-w-xl">Arcanth Project güncellemeleri, kurulum rehberleri ve topluluk haberleri.</p>
+    </div>
 
-        // Load Blogs
-        db.ref('blog').on('value', snap => {
-            const blogs = [];
-            snap.forEach(c => blogs.push(c.val()));
-            blogs.reverse();
+    <!-- KATEGORİLER -->
+    <div id="categoryFilters" class="flex flex-wrap gap-2 mb-8">
+        <button onclick="setCat('all')" id="cat-all" class="cat-chip chip-genel active px-4">Tümü</button>
+        <button onclick="setCat('genel')" id="cat-genel" class="cat-chip chip-genel">Genel</button>
+        <button onclick="setCat('guncelleme')" id="cat-guncelleme" class="cat-chip chip-guncelleme">Güncelleme</button>
+        <button onclick="setCat('rehber')" id="cat-rehber" class="cat-chip chip-rehber">Rehber</button>
+        <button onclick="setCat('haber')" id="cat-haber" class="cat-chip chip-haber">Haber</button>
+        <button onclick="setCat('duyuru')" id="cat-duyuru" class="cat-chip chip-duyuru">Duyuru</button>
+    </div>
 
-            const el = document.getElementById('blogList');
-            if (blogs.length === 0) {
-                el.innerHTML = '<div class="col-span-2 text-center py-20"><p class="text-gray-500">Henüz blog yazısı yok.</p></div>';
-                return;
-            }
+    <!-- BLOG LİST -->
+    <div id="blogList" class="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div class="col-span-3 text-center py-20">
+            <div class="w-10 h-10 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p class="text-gray-500 text-sm">Yazılar yükleniyor...</p>
+        </div>
+    </div>
 
-            el.innerHTML = blogs.map(b => `
-                <div class="glass group cursor-pointer overflow-hidden border-transparent hover:border-blue-500/30" onclick="openPost('${b.id}')">
-                    ${b.image ? `<div class="h-48 overflow-hidden"><img src="${b.image}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"></div>` : ''}
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3 flex-wrap">
-                            ${b.category ? `<span class="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-purple-500/15 text-purple-400 border border-purple-500/20">${b.category}</span>` : ''}
-                            <span class="text-xs font-bold text-gray-500">${b.date}</span>
-                            <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
-                            <span class="text-xs font-bold text-blue-400 uppercase">${b.author || 'Admin'}</span>
-                        </div>
-                        <h2 class="text-2xl font-black mb-2 group-hover:text-blue-400 transition-colors">${b.title}</h2>
-                        <div class="text-gray-400 text-sm line-clamp-3">${b.content.replace(/<[^>]*>/g, '').substring(0, 150)}...</div>
-                    </div>
+    <div id="noResults" class="hidden text-center py-20">
+        <div class="text-5xl mb-4">🔍</div>
+        <p class="text-gray-400 font-bold">Sonuç bulunamadı</p>
+        <p class="text-gray-600 text-sm mt-1">Farklı bir arama yapmayı deneyin</p>
+    </div>
+</main>
+
+<!-- READ MODAL -->
+<div id="readModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-lg items-center justify-center p-4">
+    <div class="bg-[#080d14] border border-white/[0.08] w-full max-w-3xl max-h-[92vh] rounded-2xl flex flex-col overflow-hidden shadow-2xl">
+        <!-- Modal Nav -->
+        <div class="px-6 py-4 border-b border-white/[0.06] flex items-center justify-between flex-shrink-0" style="background:rgba(255,255,255,.02)">
+            <button onclick="closeModal()" class="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Geri
+            </button>
+            <div class="flex items-center gap-3">
+                <span id="mReadTime" class="text-[11px] text-gray-500 font-bold">5 dk okuma</span>
+                <button onclick="sharePost()" class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-white/10 transition-all" title="Paylaş">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                </button>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-white/10 transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+        </div>
+        <!-- Modal Content -->
+        <div id="modalScroll" class="flex-1 overflow-y-auto" onscroll="updateReadProgress(this)">
+            <img id="mImage" class="w-full h-64 object-cover hidden" src="">
+            <div class="p-6 md:p-8">
+                <!-- Meta -->
+                <div class="flex flex-wrap items-center gap-2 mb-4">
+                    <span id="mCat" class="cat-chip chip-genel"></span>
+                    <span class="text-xs text-gray-500 font-bold" id="mDate"></span>
+                    <span class="text-gray-700">·</span>
+                    <span class="text-xs font-bold text-blue-400 uppercase" id="mAuthor"></span>
                 </div>
-            `).join('');
-        });
-
-        async function openPost(id) {
-            currentPostId = id;
-            try {
-                const snap = await db.ref('blog/' + id).once('value');
-                const p = snap.val();
-                if (!p) return;
-
-                document.getElementById('mTitle').textContent = p.title;
-                document.getElementById('mDate').textContent = p.date;
-                document.getElementById('mAuthor').textContent = p.author || 'Admin';
-                document.getElementById('mContent').innerHTML = p.content;
-
-                const imgEl = document.getElementById('mImage');
-                if (p.image) {
-                    imgEl.src = p.image;
-                    imgEl.classList.remove('hidden');
-                } else {
-                    imgEl.classList.add('hidden');
-                }
-
-                document.getElementById('readModal').classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-                loadComments(id);
-            } catch (e) { console.error(e); }
-        }
-
-        function closeModal() {
-            document.getElementById('readModal').classList.add('hidden');
-            document.body.style.overflow = 'auto';
-            currentPostId = null;
-        }
-
-        function loadComments(postId) {
-            const el = document.getElementById('commentsList');
-            el.innerHTML = '<p class="text-gray-500 text-sm">Yorumlar yükleniyor...</p>';
-
-            db.ref('comments/' + postId).on('value', snap => {
-                const comments = [];
-                snap.forEach(c => comments.push(c.val()));
-                comments.sort((a, b) => new Date(b.created) - new Date(a.created));
-
-                if (comments.length === 0) {
-                    el.innerHTML = '<p class="text-gray-500 text-sm">Henüz yorum yapılmamış. İlk yorumu sen yap!</p>';
-                    return;
-                }
-
-                // Fetch user details for each comment
-                Promise.all(comments.map(async c => {
-                    let userDisplay = { name: 'Anonim', photo: `https://ui-avatars.com/api/?name=A&background=random` };
-                    try {
-                        const uSnap = await db.ref('users/' + c.userId).once('value');
-                        const u = uSnap.val();
-                        if (u) {
-                            userDisplay.name = u.username || u.name || 'Kullanıcı';
-                            userDisplay.photo = u.photoURL || `https://ui-avatars.com/api/?name=${userDisplay.name[0]}&background=random`;
-                        }
-                    } catch (e) { }
-                    return { ...c, user: userDisplay };
-                })).then(enhancedComments => {
-                    el.innerHTML = enhancedComments.map(c => `
-                        <div class="flex gap-4">
-                            <img src="${c.user.photo}" class="w-10 h-10 rounded-xl object-cover bg-white/5">
-                            <div class="flex-1">
-                                <div class="bg-white/5 rounded-xl p-4 rounded-tl-none">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <span class="font-bold text-sm text-blue-400">${c.user.name}</span>
-                                        <span class="text-[10px] text-gray-500">${c.date}</span>
-                                    </div>
-                                    <p class="text-sm text-gray-300">${c.text}</p>
-                                </div>
+                <h1 class="text-2xl md:text-3xl font-black leading-tight mb-6" id="mTitle"></h1>
+                <!-- Article -->
+                <div class="prose-content" id="mContent"></div>
+            </div>
+            <!-- YORUMLAR -->
+            <div class="border-t border-white/[0.06] p-6 md:p-8">
+                <h3 class="font-black text-lg mb-6 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+                    Yorumlar
+                    <span id="commentCount" class="text-sm text-gray-500 font-normal">( 0 )</span>
+                </h3>
+                <!-- Yorum formu -->
+                <div id="commentFormWrap" class="hidden mb-8">
+                    <div class="flex gap-3">
+                        <img id="commenterAvatar" src="" class="w-9 h-9 rounded-xl object-cover bg-white/5 flex-shrink-0">
+                        <div class="flex-1">
+                            <textarea id="commentText" class="input-f min-h-[90px] mb-2 resize-none" placeholder="Düşüncelerini paylaş..."></textarea>
+                            <div class="flex justify-end gap-2">
+                                <button onclick="postComment()" class="btn-p text-sm py-2">Yorum Yap</button>
                             </div>
                         </div>
-                    `).join('');
-                });
+                    </div>
+                </div>
+                <div id="loginNudge" class="hidden mb-8 p-4 bg-blue-500/[0.08] border border-blue-500/20 rounded-xl text-center">
+                    <p class="text-sm text-blue-200">Yorum yapmak için <button onclick="showAuthModal()" class="font-black underline hover:text-white">giriş yapın</button></p>
+                </div>
+                <div id="commentsList" class="space-y-5"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div id="authModal" class="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="bg-[#0a0f18] border border-white/[0.08] w-full max-w-sm rounded-2xl p-8 shadow-2xl">
+        <button onclick="closeAuthModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded-lg transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <div class="text-center mb-6">
+            <img src="logo.png" class="w-12 h-12 rounded-xl mx-auto mb-3" onerror="this.style.display='none'">
+            <h2 class="text-xl font-black">Giriş Yap</h2>
+            <p class="text-gray-500 text-sm mt-1">Yorum yapabilmek için giriş gerekli</p>
+        </div>
+        <div class="space-y-3">
+            <button onclick="loginGoogle()" class="w-full flex items-center justify-center gap-3 py-3 bg-white/[0.06] hover:bg-white/[0.1] border border-white/10 rounded-xl font-bold text-sm transition-all">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/></svg>
+                Google ile Giriş
+            </button>
+        </div>
+        <p id="authErr" class="text-red-400 text-xs text-center mt-3 hidden"></p>
+    </div>
+</div>
+
+<script>
+    const FC = {apiKey:"AIzaSyCnkk6j1CGsi4sNXJ8FA9Gd2B6_VDptVDg",authDomain:"arcanthproject.firebaseapp.com",databaseURL:"https://arcanthproject-default-rtdb.firebaseio.com",projectId:"arcanthproject",storageBucket:"arcanthproject.firebasestorage.app",messagingSenderId:"826341954149",appId:"1:826341954149:web:6429d61a5b40810009ac8c"};
+    firebase.initializeApp(FC);
+    const auth = firebase.auth(), db = firebase.database();
+
+    let allPosts = [], currentUser = null, currentPostId = null, activeCat = 'all';
+    const CAT_COLORS = {
+        genel:'chip-genel', guncelleme:'chip-guncelleme', rehber:'chip-rehber',
+        haber:'chip-haber', duyuru:'chip-duyuru'
+    };
+
+    /* ── AUTH ── */
+    auth.onAuthStateChanged(u => {
+        currentUser = u;
+        const authBtn  = document.getElementById('authBtn');
+        const userInfo = document.getElementById('userInfo');
+        const formWrap = document.getElementById('commentFormWrap');
+        const loginNudge = document.getElementById('loginNudge');
+        if (u) {
+            authBtn.classList.add('hidden');
+            userInfo.classList.remove('hidden');
+            userInfo.classList.add('flex');
+            const av = document.getElementById('userAvatar');
+            if (av) av.src = u.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.email[0])}&background=3b82f6&color=fff&size=64`;
+            const ca = document.getElementById('commenterAvatar');
+            if (ca) ca.src = av ? av.src : '';
+            if (formWrap) formWrap.classList.remove('hidden');
+            if (loginNudge) loginNudge.classList.add('hidden');
+        } else {
+            authBtn.classList.remove('hidden');
+            userInfo.classList.add('hidden');
+            if (formWrap) formWrap.classList.add('hidden');
+            if (loginNudge) loginNudge.classList.remove('hidden');
+        }
+    });
+    function loginGoogle(){ auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(()=>closeAuthModal()).catch(e=>{document.getElementById('authErr').textContent=e.message;document.getElementById('authErr').classList.remove('hidden');}); }
+    function showAuthModal(){ document.getElementById('authModal').classList.remove('hidden'); document.getElementById('authModal').classList.add('flex'); }
+    function closeAuthModal(){ document.getElementById('authModal').classList.add('hidden'); document.getElementById('authModal').classList.remove('flex'); }
+
+    /* ── LOAD POSTS ── */
+    db.ref('site_data/blog').on('value', snap => {
+        allPosts = [];
+        snap.forEach(c => allPosts.push(c.val()));
+        allPosts.reverse();
+        renderPosts();
+        document.getElementById('loading-screen').classList.add('hidden');
+    });
+
+    function renderPosts() {
+        const q = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+        let posts = allPosts.filter(p => {
+            const catOk = activeCat === 'all' || (p.category||'genel') === activeCat;
+            const searchOk = !q || p.title.toLowerCase().includes(q) || (p.content||'').replace(/<[^>]*>/g,'').toLowerCase().includes(q);
+            return catOk && searchOk;
+        });
+        const el = document.getElementById('blogList');
+        const noRes = document.getElementById('noResults');
+        if (!posts.length) {
+            el.innerHTML = '';
+            noRes.classList.remove('hidden');
+            return;
+        }
+        noRes.classList.add('hidden');
+        const wordCount = p => (p.content||'').replace(/<[^>]*>/g,'').split(/\s+/).length;
+        el.innerHTML = posts.map((p, i) => {
+            const cat = p.category || 'genel';
+            const chipCls = CAT_COLORS[cat] || 'chip-genel';
+            const catLabel = {genel:'Genel',guncelleme:'Güncelleme',rehber:'Rehber',haber:'Haber',duyuru:'Duyuru'}[cat] || cat;
+            const readMins = Math.max(1, Math.ceil(wordCount(p) / 200));
+            const preview = (p.content||'').replace(/<[^>]*>/g,'').substring(0, 130);
+            return `<div class="glass blog-card cursor-pointer overflow-hidden group flex flex-col" style="animation-delay:${i*0.05}s" onclick="openPost('${p.id}')">
+                ${p.image ? `<div class="h-44 overflow-hidden flex-shrink-0"><img src="${p.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"></div>` : ''}
+                <div class="p-5 flex flex-col flex-1">
+                    <div class="flex items-center gap-2 mb-3 flex-wrap">
+                        <span class="cat-chip ${chipCls}">${catLabel}</span>
+                        <span class="text-[10px] font-bold text-gray-600">${p.date||''}</span>
+                        <span class="text-[10px] text-gray-600 ml-auto">${readMins} dk okuma</span>
+                    </div>
+                    <h2 class="font-black text-lg leading-snug mb-2 group-hover:text-blue-400 transition-colors line-clamp-2">${p.title}</h2>
+                    <p class="text-gray-500 text-sm leading-relaxed flex-1 line-clamp-3">${preview}…</p>
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-white/[0.05]">
+                        <span class="text-[11px] font-bold text-blue-400 uppercase tracking-wider">${p.author||'Admin'}</span>
+                        <span class="text-[11px] text-gray-600 flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            ${p.views||0}
+                        </span>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function setCat(cat) {
+        activeCat = cat;
+        document.querySelectorAll('[id^="cat-"]').forEach(b => b.classList.remove('active'));
+        const btn = document.getElementById('cat-' + cat);
+        if (btn) btn.classList.add('active');
+        renderPosts();
+    }
+    function filterPosts() { renderPosts(); }
+
+    /* ── OPEN POST ── */
+    async function openPost(id) {
+        currentPostId = id;
+        try {
+            const snap = await db.ref('site_data/blog/' + id).once('value');
+            const p = snap.val(); if (!p) return;
+            const cat = p.category || 'genel';
+            const chipCls = CAT_COLORS[cat] || 'chip-genel';
+            const catLabel = {genel:'Genel',guncelleme:'Güncelleme',rehber:'Rehber',haber:'Haber',duyuru:'Duyuru'}[cat] || cat;
+            const wc = (p.content||'').replace(/<[^>]*>/g,'').split(/\s+/).length;
+            const readMins = Math.max(1, Math.ceil(wc / 200));
+
+            document.getElementById('mTitle').textContent  = p.title;
+            document.getElementById('mDate').textContent   = p.date||'';
+            document.getElementById('mAuthor').textContent = p.author||'Admin';
+            document.getElementById('mContent').innerHTML  = p.content||'';
+            document.getElementById('mReadTime').textContent = readMins + ' dk okuma';
+            const mCat = document.getElementById('mCat');
+            mCat.textContent  = catLabel;
+            mCat.className    = 'cat-chip ' + chipCls;
+            const img = document.getElementById('mImage');
+            if (p.image) { img.src = p.image; img.classList.remove('hidden'); }
+            else img.classList.add('hidden');
+
+            document.getElementById('readModal').classList.add('open');
+            document.getElementById('modalScroll').scrollTop = 0;
+            document.body.style.overflow = 'hidden';
+            document.getElementById('readProgress').style.width = '0%';
+
+            /* görüntüleme sayacı */
+            db.ref('site_data/blog/' + id + '/views').transaction(v => (v||0) + 1);
+            loadComments(id);
+        } catch(e) { console.error(e); }
+    }
+
+    function closeModal() {
+        document.getElementById('readModal').classList.remove('open');
+        document.body.style.overflow = '';
+        currentPostId = null;
+        document.getElementById('readProgress').style.width = '0%';
+        db.ref('site_data/blog/' + currentPostId + '/comments').off();
+    }
+
+    function updateReadProgress(el) {
+        const pct = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100;
+        document.getElementById('readProgress').style.width = Math.min(100, pct) + '%';
+    }
+
+    function sharePost() {
+        const title = document.getElementById('mTitle').textContent;
+        if (navigator.share) { navigator.share({ title, url: location.href }).catch(()=>{}); }
+        else { navigator.clipboard.writeText(location.href).then(()=>alert('Link kopyalandı!')); }
+    }
+
+    /* ── COMMENTS ── */
+    function loadComments(postId) {
+        const el = document.getElementById('commentsList');
+        el.innerHTML = '<p class="text-gray-600 text-sm">Yorumlar yükleniyor...</p>';
+        db.ref('comments/' + postId).on('value', snap => {
+            const comments = [];
+            snap.forEach(c => comments.push(c.val()));
+            comments.sort((a, b) => new Date(b.created) - new Date(a.created));
+            document.getElementById('commentCount').textContent = `( ${comments.length} )`;
+            if (!comments.length) {
+                el.innerHTML = '<p class="text-gray-600 text-sm">Henüz yorum yok. İlk yorumu sen yap!</p>';
+                return;
+            }
+            Promise.all(comments.map(async cm => {
+                let user = { name: 'Anonim', photo: '' };
+                try {
+                    const us = await db.ref('users/' + cm.userId).once('value');
+                    const ud = us.val();
+                    if (ud) {
+                        user.name  = ud.username || ud.name || 'Kullanıcı';
+                        user.photo = ud.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name[0])}&background=3b82f6&color=fff&size=48`;
+                    }
+                } catch(_) {}
+                return {...cm, user};
+            })).then(list => {
+                el.innerHTML = list.map(cm => `
+                    <div class="flex gap-3">
+                        <img src="${cm.user.photo||`https://ui-avatars.com/api/?name=${encodeURIComponent(cm.user.name[0])}&background=3b82f6&color=fff&size=48`}" class="w-9 h-9 rounded-xl object-cover flex-shrink-0">
+                        <div class="flex-1">
+                            <div class="bg-white/[0.04] rounded-xl rounded-tl-none p-4">
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <span class="font-bold text-sm text-blue-400">${cm.user.name}</span>
+                                    <span class="text-[10px] text-gray-600">${cm.date||''}</span>
+                                </div>
+                                <p class="text-sm text-gray-300 leading-relaxed">${cm.text}</p>
+                            </div>
+                        </div>
+                    </div>`).join('');
             });
-        }
+        });
+    }
 
-        async function postComment() {
-            if (!currentUser) return;
-            const txt = document.getElementById('commentText').value.trim();
-            if (!txt) return alert('Yorum boş olamaz.');
-            if (txt.length > 500) return alert('Yorum çok uzun!');
+    async function postComment() {
+        if (!currentUser) return showAuthModal();
+        const txt = document.getElementById('commentText').value.trim();
+        if (!txt) return;
+        if (txt.length > 500) return alert('Yorum en fazla 500 karakter olabilir.');
+        const id = Date.now();
+        await db.ref('comments/' + currentPostId + '/' + id).set({
+            id, userId: currentUser.uid, text: txt,
+            date: new Date().toLocaleDateString('tr-TR'),
+            created: new Date().toISOString()
+        });
+        document.getElementById('commentText').value = '';
+    }
 
-            const id = Date.now();
-            const comment = {
-                id: id,
-                userId: currentUser.uid,
-                text: txt,
-                date: new Date().toLocaleDateString('tr-TR'),
-                created: new Date().toISOString()
-            };
-
-            try {
-                await db.ref('comments/' + currentPostId + '/' + id).set(comment);
-                document.getElementById('commentText').value = '';
-            } catch (e) { alert('Hata: ' + e.message); }
-        }
-    </script>
+    /* ESC kapatma */
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+    document.getElementById('readModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+</script>
 </body>
-
 </html>
