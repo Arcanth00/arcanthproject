@@ -20,17 +20,51 @@ var ThemeSystem = (function () {
     function applyTheme(theme) {
         currentTheme = theme;
         removePreviousTheme();
-        if (theme === 'ramadan') applyRamadan();
-        else if (theme === 'newyear') applyNewyear();
+        var t = theme;
+        if      (t==='ramadan')   applyRamadan();
+        else if (t==='eid')       applyFestival({emoji:'🌟',emoji2:'🌙',animPfx:'eid',
+            bg:'#0a1a18',accent:'#6ee7b7',
+            title:'Ramazan Bayramınız Mübarek Olsun',sub:'— Şeker Bayramı — Sağlık ve Huzur —',bodyClass:'theme-eid'});
+        else if (t==='kurban')    applyFestival({emoji:'🐑',emoji2:'🌿',animPfx:'kurban',
+            bg:'#071a0a',accent:'#34d399',
+            title:'Kurban Bayramınız Mübarek Olsun',sub:'— Hayırlı Kurbanlar, Bereketli Günler —',bodyClass:'theme-kurban'});
+        else if (t==='april23')   applyFestival({emoji:'🎈',emoji2:'🇹🇷',animPfx:'apr23',
+            bg:'#1a0505',accent:'#f87171',
+            title:'23 Nisan Ulusal Egemenlik ve Çocuk Bayramı',sub:'— Geleceğimizin Güvencesi Çocuklarımıza —',bodyClass:'theme-april23',
+            particles:['#ef4444','#f87171','#3b82f6','#ffffff','#fbbf24'],shapes:['circle','rect','heart']});
+        else if (t==='may19')     applyFestival({emoji:'⭐',emoji2:'🏃',animPfx:'may19',
+            bg:'#1a0505',accent:'#dc2626',
+            title:'19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı',sub:'— Ne Mutlu Türküm Diyene —',bodyClass:'theme-may19',
+            particles:['#ef4444','#dc2626','#fca5a5','#ffffff']});
+        else if (t==='oct29')     applyFestival({emoji:'🎆',emoji2:'🇹🇷',animPfx:'oct29',
+            bg:'#1a0500',accent:'#fb923c',
+            shimmer:'#ef4444 0%,#fb923c 30%,#fde68a 50%,#fb923c 70%,#ef4444 100%',
+            title:'Cumhuriyet Bayramımız Kutlu Olsun',sub:'— 29 Ekim 1923 — Türkiye Cumhuriyeti —',bodyClass:'theme-oct29',
+            particles:['#ef4444','#fb923c','#fde68a','#ffffff']});
+        else if (t==='hidrellez') applyFestival({emoji:'🌿',emoji2:'🌸',animPfx:'hidr',
+            bg:'#061206',accent:'#86efac',
+            title:'Hıdrellez Kutlu Olsun',sub:'— Bereket, Sağlık ve Yeni Başlangıçlar —',bodyClass:'theme-hidrellez',
+            particles:['#86efac','#4ade80','#fbbf24','#fb7185'],shapes:['circle','heart']});
+        else if (t==='anneler')   applyFestival({emoji:'💐',emoji2:'❤️',animPfx:'anne',
+            bg:'#1a0510',accent:'#f472b6',
+            title:'Anneler Günün Kutlu Olsun',sub:'— Dünyanın En Güzel Varlıklarına —',bodyClass:'theme-anneler',
+            particles:['#f472b6','#fb7185','#fda4af','#ffffff'],shapes:['circle','heart','rect']});
+        else if (t==='halloween') applyFestival({emoji:'🎃',emoji2:'🦇',animPfx:'hall',
+            bg:'#0a0500',accent:'#f97316',
+            title:'Happy Halloween',sub:'— Trick or Treat? —',bodyClass:'theme-halloween',
+            particles:['#f97316','#fb923c','#7c3aed','#fde68a']});
+        else if (t==='newyear')   applyNewyear();
     }
 
     function removePreviousTheme() {
-        ['season-banner','snow-canvas','ramadan-bg','season-styles'].forEach(function(id) {
+        ['season-banner','snow-canvas','ramadan-bg','season-styles','season-particles'].forEach(function(id) {
             var el = document.getElementById(id); if (el) el.remove();
         });
         if (snowAnimFrame) { cancelAnimationFrame(snowAnimFrame); snowAnimFrame = null; }
         if (bgAnimFrame)   { cancelAnimationFrame(bgAnimFrame);   bgAnimFrame   = null; }
-        document.body.classList.remove('season-active','theme-ramadan','theme-newyear');
+        /* Tüm tema class'larını temizle */
+        document.body.className = document.body.className
+            .replace(/\bseason-active\b|\btheme-\S+/g,'').trim();
         var nav = document.querySelector('nav'); if (nav) nav.style.top = '';
     }
 
@@ -434,6 +468,94 @@ var ThemeSystem = (function () {
             '<svg width="6" height="6" viewBox="0 0 10 10" style="animation:nyStarSpin 2s ease-in-out .4s infinite"><polygon points="5,0 6.2,3.8 10,3.8 6.9,6.2 8.1,10 5,7.6 1.9,10 3.1,6.2 0,3.8 3.8,3.8" fill="#fca5a5" opacity="0.3"/></svg>' +
             '<svg width="8" height="8" viewBox="0 0 10 10" style="animation:nyStarSpin 3s ease-in-out .9s infinite"><polygon points="5,0 6.2,3.8 10,3.8 6.9,6.2 8.1,10 5,7.6 1.9,10 3.1,6.2 0,3.8 3.8,3.8" fill="#fca5a5" opacity="0.4"/></svg>' +
         '</div>';
+    }
+
+
+    /* ════════════════════════════════════════════════════
+       GENEL FESTIVAL BANNER (tüm yeni temalar için)
+    ════════════════════════════════════════════════════ */
+    function applyFestival(opts) {
+        var pfx = opts.animPfx || 'gn';
+        var acc = opts.accent || '#60a5fa';
+        var shimmerColors = opts.shimmer || (acc+' 0%,#fff 50%,'+acc+' 100%');
+        /* Styles */
+        var s = document.createElement('style');
+        s.id = 'season-styles';
+        s.textContent =
+            '@keyframes '+pfx+'Sh{0%{background-position:250% center}100%{background-position:-250% center}}'+
+            '@keyframes '+pfx+'Gl{0%,100%{filter:drop-shadow(0 0 6px '+acc+'55)}50%{filter:drop-shadow(0 0 14px '+acc+')}}'+
+            '@keyframes '+pfx+'In{from{transform:translateY(-100%)}to{transform:translateY(0)}}';
+        document.head.appendChild(s);
+        /* Banner */
+        var b = document.createElement('div');
+        b.id = 'season-banner';
+        b.style.cssText =
+            'position:fixed;top:0;left:0;right:0;z-index:9998;height:'+BANNER_H+'px;'+
+            'display:flex;align-items:center;justify-content:center;overflow:hidden;'+
+            'background:linear-gradient(90deg,#000 0%,'+opts.bg+' 20%,'+opts.bg+' 80%,#000 100%);'+
+            'border-bottom:1px solid '+acc+'33;'+
+            'transform:translateY(-100%);animation:'+pfx+'In .8s cubic-bezier(.16,1,.3,1) .1s forwards;';
+        b.innerHTML =
+            '<div style="display:flex;align-items:center;gap:16px;position:relative;z-index:2">'+
+            '<span style="font-size:22px;animation:'+pfx+'Gl 3s ease-in-out infinite">'+opts.emoji+'</span>'+
+            '<div style="width:1px;height:28px;background:linear-gradient(180deg,transparent,'+acc+'88,transparent)"></div>'+
+            '<div style="text-align:center">'+
+            '<p style="margin:0;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:linear-gradient(90deg,'+shimmerColors+');background-size:250% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:'+pfx+'Sh 5s linear infinite">'+opts.title+'</p>'+
+            '<p style="margin:3px 0 0;font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:'+acc+'80">'+opts.sub+'</p>'+
+            '</div>'+
+            '<div style="width:1px;height:28px;background:linear-gradient(180deg,transparent,'+acc+'88,transparent)"></div>'+
+            '<span style="font-size:22px;animation:'+pfx+'Gl 3s ease-in-out 1s infinite">'+opts.emoji2+'</span>'+
+            '</div>';
+        document.body.insertBefore(b, document.body.firstChild);
+        document.body.classList.add('season-active', opts.bodyClass || '');
+        var nav = document.querySelector('nav'); if (nav) nav.style.top = BANNER_H + 'px';
+        /* Particles */
+        var colors = opts.particles || [acc,'#ffffff'];
+        var shapes = opts.shapes   || ['circle','rect'];
+        startParticles(colors, shapes);
+    }
+
+    /* ════════════════════════════════════════════════════
+       RENKLI PARÇACİK EFEKTİ
+    ════════════════════════════════════════════════════ */
+    function startParticles(colors, shapes) {
+        var canvas = document.createElement('canvas');
+        canvas.id  = 'season-particles';
+        canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;opacity:.55';
+        document.body.appendChild(canvas);
+        var ctx = canvas.getContext('2d'), W, H;
+        function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+        resize(); window.addEventListener('resize',resize);
+        var pts = [];
+        for(var i=0;i<70;i++) pts.push({
+            x:Math.random()*1600, y:Math.random()*900-50,
+            vx:(Math.random()-.5)*.4, vy:Math.random()*.9+.3,
+            r:Math.random()*5+2,
+            color:colors[Math.floor(Math.random()*colors.length)],
+            rot:Math.random()*Math.PI*2,
+            rSpeed:(Math.random()-.5)*.04,
+            shape:shapes[Math.floor(Math.random()*shapes.length)],
+            opacity:Math.random()*.5+.2
+        });
+        var lastT=null;
+        function draw(ts){
+            var dt=lastT?Math.min((ts-lastT)/1000,.05):.016; lastT=ts;
+            ctx.clearRect(0,0,W,H);
+            pts.forEach(function(p){
+                p.x+=p.vx+Math.sin(ts/2000+p.r)*.3;
+                p.y+=p.vy; p.rot+=p.rSpeed;
+                if(p.y>H+10){p.y=-10;p.x=Math.random()*W;}
+                if(p.x>W+5) p.x=-5; else if(p.x<-5) p.x=W+5;
+                ctx.save();ctx.globalAlpha=p.opacity;ctx.fillStyle=p.color;
+                ctx.translate(p.x,p.y);ctx.rotate(p.rot);
+                if(p.shape==='rect'){ctx.fillRect(-p.r,-p.r*.6,p.r*2,p.r*1.2);}
+                else if(p.shape==='heart'){ctx.beginPath();ctx.arc(-p.r*.5,-p.r*.3,p.r*.55,Math.PI,0);ctx.arc(p.r*.5,-p.r*.3,p.r*.55,Math.PI,0);ctx.lineTo(0,p.r*.9);ctx.fill();}
+                else{ctx.beginPath();ctx.arc(0,0,p.r,0,Math.PI*2);ctx.fill();}
+                ctx.restore();
+            });
+            bgAnimFrame=requestAnimationFrame(draw);
+        }
+        requestAnimationFrame(draw);
     }
 
     return { init: init, apply: applyTheme };
