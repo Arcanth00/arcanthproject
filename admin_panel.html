@@ -1302,8 +1302,6 @@
 
         const firebaseConfig = { apiKey: "AIzaSyCnkk6j1CGsi4sNXJ8FA9Gd2B6_VDptVDg", authDomain: "arcanthproject.firebaseapp.com", databaseURL: "https://arcanthproject-default-rtdb.firebaseio.com", projectId: "arcanthproject", storageBucket: "arcanthproject.firebasestorage.app", messagingSenderId: "826341954149", appId: "1:826341954149:web:6429d61a5b40810009ac8c" };
 
-                        });
-        }
 
         const allowedAdmins = ["dlfMOzh6PXWnNghZYDRYcdgPHQs2", "rBoqVOBlyRU5MHclICBtoKKR8Fe2"];
         firebase.initializeApp(firebaseConfig);
@@ -1447,7 +1445,6 @@
         }
         /* _old_viewUser replaced by openUD */
         /* toggleUserBlock replaced by doToggleBlock */
-        }
         async function loadSupport() { try { const snapshot = await db.ref('support_tickets').once('value'); const tickets = []; snapshot.forEach(child => { tickets.push(child.val()) }); tickets.sort((a, b) => b.created.localeCompare(a.created)); const el = g('supportList'); const statusColors = { aktif: 'text-green-400 bg-green-500/15', beklemede: 'text-yellow-400 bg-yellow-500/15', kapali: 'text-gray-400 bg-gray-500/15' }; el.innerHTML = tickets.map(t => `<tr><td class="text-sm">${t.userEmail}</td><td class="font-semibold">${t.subject}</td><td><span class="px-2 py-0.5 bg-purple-500/15 text-purple-400 rounded text-[10px] font-bold uppercase">${t.category}</span></td><td><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusColors[t.status] || statusColors.aktif}">${t.status}</span></td><td class="text-gray-500 text-xs">${new Date(t.created).toLocaleString('tr-TR')}</td><td class="whitespace-nowrap"><button onclick="openTD(${t.id})" class="btn-s mr-1">Gör</button><button onclick="replyTicket(${t.id})" class="btn-p text-[10px] px-2 py-1 mr-1">Yanıtla</button><button onclick="openTD(${t.id})" class="btn-s mr-1">Durum</button><button onclick="delTicket(${t.id})" class="btn-d">Sil</button></td></tr>`).join('') || '<tr><td colspan="6" class="text-center text-gray-500 py-8">Henüz destek talebi yok</td></tr>' } catch (e) { g('supportList').innerHTML = '<tr><td colspan="6" class="text-center text-red-500 py-8">Hata: ' + e.message + '</td></tr>' } }
         /* _old_viewTicket replaced by openTD */
         /* changeStatus replaced by setTStatus via openTD */
