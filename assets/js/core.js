@@ -1,3 +1,11 @@
+/* === THEME INIT (runs before DOM) === */
+(function () {
+    var saved = localStorage.getItem('ap_theme') || 'dark';
+    var html = document.documentElement;
+    html.classList.remove('dark', 'light');
+    html.classList.add(saved);
+})();
+
 /* ============================================
    ARCANTH PROJECT — core.js
    Firebase başlatma, Auth, UI yardımcıları
@@ -194,14 +202,34 @@ function showToast(msg, type) {
 /* === THEME TOGGLE (dark/light) === */
 function toggleTheme() {
     var html = document.documentElement;
+    var isDark = html.classList.contains('dark');
+    var next = isDark ? 'light' : 'dark';
+    html.classList.remove('dark', 'light');
+    html.classList.add(next);
+    localStorage.setItem('ap_theme', next);
+    _updateThemeIcon(next);
+    /* meta theme-color */
+    var metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) metaTheme.content = next === 'dark' ? '#020408' : '#f1f5f9';
+    /* dispatch event for other scripts */
+    document.dispatchEvent(new CustomEvent('themechange', { detail: { theme: next } }));
+}
+
+function _updateThemeIcon(theme) {
     var icon = document.getElementById('theme-icon');
-    if (html.classList.contains('dark')) {
-        html.classList.replace('dark', 'light');
-        if (icon) icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>';
+    if (!icon) return;
+    if (theme === 'light') {
+        /* sun icon */
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>';
     } else {
-        html.classList.replace('light', 'dark');
-        if (icon) icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>';
+        /* moon icon */
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>';
     }
+}
+
+function initThemeIcon() {
+    var theme = localStorage.getItem('ap_theme') || 'dark';
+    _updateThemeIcon(theme);
 }
 
 /* === MOBILE MENU === */
@@ -488,6 +516,7 @@ document.addEventListener('keydown', function (e) {
 
 /* === DROPDOWN === */
 document.addEventListener('DOMContentLoaded', function () {
+    initThemeIcon();
     var profileBtn = document.getElementById('userProfileBtn');
     var dropdown   = document.getElementById('userDropdown');
     if (profileBtn) {
