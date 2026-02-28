@@ -9,6 +9,7 @@
         <!-- Theme anti-flash -->
     <script>(function(){var t=localStorage.getItem('ap_theme')||'dark';document.documentElement.classList.remove('dark','light');document.documentElement.classList.add(t);})();</script>
 <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -713,129 +714,134 @@
             </div>
 
             <div id="t-analytics" class="tab-c space-y-6">
-                <h2 class="text-2xl font-black">Analitik Dashboard</h2>
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-black">Analitik Dashboard</h2>
+                    <button onclick="loadAnalytics()" class="btn-s text-xs flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        Yenile
+                    </button>
+                </div>
+
+                <!-- Stat Cards -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="stat">
                         <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Toplam Ziyaret</p>
                         <p class="text-3xl font-black mt-1" id="stat-pageviews">0</p>
+                        <p class="text-[10px] text-gray-600 mt-1" id="stat-pageviews-sub">sayfa görüntüleme</p>
                     </div>
                     <div class="stat">
                         <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Toplam İndirme</p>
                         <p class="text-3xl font-black mt-1" id="stat-downloads">0</p>
+                        <p class="text-[10px] text-gray-600 mt-1" id="stat-downloads-sub">kayıtlı indirme</p>
                     </div>
                     <div class="stat">
                         <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Destek Talepleri</p>
                         <p class="text-3xl font-black mt-1" id="stat-tickets">0</p>
+                        <p class="text-[10px] text-gray-600 mt-1" id="stat-tickets-sub">toplam talep</p>
                     </div>
                     <div class="stat">
                         <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Aktif Kullanıcı</p>
                         <p class="text-3xl font-black mt-1" id="stat-active">0</p>
+                        <p class="text-[10px] text-gray-600 mt-1" id="stat-active-sub">engelsiz hesap</p>
                     </div>
                 </div>
-                <div class="glass p-6">
-                    <h3 class="font-bold mb-4">En Çok İndirilen Projeler</h3>
-                    <div id="top-downloads"></div>
+
+                <!-- Charts Row 1 -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Sayfa Görüntüleme Bar Chart -->
+                    <div class="glass p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold flex items-center gap-2 text-sm">
+                                <span class="w-2 h-2 rounded-full bg-blue-500 inline-block"></span>
+                                Sayfa Görüntüleme
+                            </h3>
+                            <span class="text-[10px] text-gray-600 bg-white/[0.04] px-2 py-1 rounded-lg">Son veriler</span>
+                        </div>
+                        <div style="position:relative;height:220px">
+                            <canvas id="chart-pageviews"></canvas>
+                            <p id="chart-pageviews-empty" class="hidden absolute inset-0 flex items-center justify-center text-gray-600 text-sm">Veri yok</p>
+                        </div>
+                    </div>
+                    <!-- İndirme Doughnut Chart -->
+                    <div class="glass p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold flex items-center gap-2 text-sm">
+                                <span class="w-2 h-2 rounded-full bg-cyan-500 inline-block"></span>
+                                İndirme Dağılımı
+                            </h3>
+                            <span class="text-[10px] text-gray-600 bg-white/[0.04] px-2 py-1 rounded-lg">Projelere göre</span>
+                        </div>
+                        <div style="position:relative;height:220px;display:flex;align-items:center;justify-content:center">
+                            <canvas id="chart-downloads" style="max-width:220px"></canvas>
+                            <p id="chart-downloads-empty" class="hidden text-gray-600 text-sm">Veri yok</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="glass p-6">
-                    <h3 class="font-bold mb-4">Son Aktiviteler</h3>
-                    <div id="recent-activities"></div>
+
+                <!-- Charts Row 2 -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Kullanıcı Kayıt Trend -->
+                    <div class="glass p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold flex items-center gap-2 text-sm">
+                                <span class="w-2 h-2 rounded-full bg-purple-500 inline-block"></span>
+                                Kullanıcı Büyümesi
+                            </h3>
+                            <span class="text-[10px] text-gray-600 bg-white/[0.04] px-2 py-1 rounded-lg">Son 7 gün</span>
+                        </div>
+                        <div style="position:relative;height:220px">
+                            <canvas id="chart-users"></canvas>
+                            <p id="chart-users-empty" class="hidden absolute inset-0 flex items-center justify-center text-gray-600 text-sm">Veri yok</p>
+                        </div>
+                    </div>
+                    <!-- Destek Talebi Durum Doughnut -->
+                    <div class="glass p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold flex items-center gap-2 text-sm">
+                                <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
+                                Destek Durumu
+                            </h3>
+                            <span class="text-[10px] text-gray-600 bg-white/[0.04] px-2 py-1 rounded-lg">Aktif / Bekleyen / Kapalı</span>
+                        </div>
+                        <div style="position:relative;height:220px;display:flex;align-items:center;justify-content:center">
+                            <canvas id="chart-tickets" style="max-width:220px"></canvas>
+                            <p id="chart-tickets-empty" class="hidden text-gray-600 text-sm">Veri yok</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- En Çok İndirilen + Son Aktivite -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="glass p-6">
+                        <h3 class="font-bold mb-4 text-sm flex items-center gap-2">🏆 En Çok İndirilen</h3>
+                        <div id="top-downloads"></div>
+                    </div>
+                    <div class="glass p-6">
+                        <h3 class="font-bold mb-4 text-sm flex items-center gap-2">⚡ Son Aktiviteler</h3>
+                        <div id="recent-activities"></div>
+                    </div>
                 </div>
 
                 <!-- TABLE ANALYSIS -->
-                <h2 class="text-2xl font-black pt-4 border-t border-white/5">Tablo Analizi</h2>
-                <div class="glass p-6">
-                    <h3 class="font-bold mb-4 flex items-center gap-2"><svg class="w-5 h-5 text-blue-400" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg> Sayfa Görüntüleme</h3>
-                    <div class="overflow-x-auto">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Sayfa</th>
-                                    <th>Görüntüleme</th>
-                                    <th>Son Ziyaret</th>
-                                </tr>
-                            </thead>
-                            <tbody id="analytics-pageviews-table">
-                                <tr>
-                                    <td colspan="3" class="text-center text-gray-500 py-4">Yükleniyor...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <h2 class="text-xl font-black pt-4 border-t border-white/5 text-gray-400">Detay Tabloları</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="glass p-5">
+                        <h3 class="font-bold mb-3 flex items-center gap-2 text-sm"><svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> Sayfa Görüntüleme</h3>
+                        <div class="overflow-x-auto"><table><thead><tr><th>Sayfa</th><th>Görüntüleme</th><th>Son Ziyaret</th></tr></thead><tbody id="analytics-pageviews-table"><tr><td colspan="3" class="text-center text-gray-500 py-4">Yükleniyor...</td></tr></tbody></table></div>
+                    </div>
+                    <div class="glass p-5">
+                        <h3 class="font-bold mb-3 flex items-center gap-2 text-sm"><svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> İndirme Detayları</h3>
+                        <div class="overflow-x-auto"><table><thead><tr><th>Proje</th><th>İndirme</th></tr></thead><tbody id="analytics-downloads-table"><tr><td colspan="2" class="text-center text-gray-500 py-4">Yükleniyor...</td></tr></tbody></table></div>
                     </div>
                 </div>
-                <div class="glass p-6">
-                    <h3 class="font-bold mb-4 flex items-center gap-2"><svg class="w-5 h-5 text-cyan-400" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg> İndirme Detayları</h3>
-                    <div class="overflow-x-auto">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Proje</th>
-                                    <th>İndirme Sayısı</th>
-                                </tr>
-                            </thead>
-                            <tbody id="analytics-downloads-table">
-                                <tr>
-                                    <td colspan="2" class="text-center text-gray-500 py-4">Yükleniyor...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="glass p-5">
+                        <h3 class="font-bold mb-3 flex items-center gap-2 text-sm"><svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg> Kullanıcı Kayıtları</h3>
+                        <div class="overflow-x-auto"><table><thead><tr><th>Dönem</th><th>Yeni</th><th>Toplam</th></tr></thead><tbody id="analytics-users-table"><tr><td colspan="3" class="text-center text-gray-500 py-4">Yükleniyor...</td></tr></tbody></table></div>
                     </div>
-                </div>
-                <div class="glass p-6">
-                    <h3 class="font-bold mb-4 flex items-center gap-2"><svg class="w-5 h-5 text-purple-400" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg> Kullanıcı Kayıtları</h3>
-                    <div class="overflow-x-auto">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Dönem</th>
-                                    <th>Yeni Kullanıcı</th>
-                                    <th>Toplam</th>
-                                </tr>
-                            </thead>
-                            <tbody id="analytics-users-table">
-                                <tr>
-                                    <td colspan="3" class="text-center text-gray-500 py-4">Yükleniyor...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="glass p-6">
-                    <h3 class="font-bold mb-4 flex items-center gap-2"><svg class="w-5 h-5 text-green-400" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg> Destek Talepleri Özeti</h3>
-                    <div class="overflow-x-auto">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Kategori</th>
-                                    <th>Aktif</th>
-                                    <th>Beklemede</th>
-                                    <th>Kapalı</th>
-                                    <th>Toplam</th>
-                                </tr>
-                            </thead>
-                            <tbody id="analytics-tickets-table">
-                                <tr>
-                                    <td colspan="5" class="text-center text-gray-500 py-4">Yükleniyor...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="glass p-5">
+                        <h3 class="font-bold mb-3 flex items-center gap-2 text-sm"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg> Talep Özeti (Kategori)</h3>
+                        <div class="overflow-x-auto"><table><thead><tr><th>Kategori</th><th>Aktif</th><th>Bekl.</th><th>Kapalı</th><th>Top.</th></tr></thead><tbody id="analytics-tickets-table"><tr><td colspan="5" class="text-center text-gray-500 py-4">Yükleniyor...</td></tr></tbody></table></div>
                     </div>
                 </div>
             </div>
@@ -1443,11 +1449,144 @@
             const monthUsers = allUsers.filter(u => u.created && new Date(u.created).getMonth() === thisMonth).length;
             document.getElementById('stat-month-users').textContent = monthUsers;
         }
-        /* _old_viewUser replaced by openUD */
-        /* toggleUserBlock replaced by doToggleBlock */
+        /* ══════════════════════════════════════════
+           KULLANICI DETAY MODAL — openUD / closeUD / doToggleBlock
+        ══════════════════════════════════════════ */
+        async function openUD(uid) {
+            const m = g('m-user-detail');
+            m.classList.remove('hidden'); m.classList.add('flex');
+            // Reset
+            g('ud-nm').textContent = '...'; g('ud-un').textContent = ''; g('ud-uid').textContent = uid;
+            g('ud-em').textContent = '...'; g('ud-cr').textContent = '...';
+            g('ud-pr').textContent = '...'; g('ud-tk').textContent = '...';
+            g('ud-av').textContent = '?';
+            try {
+                const snap = await db.ref('users/' + uid).once('value');
+                const u = snap.val() || {};
+                const name = u.name || u.displayName || 'Bilinmiyor';
+                const initials = name.split(' ').map(w => w[0]||'').join('').toUpperCase().substring(0,2) || '?';
+                g('ud-av').textContent = initials;
+                g('ud-nm').textContent = name;
+                g('ud-un').textContent = '@' + (u.username || uid.substring(0,8));
+                g('ud-em').textContent = u.email || '-';
+                g('ud-cr').textContent = u.created ? new Date(u.created).toLocaleDateString('tr-TR') : '-';
+                g('ud-pr').textContent = u.provider || 'email';
+                g('ud-uid').textContent = uid;
+                // Status badge
+                const sb = g('ud-sb');
+                if (u.blocked) {
+                    sb.textContent = 'Engelli'; sb.className = 'mt-1.5 inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-500/15 text-red-400';
+                } else {
+                    sb.textContent = 'Aktif'; sb.className = 'mt-1.5 inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-green-500/15 text-green-400';
+                }
+                // Ticket count
+                const tkSnap = await db.ref('support_tickets').orderByChild('userId').equalTo(uid).once('value');
+                g('ud-tk').textContent = tkSnap.numChildren();
+                // Block/Unblock button
+                const bb = g('ud-bb');
+                if (u.blocked) {
+                    bb.textContent = 'Engeli Kaldır';
+                    bb.className = 'flex-1 py-2.5 rounded-xl font-bold text-sm bg-green-600 hover:bg-green-500 text-white transition-all';
+                    bb.onclick = function(){ doToggleBlock(uid, false); closeUD(); };
+                } else {
+                    bb.textContent = 'Engelle';
+                    bb.className = 'flex-1 py-2.5 rounded-xl font-bold text-sm bg-red-600 hover:bg-red-500 text-white transition-all';
+                    bb.onclick = function(){ doToggleBlock(uid, true); closeUD(); };
+                }
+            } catch(e) {
+                g('ud-nm').textContent = 'Hata: ' + e.message;
+            }
+        }
+
+        function closeUD() {
+            const m = g('m-user-detail');
+            m.classList.add('hidden'); m.classList.remove('flex');
+        }
+        g('m-user-detail').addEventListener('click', function(e){ if(e.target===this) closeUD(); });
+
+        async function doToggleBlock(uid, block) {
+            showConfirm({
+                title: block ? 'Kullanıcıyı Engelle' : 'Engeli Kaldır',
+                msg: block ? 'Bu kullanıcı siteye erişemeyecek.' : 'Kullanıcı tekrar erişim kazanacak.',
+                icon: block ? '🚫' : '✓',
+                iconBg: block ? 'rgba(239,68,68,.12)' : 'rgba(34,197,94,.12)',
+                okLabel: block ? 'Engelle' : 'Kaldır',
+                okClass: block ? 'bg-red-600 hover:bg-red-500 text-white' : 'bg-green-600 hover:bg-green-500 text-white',
+                onOk: async function() {
+                    try {
+                        await db.ref('users/' + uid + '/blocked').set(block);
+                        await loadUsers();
+                        showAT(block ? 'Kullanıcı engellendi' : 'Engel kaldırıldı', block ? 'error' : 'success');
+                        log((block ? 'Kullanıcı engellendi: ' : 'Engel kaldırıldı: ') + uid.substring(0,8));
+                    } catch(e) { showAT('Hata: ' + e.message, 'error'); }
+                }
+            });
+        }
         async function loadSupport() { try { const snapshot = await db.ref('support_tickets').once('value'); const tickets = []; snapshot.forEach(child => { tickets.push(child.val()) }); tickets.sort((a, b) => b.created.localeCompare(a.created)); const el = g('supportList'); const statusColors = { aktif: 'text-green-400 bg-green-500/15', beklemede: 'text-yellow-400 bg-yellow-500/15', kapali: 'text-gray-400 bg-gray-500/15' }; el.innerHTML = tickets.map(t => `<tr><td class="text-sm">${t.userEmail}</td><td class="font-semibold">${t.subject}</td><td><span class="px-2 py-0.5 bg-purple-500/15 text-purple-400 rounded text-[10px] font-bold uppercase">${t.category}</span></td><td><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusColors[t.status] || statusColors.aktif}">${t.status}</span></td><td class="text-gray-500 text-xs">${new Date(t.created).toLocaleString('tr-TR')}</td><td class="whitespace-nowrap"><button onclick="openTD(${t.id})" class="btn-s mr-1">Gör</button><button onclick="replyTicket(${t.id})" class="btn-p text-[10px] px-2 py-1 mr-1">Yanıtla</button><button onclick="openTD(${t.id})" class="btn-s mr-1">Durum</button><button onclick="delTicket(${t.id})" class="btn-d">Sil</button></td></tr>`).join('') || '<tr><td colspan="6" class="text-center text-gray-500 py-8">Henüz destek talebi yok</td></tr>' } catch (e) { g('supportList').innerHTML = '<tr><td colspan="6" class="text-center text-red-500 py-8">Hata: ' + e.message + '</td></tr>' } }
-        /* _old_viewTicket replaced by openTD */
-        /* changeStatus replaced by setTStatus via openTD */
+        /* ══════════════════════════════════════════
+           TİCKET DETAY MODAL — openTD / closeTD / setTStatus
+        ══════════════════════════════════════════ */
+        var _currentTDId = null;
+
+        async function openTD(id) {
+            _currentTDId = id;
+            const m = g('m-ticket-detail');
+            m.classList.remove('hidden'); m.classList.add('flex');
+            g('td-subj').textContent = '...'; g('td-msg').textContent = '...';
+            g('td-em').textContent = '...'; g('td-dt').textContent = '...';
+            g('td-reps').innerHTML = '<p class="text-gray-600 text-sm">Yükleniyor...</p>';
+            try {
+                const snap = await db.ref('support_tickets/' + id).once('value');
+                const t = snap.val(); if (!t) { showAT('Talep bulunamiyor','error'); closeTD(); return; }
+                const statusColors = { aktif:'text-green-400 bg-green-500/15', beklemede:'text-yellow-400 bg-yellow-500/15', kapali:'text-gray-400 bg-gray-500/15' };
+                const priorityColors = { yuksek:'text-red-400 bg-red-500/15', orta:'text-yellow-400 bg-yellow-500/15', dusuk:'text-blue-400 bg-blue-500/15' };
+                const sb = g('td-sb'); sb.textContent = t.status || 'aktif';
+                sb.className = 'px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ' + (statusColors[t.status] || statusColors.aktif);
+                const cb = g('td-cb'); cb.textContent = t.category || '-';
+                const pb = g('td-pb');
+                if (t.priority) { pb.textContent = t.priority; pb.className = 'px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ' + (priorityColors[t.priority] || 'bg-white/5 text-gray-400'); }
+                else { pb.textContent = ''; }
+                g('td-subj').textContent = t.subject;
+                g('td-msg').textContent = t.message;
+                g('td-em').textContent = t.userEmail || '-';
+                g('td-dt').textContent = t.created ? new Date(t.created).toLocaleString('tr-TR') : '-';
+                if (t.replies && Object.keys(t.replies).length) {
+                    const sorted = Object.values(t.replies).sort((a,b)=>a.created.localeCompare(b.created));
+                    g('td-reps').innerHTML = sorted.map(r => {
+                        const isAdmin = r.author === 'Admin';
+                        return '<div class="p-3 rounded-xl border ' + (isAdmin ? 'bg-blue-500/[0.06] border-blue-500/20' : 'bg-white/[0.03] border-white/[0.05]') + '">'
+                            + '<div class="flex items-center gap-2 mb-1.5"><span class="text-[10px] font-black ' + (isAdmin ? 'text-blue-400' : 'text-gray-400') + '">' + (isAdmin ? '🛡 Admin' : r.author) + '</span>'
+                            + '<span class="text-[9px] text-gray-600">' + new Date(r.created).toLocaleString('tr-TR') + '</span></div>'
+                            + '<p class="text-sm text-gray-200 leading-relaxed whitespace-pre-wrap">' + r.message + '</p></div>';
+                    }).join('');
+                } else {
+                    g('td-reps').innerHTML = '<p class="text-gray-600 text-sm text-center py-2">Henüz yanit yok</p>';
+                }
+            } catch(e) { showAT('Hata: '+e.message,'error'); closeTD(); }
+        }
+
+        function closeTD() {
+            _currentTDId = null;
+            const m = g('m-ticket-detail');
+            m.classList.add('hidden'); m.classList.remove('flex');
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            var mTD = g('m-ticket-detail');
+            if (mTD) mTD.addEventListener('click', function(e){ if(e.target===this) closeTD(); });
+        });
+
+        async function setTStatus(status) {
+            if (!_currentTDId) return;
+            try {
+                await db.ref('support_tickets/' + _currentTDId + '/status').set(status);
+                const statusColors = { aktif:'text-green-400 bg-green-500/15', beklemede:'text-yellow-400 bg-yellow-500/15', kapali:'text-gray-400 bg-gray-500/15' };
+                const sb = g('td-sb'); sb.textContent = status;
+                sb.className = 'px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ' + (statusColors[status] || statusColors.aktif);
+                showAT('Durum güncellendi: ' + status, 'success');
+                log('Destek talebi durumu degistirildi: ' + status);
+                loadSupport();
+            } catch(e) { showAT('Hata: '+e.message,'error'); }
+        }
         function delTicket(id){ showConfirm({title:'Sil',msg:'Bu talep kalici olarak silinecek.',icon:'!',iconBg:'rgba(239,68,68,.12)',okLabel:'Sil',okClass:'bg-red-600 hover:bg-red-500 text-white',onOk:async function(){try{await db.ref('support_tickets/'+id).remove();loadSupport();showAT('Talep silindi','success');}catch(e){showAT('Hata: '+e.message,'error');}}}); }
 
         async function replyTicket(id) {
@@ -1759,104 +1898,231 @@
             location.reload();
         }
 
-        // ============== ANALYTICS ==============
+        // ============== ANALYTICS + CHART.JS ==============
+        var _charts = {};
+        function _destroyChart(id) { if (_charts[id]) { _charts[id].destroy(); delete _charts[id]; } }
+
+        function _chartDefaults() {
+            return {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 11 } } } }
+            };
+        }
+
+        function _makeBarChart(id, labels, data, color) {
+            _destroyChart(id);
+            const canvas = g('chart-' + id);
+            if (!canvas) return;
+            if (!labels.length) { g('chart-' + id + '-empty') && g('chart-' + id + '-empty').classList.remove('hidden'); return; }
+            _charts[id] = new Chart(canvas.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{ data: data, backgroundColor: color + '33', borderColor: color, borderWidth: 2, borderRadius: 6, borderSkipped: false }]
+                },
+                options: { ..._chartDefaults(), scales: {
+                    x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                    y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
+                }, plugins: { ..._chartDefaults().plugins, legend: { display: false } } }
+            });
+        }
+
+        function _makeDoughnutChart(id, labels, data, colors) {
+            _destroyChart(id);
+            const canvas = g('chart-' + id);
+            if (!canvas) return;
+            const total = data.reduce((a,b)=>a+b,0);
+            if (!total) { g('chart-' + id + '-empty') && g('chart-' + id + '-empty').classList.remove('hidden'); canvas.style.display='none'; return; }
+            _charts[id] = new Chart(canvas.getContext('2d'), {
+                type: 'doughnut',
+                data: { labels, datasets: [{ data, backgroundColor: colors.map(c=>c+'aa'), borderColor: colors, borderWidth: 2 }] },
+                options: { ..._chartDefaults(), cutout: '65%', plugins: {
+                    ..._chartDefaults().plugins,
+                    legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 }, padding: 12 } }
+                }}
+            });
+        }
+
+        function _makeLineChart(id, labels, data, color) {
+            _destroyChart(id);
+            const canvas = g('chart-' + id);
+            if (!canvas) return;
+            _charts[id] = new Chart(canvas.getContext('2d'), {
+                type: 'line',
+                data: { labels, datasets: [{ data, borderColor: color, backgroundColor: color + '18', fill: true, tension: 0.4, pointBackgroundColor: color, pointRadius: 4, pointHoverRadius: 6 }] },
+                options: { ..._chartDefaults(), scales: {
+                    x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                    y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true, precision: 0 }
+                }, plugins: { ..._chartDefaults().plugins, legend: { display: false } } }
+            });
+        }
+
         async function loadAnalytics() {
             try {
-                // Stat cards
-                const pvSnap = await db.ref('analytics/pageviews').once('value');
+                // ── Fetch all data ──
+                const [pvSnap, dlSnap, tkSnap, countsSnap, actSnap] = await Promise.all([
+                    db.ref('analytics/pageviews').once('value'),
+                    db.ref('analytics/downloads').once('value'),
+                    db.ref('support_tickets').once('value'),
+                    db.ref('download_counts').once('value'),
+                    db.ref('activity_logs').limitToLast(10).once('value')
+                ]);
+
+                // ── Stat Cards ──
                 g('stat-pageviews').textContent = pvSnap.numChildren();
-                const dlSnap = await db.ref('analytics/downloads').once('value');
                 g('stat-downloads').textContent = dlSnap.numChildren();
-                const tkSnap = await db.ref('support_tickets').once('value');
                 g('stat-tickets').textContent = tkSnap.numChildren();
                 const activeUsers = allUsers.filter(u => !u.blocked).length;
                 g('stat-active').textContent = activeUsers;
+                g('stat-active-sub').textContent = allUsers.length + ' toplam hesap';
 
-                // Top downloads
-                const countsSnap = await db.ref('download_counts').once('value');
+                // ── Download counts ──
                 const counts = [];
                 countsSnap.forEach(c => counts.push({ name: c.key, count: c.val() }));
                 counts.sort((a, b) => b.count - a.count);
-                const topEl = g('top-downloads');
-                if (counts.length) {
-                    topEl.innerHTML = counts.slice(0, 10).map((c, i) => `<div class="flex items-center justify-between py-2 ${i > 0 ? 'border-t border-white/5' : ''}"><span class="font-semibold text-sm">${i + 1}. ${c.name}</span><span class="text-blue-400 font-bold">${c.count}</span></div>`).join('');
-                } else {
-                    topEl.innerHTML = '<p class="text-gray-500 text-sm">Henüz indirme verisi yok</p>';
-                }
 
-                // Recent activities from Firebase
-                const actSnap = await db.ref('activity_logs').limitToLast(10).once('value');
-                const acts = []; actSnap.forEach(c => acts.push(c.val())); acts.reverse();
-                const actEl = g('recent-activities');
-                if (acts.length) {
-                    actEl.innerHTML = acts.map(a => `<div class="flex items-center justify-between py-2 border-t border-white/5 first:border-0"><div><span class="text-sm font-semibold">${a.email || a.userId || 'Bilinmiyor'}</span><span class="text-gray-500 text-xs ml-2">${a.type === 'login' ? 'Giriş yaptı' : a.action || a.type}</span></div><span class="text-gray-500 text-xs">${a.timestamp ? new Date(a.timestamp).toLocaleString('tr-TR') : ''}</span></div>`).join('');
-                } else {
-                    actEl.innerHTML = '<p class="text-gray-500 text-sm">Henüz aktivite yok</p>';
-                }
+                // ── Tickets array ──
+                const tickets = [];
+                tkSnap.forEach(c => tickets.push(c.val()));
 
-                // === TABLE ANALYSIS ===
-
-                // Pageviews table: group by page
+                // ── Pageviews grouped by page ──
                 const pvData = {};
                 pvSnap.forEach(c => {
-                    const v = c.val();
-                    const page = v.page || 'unknown';
+                    const v = c.val(); const page = v.page || 'unknown';
                     if (!pvData[page]) pvData[page] = { count: 0, last: v.timestamp };
                     pvData[page].count++;
                     if (v.timestamp > pvData[page].last) pvData[page].last = v.timestamp;
                 });
+                const pvEntries = Object.entries(pvData).sort((a,b) => b[1].count - a[1].count).slice(0,8);
+
+                // ── CHART 1: Sayfa Görüntüleme Bar ──
+                _makeBarChart('pageviews',
+                    pvEntries.map(([p]) => p.replace(/^\//, '').substring(0,12) || 'Ana Sayfa'),
+                    pvEntries.map(([,d]) => d.count),
+                    '#3b82f6'
+                );
+
+                // ── CHART 2: İndirme Doughnut ──
+                const dlColors = ['#06b6d4','#3b82f6','#8b5cf6','#ec4899','#f97316','#22c55e','#eab308','#ef4444'];
+                _makeDoughnutChart('downloads',
+                    counts.slice(0,7).map(c => c.name.substring(0,14)),
+                    counts.slice(0,7).map(c => c.count),
+                    dlColors
+                );
+
+                // ── CHART 3: Kullanıcı Son 7 Gün Line ──
+                const now = new Date();
+                const dayLabels = [], dayCounts = [];
+                for (let i = 6; i >= 0; i--) {
+                    const d = new Date(now); d.setDate(d.getDate() - i);
+                    const ds = d.toDateString();
+                    dayLabels.push(d.toLocaleDateString('tr-TR', { weekday:'short', day:'numeric' }));
+                    dayCounts.push(allUsers.filter(u => u.created && new Date(u.created).toDateString() === ds).length);
+                }
+                _makeLineChart('users', dayLabels, dayCounts, '#a855f7');
+
+                // ── CHART 4: Destek Durum Doughnut ──
+                const tkAktif = tickets.filter(t => t.status === 'aktif').length;
+                const tkBekl = tickets.filter(t => t.status === 'beklemede').length;
+                const tkKap = tickets.filter(t => t.status === 'kapali' || !t.status).length;
+                _makeDoughnutChart('tickets',
+                    ['Aktif', 'Beklemede', 'Kapalı'],
+                    [tkAktif, tkBekl, tkKap],
+                    ['#22c55e','#eab308','#6b7280']
+                );
+
+                // ── Top Downloads ──
+                const topEl = g('top-downloads');
+                if (counts.length) {
+                    topEl.innerHTML = counts.slice(0,8).map((c,i) => {
+                        const pct = Math.round((c.count / counts[0].count) * 100);
+                        return '<div class="mb-3">'
+                            + '<div class="flex justify-between items-center mb-1">'
+                            + '<span class="text-sm font-semibold truncate max-w-[140px]">' + (i+1) + '. ' + c.name + '</span>'
+                            + '<span class="text-blue-400 font-black text-sm">' + c.count + '</span></div>'
+                            + '<div class="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">'
+                            + '<div class="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" style="width:' + pct + '%"></div></div></div>';
+                    }).join('');
+                } else {
+                    topEl.innerHTML = '<p class="text-gray-500 text-sm">Henüz indirme verisi yok</p>';
+                }
+
+                // ── Recent Activities ──
+                const acts = []; actSnap.forEach(c => acts.push(c.val())); acts.reverse();
+                const actEl = g('recent-activities');
+                if (acts.length) {
+                    actEl.innerHTML = acts.map(a => {
+                        const actionLabel = a.type === 'login' ? '🔐 Giriş' : a.type === 'download' ? '📥 İndirdi' : (a.action || a.type || '?');
+                        return '<div class="flex items-center justify-between py-2 border-t border-white/[0.04] first:border-0">'
+                            + '<div class="flex items-center gap-2 min-w-0"><span class="text-sm font-semibold truncate max-w-[120px]">' + (a.email || a.userId || 'Bilinmiyor').split('@')[0] + '</span>'
+                            + '<span class="text-gray-500 text-xs shrink-0">' + actionLabel + '</span></div>'
+                            + '<span class="text-gray-600 text-[10px] shrink-0">' + (a.timestamp ? new Date(a.timestamp).toLocaleTimeString('tr-TR') : '') + '</span></div>';
+                    }).join('');
+                } else {
+                    actEl.innerHTML = '<p class="text-gray-500 text-sm">Henüz aktivite yok</p>';
+                }
+
+                // ── Table: Pageviews ──
                 const pvTable = g('analytics-pageviews-table');
-                const pvEntries = Object.entries(pvData).sort((a, b) => b[1].count - a[1].count);
                 if (pvEntries.length) {
-                    pvTable.innerHTML = pvEntries.map(([page, d]) => `<tr><td class="font-semibold">${page}</td><td class="text-blue-400 font-bold">${d.count}</td><td class="text-gray-500 text-xs">${d.last ? new Date(d.last).toLocaleString('tr-TR') : '-'}</td></tr>`).join('');
+                    pvTable.innerHTML = pvEntries.map(([page,d]) =>
+                        '<tr><td class="font-semibold">' + page + '</td>'
+                        + '<td class="text-blue-400 font-bold">' + d.count + '</td>'
+                        + '<td class="text-gray-500 text-xs">' + (d.last ? new Date(d.last).toLocaleString('tr-TR') : '-') + '</td></tr>'
+                    ).join('');
                 } else {
                     pvTable.innerHTML = '<tr><td colspan="3" class="text-center text-gray-500 py-4">Henüz veri yok</td></tr>';
                 }
 
-                // Downloads table
+                // ── Table: Downloads ──
                 const dlTable = g('analytics-downloads-table');
                 if (counts.length) {
-                    dlTable.innerHTML = counts.map(c => `<tr><td class="font-semibold">${c.name}</td><td class="text-cyan-400 font-bold">${c.count}</td></tr>`).join('');
+                    dlTable.innerHTML = counts.map(c =>
+                        '<tr><td class="font-semibold">' + c.name + '</td><td class="text-cyan-400 font-bold">' + c.count + '</td></tr>'
+                    ).join('');
                 } else {
                     dlTable.innerHTML = '<tr><td colspan="2" class="text-center text-gray-500 py-4">Henüz veri yok</td></tr>';
                 }
 
-                // Users table: by period
-                const now = new Date();
+                // ── Table: Users ──
                 const todayStr = now.toDateString();
-                const weekAgo = new Date(now.getTime() - 7 * 86400000);
-                const monthAgo = new Date(now.getTime() - 30 * 86400000);
-                const todayUsers = allUsers.filter(u => u.created && new Date(u.created).toDateString() === todayStr).length;
-                const weekUsers = allUsers.filter(u => u.created && new Date(u.created) >= weekAgo).length;
-                const monthUsers = allUsers.filter(u => u.created && new Date(u.created) >= monthAgo).length;
-                g('analytics-users-table').innerHTML = `
-                    <tr><td class="font-semibold">Bugün</td><td class="text-purple-400 font-bold">${todayUsers}</td><td class="text-gray-400">${allUsers.length}</td></tr>
-                    <tr><td class="font-semibold">Son 7 Gün</td><td class="text-purple-400 font-bold">${weekUsers}</td><td class="text-gray-400">${allUsers.length}</td></tr>
-                    <tr><td class="font-semibold">Son 30 Gün</td><td class="text-purple-400 font-bold">${monthUsers}</td><td class="text-gray-400">${allUsers.length}</td></tr>
-                `;
+                const weekAgo = new Date(now.getTime() - 7*86400000);
+                const monthAgo = new Date(now.getTime() - 30*86400000);
+                const todayU = allUsers.filter(u => u.created && new Date(u.created).toDateString() === todayStr).length;
+                const weekU  = allUsers.filter(u => u.created && new Date(u.created) >= weekAgo).length;
+                const monthU = allUsers.filter(u => u.created && new Date(u.created) >= monthAgo).length;
+                g('analytics-users-table').innerHTML =
+                    '<tr><td class="font-semibold">Bugün</td><td class="text-purple-400 font-bold">' + todayU + '</td><td class="text-gray-400">' + allUsers.length + '</td></tr>'
+                    + '<tr><td class="font-semibold">Son 7 Gün</td><td class="text-purple-400 font-bold">' + weekU + '</td><td class="text-gray-400">' + allUsers.length + '</td></tr>'
+                    + '<tr><td class="font-semibold">Son 30 Gün</td><td class="text-purple-400 font-bold">' + monthU + '</td><td class="text-gray-400">' + allUsers.length + '</td></tr>';
 
-                // Support tickets table: group by category and status
-                const tickets = []; tkSnap.forEach(c => tickets.push(c.val()));
+                // ── Table: Tickets by category ──
                 const catStats = {};
                 tickets.forEach(t => {
                     const cat = t.category || 'diger';
-                    if (!catStats[cat]) catStats[cat] = { aktif: 0, beklemede: 0, kapali: 0, total: 0 };
+                    if (!catStats[cat]) catStats[cat] = { aktif:0, beklemede:0, kapali:0, total:0 };
                     catStats[cat][t.status || 'aktif']++;
                     catStats[cat].total++;
                 });
-                const tkTable = g('analytics-tickets-table');
                 const catEntries = Object.entries(catStats);
+                const tkTable = g('analytics-tickets-table');
                 if (catEntries.length) {
-                    tkTable.innerHTML = catEntries.map(([cat, s]) => `<tr><td class="font-semibold capitalize">${cat}</td><td class="text-green-400 font-bold">${s.aktif}</td><td class="text-yellow-400 font-bold">${s.beklemede}</td><td class="text-gray-400 font-bold">${s.kapali}</td><td class="font-bold">${s.total}</td></tr>`).join('');
+                    tkTable.innerHTML = catEntries.map(([cat,s]) =>
+                        '<tr><td class="font-semibold capitalize">' + cat + '</td>'
+                        + '<td class="text-green-400 font-bold">' + s.aktif + '</td>'
+                        + '<td class="text-yellow-400 font-bold">' + s.beklemede + '</td>'
+                        + '<td class="text-gray-400 font-bold">' + s.kapali + '</td>'
+                        + '<td class="font-bold">' + s.total + '</td></tr>'
+                    ).join('');
                 } else {
                     tkTable.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-4">Henüz veri yok</td></tr>';
                 }
 
-                // Load event theme status
                 loadEventThemeStatus();
 
             } catch (e) {
                 console.error('Analytics error:', e);
+                showAT('Analitik yükleme hatası: ' + e.message, 'error');
             }
         }
 
