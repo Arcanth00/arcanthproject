@@ -6,7 +6,9 @@
     <title>Destek — Arcanth Project</title>
     <meta name="description" content="Arcanth Project destek merkezi. Sorularınız için destek talebi oluşturun.">
     <link rel="icon" type="image/png" href="logo.png">
-    <script src="https://cdn.tailwindcss.com"></script>
+        <!-- Theme anti-flash -->
+    <script>(function(){var t=localStorage.getItem('ap_theme')||'dark';document.documentElement.classList.remove('dark','light');document.documentElement.classList.add(t);})();</script>
+<script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -39,6 +41,25 @@
         .faq-item details summary::-webkit-details-marker{display:none;}
         .faq-item details[open] summary .faq-arrow{transform:rotate(180deg);}
         .faq-arrow{transition:transform .2s;}
+    </style>
+    <style id="light-mode-overrides">
+        html.light body { background: #f1f5f9 !important; color: #0f172a !important; }
+        html.light nav { background: rgba(241,245,249,.92) !important; border-bottom-color: rgba(0,0,0,.07) !important; }
+        html.light [class*="text-gray-400"] { color: #64748b !important; }
+        html.light [class*="text-gray-500"] { color: #475569 !important; }
+        html.light [class*="text-gray-600"] { color: #334155 !important; }
+        html.light [class*="text-gray-300"] { color: #475569 !important; }
+        html.light [class*="text-white"]    { color: #0f172a !important; }
+        html.light [class*="bg-white/"]     { background: rgba(255,255,255,.85) !important; border-color: rgba(0,0,0,.07) !important; }
+        html.light [class*="border-white/"] { border-color: rgba(0,0,0,.08) !important; }
+        html.light .glass { background: rgba(255,255,255,.85) !important; border-color: rgba(0,0,0,.08) !important; }
+        html.light input,html.light select,html.light textarea { background:rgba(255,255,255,.9) !important; border-color:rgba(0,0,0,.12) !important; color:#0f172a !important; }
+        html.light input::placeholder { color:#94a3b8 !important; }
+        html.light [style*="background:#0"],html.light [style*="background: #0"] { background:#f8fafc !important; }
+        html.light [class*="bg-\[#0"] { background:#f8fafc !important; }
+        html.light [class*="bg-\[#030508\]"] { background:#f1f5f9 !important; }
+        html.light [class*="bg-black/"] { background:rgba(15,23,42,.6) !important; }
+        html.light footer { background:#f8fafc !important; border-top-color:rgba(0,0,0,.07) !important; }
     </style>
 </head>
 <body>
@@ -243,19 +264,59 @@
 
 <!-- Ticket Detail Modal -->
 <div id="ticketModal" class="fixed inset-0 z-[200] hidden bg-black/85 backdrop-blur-lg flex items-center justify-center p-4">
-    <div class="bg-[#080d14] border border-white/[0.08] w-full max-w-2xl max-h-[88vh] rounded-2xl flex flex-col overflow-hidden shadow-2xl">
-        <div class="px-6 py-4 border-b border-white/[0.06] flex items-center justify-between flex-shrink-0">
-            <h3 class="font-black" id="modalTicketSubject">Talep Detayı</h3>
+    <div class="bg-[#080d14] border border-white/[0.08] w-full max-w-2xl max-h-[90vh] rounded-2xl flex flex-col overflow-hidden shadow-2xl" style="animation:mdlIn .25s cubic-bezier(.16,1,.3,1)">
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-white/[0.06] flex items-center justify-between flex-shrink-0" style="background:rgba(255,255,255,.02)">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+                </div>
+                <h3 class="font-black text-sm" id="modalTicketSubject">Talep Detayı</h3>
+            </div>
             <button onclick="closeTicketModal()" class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-white/10 transition-all">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
-        <div class="flex-1 overflow-y-auto p-6 space-y-6">
+        <!-- Scrollable body -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-5">
             <div id="modalTicketBody"></div>
-            <div id="modalReplies" class="space-y-3"></div>
+            <!-- Replies thread -->
+            <div id="modalRepliesWrap">
+                <div class="flex items-center gap-2 mb-3">
+                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Konuşma</p>
+                    <div class="flex-1 h-px bg-white/[0.05]"></div>
+                    <span id="modal-reply-count" class="text-[10px] text-gray-600"></span>
+                </div>
+                <div id="modalReplies" class="space-y-3"></div>
+            </div>
+        </div>
+        <!-- User reply form (hidden when ticket is closed) -->
+        <div id="userReplyForm" class="p-4 border-t border-white/[0.06] flex-shrink-0" style="background:rgba(255,255,255,.015)">
+            <div class="flex gap-3 items-end">
+                <div class="flex-1">
+                    <textarea id="userReplyText" rows="2"
+                        placeholder="Yanıt yaz... (Enter ile gönder, Shift+Enter yeni satır)"
+                        class="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 outline-none resize-none transition-all focus:border-blue-500/50 focus:bg-blue-500/[0.04]"
+                        style="font-family:inherit"
+                        onkeydown="handleReplyKey(event)"></textarea>
+                    <div class="flex items-center justify-between mt-1.5">
+                        <span id="replyCharCount" class="text-[10px] text-gray-700">0 / 500</span>
+                        <span class="text-[10px] text-gray-700">Enter = Gönder</span>
+                    </div>
+                </div>
+                <button onclick="sendUserReply()" id="sendReplyBtn"
+                    class="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-600 hover:bg-blue-500 flex items-center justify-center transition-all mb-7 active:scale-95 disabled:opacity-40"
+                    style="box-shadow:0 4px 12px rgba(59,130,246,.3)">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                </button>
+            </div>
+        </div>
+        <div id="closedTicketBar" class="hidden p-3 bg-gray-500/[0.08] border-t border-white/[0.04] text-center text-xs text-gray-600 font-bold uppercase tracking-wider flex-shrink-0">
+            Bu talep kapatıldı — yanıt gönderilemez
         </div>
     </div>
 </div>
+<style>@keyframes mdlIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}</style>
 
 <script>
     const FC = {apiKey:"AIzaSyCnkk6j1CGsi4sNXJ8FA9Gd2B6_VDptVDg",authDomain:"arcanthproject.firebaseapp.com",databaseURL:"https://arcanthproject-default-rtdb.firebaseio.com",projectId:"arcanthproject",storageBucket:"arcanthproject.firebasestorage.app",messagingSenderId:"826341954149",appId:"1:826341954149:web:6429d61a5b40810009ac8c"};
@@ -453,23 +514,114 @@
                 </div>
                 <p class="text-[10px] text-gray-600">${new Date(t.created).toLocaleString('tr-TR')}</p>`;
 
-            if (t.replies && Object.keys(t.replies).length) {
-                const replies = Object.values(t.replies).sort((a,b)=>a.created.localeCompare(b.created));
-                g('modalReplies').innerHTML = '<p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Yanıtlar</p>' +
-                    replies.map(r => `<div class="p-4 rounded-xl ${r.author==='Admin'?'bg-blue-500/10 border border-blue-500/20':'bg-white/[0.04]'}">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="font-bold text-sm ${r.author==='Admin'?'text-blue-400':'text-gray-300'}">${r.author}</span>
-                            <span class="text-[10px] text-gray-600">${new Date(r.created).toLocaleString('tr-TR')}</span>
-                        </div>
-                        <p class="text-sm text-gray-300 leading-relaxed">${r.message}</p>
-                    </div>`).join('');
-            } else {
-                g('modalReplies').innerHTML = '<p class="text-sm text-gray-600 text-center py-4">Henüz yanıt yok. Destek ekibimiz en kısa sürede yanıt verecek.</p>';
-            }
+            renderReplies(t.replies, t.status);
+            // Show/hide reply form based on ticket status
+            const isClosed = t.status === 'kapali';
+            g('userReplyForm').style.display = isClosed ? 'none' : 'block';
+            g('closedTicketBar').style.display = isClosed ? 'block' : 'none';
+            // Setup real-time listener for replies
+            startReplyListener(id);
         } catch(e){ g('modalTicketBody').innerHTML='<p class="text-red-400 text-sm">Hata: '+e.message+'</p>'; }
     }
-    function closeTicketModal(){ g('ticketModal').classList.add('hidden'); }
+
+    function renderReplies(replies, status) {
+        const container = g('modalReplies');
+        const countEl = g('modal-reply-count');
+        if (replies && Object.keys(replies).length) {
+            const sorted = Object.values(replies).sort((a,b)=>a.created.localeCompare(b.created));
+            countEl.textContent = sorted.length + ' mesaj';
+            container.innerHTML = sorted.map(r => {
+                const isAdmin = r.author === 'Admin';
+                const isMe = currentUser && r.authorId === currentUser.uid;
+                const alignClass = isAdmin ? '' : 'flex-row-reverse';
+                const bubbleBg   = isAdmin ? 'bg-blue-500/10 border-blue-500/20' : 'bg-indigo-500/10 border-indigo-500/20';
+                const nameColor  = isAdmin ? 'text-blue-400' : 'text-indigo-400';
+                const nameLabel  = isAdmin ? '🛡 Admin' : (r.author || 'Sen');
+                return `<div class="flex items-end gap-3 ${alignClass}">
+                    <div class="w-7 h-7 rounded-lg ${isAdmin ? 'bg-blue-500/15' : 'bg-indigo-500/15'} flex items-center justify-center flex-shrink-0 text-xs font-black ${nameColor}">${nameLabel[0]}</div>
+                    <div class="max-w-[80%]">
+                        <div class="flex items-center gap-2 mb-1 ${isAdmin ? '' : 'justify-end'}">
+                            <span class="text-[10px] font-black ${nameColor}">${nameLabel}</span>
+                            <span class="text-[9px] text-gray-600">${new Date(r.created).toLocaleString('tr-TR')}</span>
+                        </div>
+                        <div class="p-3 rounded-xl border ${bubbleBg}">
+                            <p class="text-sm text-gray-200 leading-relaxed whitespace-pre-wrap">${r.message}</p>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+            // scroll to bottom
+            setTimeout(()=>{ container.scrollTop = container.scrollHeight; }, 50);
+        } else {
+            countEl.textContent = '0 mesaj';
+            container.innerHTML = '<div class="text-center py-8"><div class="text-3xl mb-2">💬</div><p class="text-sm text-gray-600">Henüz yanıt yok.</p><p class="text-xs text-gray-700 mt-1">Destek ekibimiz en kısa sürede yanıt verecek.</p></div>';
+        }
+    }
+
+    let _replyListener = null;
+    let _currentModalTicketId = null;
+    function startReplyListener(id) {
+        _currentModalTicketId = id;
+        if (_replyListener) _replyListener();
+        const ref = db.ref('support_tickets/' + id + '/replies');
+        const handler = ref.on('value', function(snap){
+            if (!g('ticketModal').classList.contains('hidden')) {
+                db.ref('support_tickets/' + id + '/status').once('value').then(function(ss){
+                    renderReplies(snap.val(), ss.val());
+                });
+            }
+        });
+        _replyListener = function(){ ref.off('value', handler); };
+    }
+
+    function closeTicketModal(){
+        g('ticketModal').classList.add('hidden');
+        if (_replyListener) { _replyListener(); _replyListener = null; }
+        _currentModalTicketId = null;
+        g('userReplyText').value = '';
+        g('replyCharCount').textContent = '0 / 500';
+    }
     document.getElementById('ticketModal').addEventListener('click', function(e){ if(e.target===this) closeTicketModal(); });
+
+    // char counter
+    document.getElementById('userReplyText').addEventListener('input', function(){
+        const len = this.value.length;
+        const el = g('replyCharCount');
+        el.textContent = len + ' / 500';
+        el.style.color = len > 450 ? (len >= 500 ? '#f87171' : '#facc15') : '';
+        if (len > 500) this.value = this.value.substring(0, 500);
+    });
+
+    function handleReplyKey(e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendUserReply(); }
+    }
+
+    async function sendUserReply() {
+        if (!currentUser || !_currentModalTicketId) return;
+        const text = g('userReplyText').value.trim();
+        if (!text) return;
+        const btn = g('sendReplyBtn');
+        btn.disabled = true;
+        try {
+            const rid = Date.now();
+            const uSnap = await db.ref('users/' + currentUser.uid).once('value');
+            const uData = uSnap.val() || {};
+            await db.ref('support_tickets/' + _currentModalTicketId + '/replies/' + rid).set({
+                id: rid,
+                message: text,
+                author: uData.username || uData.name || currentUser.email.split('@')[0],
+                authorId: currentUser.uid,
+                created: new Date().toISOString()
+            });
+            await db.ref('support_tickets/' + _currentModalTicketId + '/status').set('beklemede');
+            g('userReplyText').value = '';
+            g('replyCharCount').textContent = '0 / 500';
+        } catch(e) {
+            console.error(e);
+        } finally {
+            btn.disabled = false;
+        }
+    }
 </script>
 </body>
 </html>
