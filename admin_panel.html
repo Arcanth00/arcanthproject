@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arcanth Project Admin Panel</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <script src="https://cdn.tailwindcss.com"></script>
+        <!-- Theme anti-flash -->
+    <script>(function(){var t=localStorage.getItem('ap_theme')||'dark';document.documentElement.classList.remove('dark','light');document.documentElement.classList.add(t);})();</script>
+<script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -396,6 +398,89 @@
             window._lsIv=iv;
         })();
     </script>
+
+
+    <!-- 2FA Verification Screen -->
+    <div id="screen-2fa" class="fixed inset-0 z-[9998] hidden items-center justify-center" style="background:#020408">
+        <div class="w-full max-w-sm mx-4">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-blue-500/20">
+                    <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                </div>
+                <h2 class="text-2xl font-black mb-1">İki Faktörlü Doğrulama</h2>
+                <p class="text-gray-500 text-sm" id="tfa-subtitle">Google Authenticator uygulamasındaki 6 haneli kodu girin</p>
+            </div>
+            <!-- Code input -->
+            <div class="glass p-6 space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Doğrulama Kodu</label>
+                    <input type="text" id="tfa-code-input" inputmode="numeric" pattern="[0-9]*" maxlength="6"
+                        placeholder="000000"
+                        class="w-full bg-white/[0.04] border border-white/[0.08] text-white text-center text-3xl font-black tracking-[.5em] py-4 rounded-xl outline-none transition-all focus:border-blue-500/50 focus:bg-blue-500/[0.04]"
+                        style="font-family:monospace"
+                        oninput="this.value=this.value.replace(/[^0-9]/g,'').substring(0,6); if(this.value.length===6) verify2FA()"
+                        onkeydown="if(event.key==='Enter') verify2FA()">
+                </div>
+                <div id="tfa-err" class="hidden text-sm text-red-400 text-center font-bold"></div>
+                <button onclick="verify2FA()" id="tfa-verify-btn" class="btn-p w-full py-3">Doğrula</button>
+                <button onclick="cancel2FA()" class="w-full py-2.5 text-sm text-gray-500 hover:text-gray-400 transition-colors font-bold">← Çıkış Yap ve Geri Dön</button>
+            </div>
+            <!-- Time remaining bar -->
+            <div class="mt-4 px-2">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-[10px] text-gray-600 font-bold uppercase tracking-wider">Kod geçerlilik süresi</span>
+                    <span id="tfa-timer" class="text-[10px] font-black text-gray-500">30s</span>
+                </div>
+                <div class="h-1 bg-white/[0.05] rounded-full overflow-hidden">
+                    <div id="tfa-timer-bar" class="h-full bg-blue-500 rounded-full transition-none" style="width:100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2FA Setup Screen (for first-time setup) -->
+    <div id="screen-2fa-setup" class="fixed inset-0 z-[9999] hidden items-center justify-center" style="background:#020408">
+        <div class="w-full max-w-md mx-4">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-black mb-1">2FA Kurulumu</h2>
+                <p class="text-gray-500 text-sm">Google Authenticator ile hesabınızı koruyun</p>
+            </div>
+            <div class="glass p-6 space-y-5">
+                <!-- Steps -->
+                <div class="space-y-3">
+                    <div class="flex items-start gap-3 p-3 bg-white/[0.03] rounded-xl border border-white/[0.05]">
+                        <div class="w-6 h-6 rounded-full bg-blue-500/15 text-blue-400 flex items-center justify-center text-xs font-black flex-shrink-0 mt-0.5">1</div>
+                        <p class="text-sm text-gray-300">Google Authenticator veya Authy uygulamasını telefonunuza indirin</p>
+                    </div>
+                    <div class="flex items-start gap-3 p-3 bg-white/[0.03] rounded-xl border border-white/[0.05]">
+                        <div class="w-6 h-6 rounded-full bg-blue-500/15 text-blue-400 flex items-center justify-center text-xs font-black flex-shrink-0 mt-0.5">2</div>
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-300 mb-2">Aşağıdaki QR kodu tarayın veya gizli anahtarı manuel girin:</p>
+                            <div id="setup-qr" class="bg-white p-3 rounded-xl inline-block"></div>
+                            <div class="mt-2">
+                                <p class="text-[10px] text-gray-600 mb-1">Manuel anahtar:</p>
+                                <code id="setup-secret-display" class="text-xs text-blue-400 bg-blue-500/[0.08] px-3 py-1.5 rounded-lg block break-all select-all font-mono tracking-wider"></code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3 p-3 bg-white/[0.03] rounded-xl border border-white/[0.05]">
+                        <div class="w-6 h-6 rounded-full bg-blue-500/15 text-blue-400 flex items-center justify-center text-xs font-black flex-shrink-0 mt-0.5">3</div>
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-300 mb-2">Uygulamada görünen 6 haneli kodu girerek kurulumu tamamlayın:</p>
+                            <input type="text" id="setup-verify-code" inputmode="numeric" maxlength="6" placeholder="000000"
+                                class="w-full bg-white/[0.04] border border-white/[0.08] text-white text-center text-2xl font-black tracking-[.4em] py-3 rounded-xl outline-none transition-all focus:border-green-500/50"
+                                style="font-family:monospace"
+                                oninput="this.value=this.value.replace(/[^0-9]/g,'').substring(0,6)">
+                        </div>
+                    </div>
+                </div>
+                <div id="setup-err" class="hidden text-sm text-red-400 text-center font-bold"></div>
+                <button onclick="complete2FASetup()" class="btn-p w-full py-3">Kurulumu Tamamla</button>
+                <button onclick="skip2FASetup()" class="w-full py-2.5 text-sm text-gray-600 hover:text-gray-500 transition-colors">Şimdilik Atla (önerilmez)</button>
+            </div>
+        </div>
+    </div>
 
     <div id="login" class="fixed inset-0 z-[9999] flex items-center justify-center hidden" style="background:#020408">
         <div class="glass p-10 max-w-sm w-full mx-4">
@@ -1277,6 +1362,151 @@
 
     <script>
         const firebaseConfig = { apiKey: "AIzaSyCnkk6j1CGsi4sNXJ8FA9Gd2B6_VDptVDg", authDomain: "arcanthproject.firebaseapp.com", databaseURL: "https://arcanthproject-default-rtdb.firebaseio.com", projectId: "arcanthproject", storageBucket: "arcanthproject.firebasestorage.app", messagingSenderId: "826341954149", appId: "1:826341954149:web:6429d61a5b40810009ac8c" };
+
+        /* ══════════════════════════════════════════════
+           TOTP 2FA — RFC 6238, Pure Web Crypto
+        ══════════════════════════════════════════════ */
+        function b32decode(s) {
+            var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+            s = s.toUpperCase().replace(/[^A-Z2-7]/g,'');
+            var bits=0,val=0,out=[];
+            for(var i=0;i<s.length;i++){val=(val<<5)|chars.indexOf(s[i]);bits+=5;if(bits>=8){out.push((val>>>(bits-8))&255);bits-=8;}}
+            return new Uint8Array(out);
+        }
+        function b32encode(bytes) {
+            var chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567',out='',bits=0,val=0;
+            for(var i=0;i<bytes.length;i++){val=(val<<8)|bytes[i];bits+=8;while(bits>=5){out+=chars[(val>>>(bits-5))&31];bits-=5;}}
+            if(bits>0)out+=chars[(val<<(5-bits))&31];
+            return out;
+        }
+        function generateTOTPSecret(){var b=new Uint8Array(20);crypto.getRandomValues(b);return b32encode(b);}
+        async function computeTOTP(secret,time){
+            var counter=Math.floor((time||Date.now()/1000)/30);
+            var key=b32decode(secret);
+            var buf=new ArrayBuffer(8);var view=new DataView(buf);
+            view.setUint32(0,Math.floor(counter/0x100000000),false);
+            view.setUint32(4,counter>>>0,false);
+            var ck=await crypto.subtle.importKey('raw',key,{name:'HMAC',hash:'SHA-1'},false,['sign']);
+            var sig=await crypto.subtle.sign('HMAC',ck,buf);
+            var hash=new Uint8Array(sig);
+            var off=hash[19]&0xf;
+            var code=((hash[off]&0x7f)<<24)|((hash[off+1]&0xff)<<16)|((hash[off+2]&0xff)<<8)|(hash[off+3]&0xff);
+            return String(code%1000000).padStart(6,'0');
+        }
+        async function verifyTOTP(secret,code){
+            var now=Date.now()/1000;
+            for(var o of[-1,0,1]){if(await computeTOTP(secret,now+o*30)===code)return true;}
+            return false;
+        }
+
+        /* ── 2FA State ── */
+        var _2faSecret=null,_2faTimer=null,_pendingUser=null,_setupSecret=null;
+
+        function start2FATimer(){
+            if(_2faTimer)clearInterval(_2faTimer);
+            _2faTimer=setInterval(function(){
+                var rem=30-(Math.floor(Date.now()/1000)%30);
+                var pct=(rem/30)*100;
+                var te=document.getElementById('tfa-timer'),be=document.getElementById('tfa-timer-bar');
+                if(te)te.textContent=rem+'s';
+                if(be){be.style.width=pct+'%';be.style.background=rem<=8?'#ef4444':rem<=15?'#f97316':'#3b82f6';}
+                if(rem===30){var inp=document.getElementById('tfa-code-input');if(inp&&inp.value.length>0&&inp.value.length<6)inp.value='';}
+            },250);
+        }
+        function stop2FATimer(){if(_2faTimer){clearInterval(_2faTimer);_2faTimer=null;}}
+
+        function show2FAVerify(user){
+            _pendingUser=user;
+            g('loading-screen').classList.add('hidden');
+            var s=document.getElementById('screen-2fa');
+            s.classList.remove('hidden');s.classList.add('flex');
+            var inp=document.getElementById('tfa-code-input');
+            if(inp){inp.value='';setTimeout(function(){inp.focus();},200);}
+            document.getElementById('tfa-err').classList.add('hidden');
+            start2FATimer();
+        }
+        async function verify2FA(){
+            var code=document.getElementById('tfa-code-input').value.trim();
+            if(code.length!==6){show2FAErr('6 haneli kodu eksiksiz girin');return;}
+            var btn=document.getElementById('tfa-verify-btn');
+            btn.textContent='Doğrulanıyor...';btn.disabled=true;
+            try{
+                var snap=await db.ref('admin_2fa/'+_pendingUser.uid+'/secret').once('value');
+                var secret=snap.val();
+                if(!secret){show2FAErr('2FA kaydı bulunamadı, tekrar giriş yapın.');btn.textContent='Doğrula';btn.disabled=false;return;}
+                var ok=await verifyTOTP(secret,code);
+                if(ok){
+                    stop2FATimer();
+                    document.getElementById('screen-2fa').classList.add('hidden');
+                    document.getElementById('screen-2fa').classList.remove('flex');
+                    sessionStorage.setItem('2fa_verified','1');
+                    g('login').style.display='none';g('admin').style.display='flex';
+                    g('current-user-uid').textContent='UID: '+_pendingUser.uid.substring(0,12)+'...';
+                    g('current-user-uid').title=_pendingUser.uid;
+                    try{await initApp();}catch(e2){showAT('Yukleme hatasi: '+e2.message,'error');}
+                }else{
+                    show2FAErr('Hatalı kod. Uygulamayı kontrol edin.');
+                    document.getElementById('tfa-code-input').value='';
+                    document.getElementById('tfa-code-input').focus();
+                    btn.textContent='Doğrula';btn.disabled=false;
+                }
+            }catch(e){show2FAErr('Hata: '+e.message);btn.textContent='Doğrula';btn.disabled=false;}
+        }
+        function show2FAErr(msg){var el=document.getElementById('tfa-err');el.textContent=msg;el.classList.remove('hidden');setTimeout(function(){el.classList.add('hidden');},4000);}
+        function cancel2FA(){stop2FATimer();_pendingUser=null;auth.signOut();document.getElementById('screen-2fa').classList.add('hidden');document.getElementById('screen-2fa').classList.remove('flex');g('login').style.display='flex';}
+
+        /* ── 2FA Setup ── */
+        async function show2FASetup(user){
+            _pendingUser=user;_setupSecret=generateTOTPSecret();
+            g('loading-screen').classList.add('hidden');
+            var issuer='ArcanthAdmin';
+            var label=encodeURIComponent(issuer+':'+user.email);
+            var qrUrl='otpauth://totp/'+label+'?secret='+_setupSecret+'&issuer='+issuer+'&algorithm=SHA1&digits=6&period=30';
+            var img=document.createElement('img');
+            img.src='https://chart.googleapis.com/chart?chs=180x180&cht=qr&chl='+encodeURIComponent(qrUrl)+'&choe=UTF-8';
+            img.style='width:180px;height:180px;border-radius:8px;display:block;';
+            var qrDiv=document.getElementById('setup-qr');qrDiv.innerHTML='';qrDiv.appendChild(img);
+            document.getElementById('setup-secret-display').textContent=_setupSecret.match(/.{1,4}/g).join(' ');
+            var s=document.getElementById('screen-2fa-setup');s.classList.remove('hidden');s.classList.add('flex');
+        }
+        async function complete2FASetup(){
+            var code=document.getElementById('setup-verify-code').value.trim();
+            if(code.length!==6){document.getElementById('setup-err').textContent='6 haneli kodu girin';document.getElementById('setup-err').classList.remove('hidden');return;}
+            var ok=await verifyTOTP(_setupSecret,code);
+            if(!ok){document.getElementById('setup-err').textContent='Hatalı kod, tekrar deneyin';document.getElementById('setup-err').classList.remove('hidden');document.getElementById('setup-verify-code').value='';return;}
+            await db.ref('admin_2fa/'+_pendingUser.uid).set({secret:_setupSecret,enabled:true,setupAt:new Date().toISOString()});
+            document.getElementById('screen-2fa-setup').classList.add('hidden');document.getElementById('screen-2fa-setup').classList.remove('flex');
+            sessionStorage.setItem('2fa_verified','1');
+            g('login').style.display='none';g('admin').style.display='flex';
+            g('current-user-uid').textContent='UID: '+_pendingUser.uid.substring(0,12)+'...';
+            showAT('2FA kurulumu tamamlandı! Hesabınız artık korunuyor 🔐','success');
+            try{await initApp();}catch(e){}
+        }
+        function skip2FASetup(){
+            document.getElementById('screen-2fa-setup').classList.add('hidden');document.getElementById('screen-2fa-setup').classList.remove('flex');
+            sessionStorage.setItem('2fa_skipped','1');
+            g('login').style.display='none';g('admin').style.display='flex';
+            g('current-user-uid').textContent='UID: '+_pendingUser.uid.substring(0,12)+'...';
+            showAT('2FA atlandı — Ayarlar menüsünden kurabilirsiniz','info');
+            try{initApp();}catch(e){}
+        }
+        async function setup2FAFromSettings(){
+            var user=auth.currentUser;if(!user)return;
+            var snap=await db.ref('admin_2fa/'+user.uid+'/enabled').once('value');
+            if(snap.val()===true){
+                showConfirm({title:'2FA Kaldır',msg:'İki faktörlü doğrulamayı devre dışı bırakmak istediğinize emin misiniz?',icon:'🔓',iconBg:'rgba(239,68,68,.12)',okLabel:'Kaldır',okClass:'bg-red-600 hover:bg-red-500 text-white',
+                    onOk:async function(){await db.ref('admin_2fa/'+user.uid).remove();showAT('2FA kaldırıldı','info');load2FAStatus();}
+                });
+            }else{await show2FASetup(user);}
+        }
+        async function load2FAStatus(){
+            var user=auth.currentUser;if(!user)return;
+            var snap=await db.ref('admin_2fa/'+user.uid+'/enabled').once('value');
+            var el=document.getElementById('tfa-status-badge');if(!el)return;
+            if(snap.val()===true){el.textContent='✓ Aktif';el.className='px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-green-500/15 text-green-400';}
+            else{el.textContent='Devre Dışı';el.className='px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-500/15 text-red-400';}
+        }
+
         const allowedAdmins = ["dlfMOzh6PXWnNghZYDRYcdgPHQs2", "rBoqVOBlyRU5MHclICBtoKKR8Fe2"];
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth(), provider = new firebase.auth.GoogleAuthProvider(), db = firebase.database();
@@ -1284,11 +1514,58 @@
         var editId = { ann: null, proj: null, dl: null, sponsor: null };
         function g(id) { return document.getElementById(id) }
         function ls(k, v) { if (v !== undefined) { localStorage.setItem(k, JSON.stringify(v)); return v } if (k === K.cms || k === K.cookies || k === K.settings) return JSON.parse(localStorage.getItem(k) || '{}'); return JSON.parse(localStorage.getItem(k) || '[]') }
-        auth.onAuthStateChanged(async user => { if (user) { if (allowedAdmins.includes(user.uid)) { const rememberMe = localStorage.getItem('rememberMe') === 'true'; if (!rememberMe && sessionStorage.getItem('currentSession') !== 'active') sessionStorage.setItem('currentSession', 'active'); g('loading-screen').classList.add('hidden'); g('login').style.display = 'none'; g('admin').style.display = 'flex'; g('current-user-uid').textContent = "UID: " + user.uid.substring(0, 12) + "..."; g('current-user-uid').title = user.uid; try { await initApp() } catch (e) { console.error('Init error:', e); showAT('Yukleme hatasi: '+e.message,'error') } } else { g('loading-screen').classList.add('hidden'); g('login').style.display = 'flex'; auth.signOut(); g('loginErr').textContent = "Yetkisiz UID: " + user.uid; g('loginErr').classList.remove('hidden') } } else { g('loading-screen').classList.add('hidden'); g('login').style.display = 'flex'; g('admin').style.display = 'none' } });
+        auth.onAuthStateChanged(async user => {
+            if (user) {
+                if (allowedAdmins.includes(user.uid)) {
+                    const rememberMe = localStorage.getItem('rememberMe') === 'true';
+                    if (!rememberMe && sessionStorage.getItem('currentSession') !== 'active') sessionStorage.setItem('currentSession', 'active');
+                    /* Check 2FA */
+                    const already2fa = sessionStorage.getItem('2fa_verified') === '1' || sessionStorage.getItem('2fa_skipped') === '1';
+                    if (already2fa) {
+                        g('loading-screen').classList.add('hidden');
+                        g('login').style.display = 'none';
+                        g('admin').style.display = 'flex';
+                        g('current-user-uid').textContent = "UID: " + user.uid.substring(0, 12) + "...";
+                        g('current-user-uid').title = user.uid;
+                        try { await initApp(); } catch (e) { console.error('Init error:', e); showAT('Yukleme hatasi: '+e.message,'error'); }
+                    } else {
+                        /* Check if 2FA is set up for this user */
+                        try {
+                            const snap = await db.ref('admin_2fa/' + user.uid + '/enabled').once('value');
+                            if (snap.val() === true) {
+                                show2FAVerify(user);
+                            } else {
+                                /* No 2FA set up yet — offer setup */
+                                show2FASetup(user);
+                            }
+                        } catch(e) {
+                            /* Firebase error — proceed without 2FA */
+                            g('loading-screen').classList.add('hidden');
+                            g('login').style.display = 'none';
+                            g('admin').style.display = 'flex';
+                            g('current-user-uid').textContent = "UID: " + user.uid.substring(0, 12) + "...";
+                            try { await initApp(); } catch(e2) {}
+                        }
+                    }
+                } else {
+                    g('loading-screen').classList.add('hidden');
+                    g('login').style.display = 'flex';
+                    auth.signOut();
+                    g('loginErr').textContent = "Yetkisiz UID: " + user.uid;
+                    g('loginErr').classList.remove('hidden');
+                }
+            } else {
+                sessionStorage.removeItem('2fa_verified');
+                sessionStorage.removeItem('2fa_skipped');
+                g('loading-screen').classList.add('hidden');
+                g('login').style.display = 'flex';
+                g('admin').style.display = 'none';
+            }
+        });
         window.addEventListener('beforeunload', () => { if (localStorage.getItem('rememberMe') !== 'true') sessionStorage.removeItem('currentSession') });
         function doGoogleLogin() { const rememberMe = g('rememberMe').checked; localStorage.setItem('rememberMe', rememberMe); if (!rememberMe) auth.setPersistence(firebase.auth.Auth.Persistence.SESSION); auth.signInWithPopup(provider).catch(e => { g('loginErr').textContent = "Hata: " + e.message; g('loginErr').classList.remove('hidden') }) }
         function doLogout(){ showConfirm({title:'Cikis Yap',msg:'Admin panelden cikis yapilacak.',icon:'>',iconBg:'rgba(99,102,241,.12)',okLabel:'Cikis',okClass:'bg-indigo-600 hover:bg-indigo-500 text-white',onOk:function(){localStorage.removeItem('rememberMe');sessionStorage.removeItem('currentSession');auth.signOut();}}); }
-        async function initApp() {
+        async function initApp() { setTimeout(load2FAStatus, 500);
             try {
                 [K.ann, K.proj, K.dl, K.sponsor].forEach(k => { if (!localStorage.getItem(k)) ls(k, []) });
                 [K.cms, K.cookies, K.settings].forEach(k => { if (!localStorage.getItem(k)) ls(k, {}) });
