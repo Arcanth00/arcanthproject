@@ -34,7 +34,7 @@ var ThemeSystem = (function () {
             particles:['#ef4444','#f87171','#3b82f6','#ffffff','#fbbf24'],shapes:['circle','rect','heart']});
         else if (t==='may19')     applyFestival({emoji:'⭐',emoji2:'🏃',animPfx:'may19',
             bg:'#1a0505',accent:'#dc2626',
-            title:'19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı',sub:'— Ne Mutlu Türküm Diyene —',bodyClass:'theme-may19',
+            title:'19 Mayıs Atatürk\u0027ü Anma, Gençlik ve Spor Bayram\u0131',sub:'— Ne Mutlu Türküm Diyene —',bodyClass:'theme-may19',
             particles:['#ef4444','#dc2626','#fca5a5','#ffffff']});
         else if (t==='oct29')     applyFestival({emoji:'🎆',emoji2:'🇹🇷',animPfx:'oct29',
             bg:'#1a0500',accent:'#fb923c',
@@ -500,8 +500,8 @@ var ThemeSystem = (function () {
             '<span style="font-size:22px;animation:'+pfx+'Gl 3s ease-in-out infinite">'+opts.emoji+'</span>'+
             '<div style="width:1px;height:28px;background:linear-gradient(180deg,transparent,'+acc+'88,transparent)"></div>'+
             '<div style="text-align:center">'+
-            '<p style="margin:0;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:linear-gradient(90deg,'+shimmerColors+');background-size:250% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:'+pfx+'Sh 5s linear infinite">'+opts.title+'</p>'+
-            '<p style="margin:3px 0 0;font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:'+acc+'80">'+opts.sub+'</p>'+
+            '<p style="margin:0;font-family:Plus Jakarta Sans,sans-serif;font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:linear-gradient(90deg,'+shimmerColors+');background-size:250% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:'+pfx+'Sh 5s linear infinite">'+opts.title+'</p>'+
+            '<p style="margin:3px 0 0;font-family:Plus Jakarta Sans,sans-serif;font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:'+acc+'80">'+opts.sub+'</p>'+
             '</div>'+
             '<div style="width:1px;height:28px;background:linear-gradient(180deg,transparent,'+acc+'88,transparent)"></div>'+
             '<span style="font-size:22px;animation:'+pfx+'Gl 3s ease-in-out 1s infinite">'+opts.emoji2+'</span>'+
