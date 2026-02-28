@@ -1361,11 +1361,84 @@
     </div>
 
     <script>
-        const firebaseConfig = { apiKey: "AIzaSyCnkk6j1CGsi4sNXJ8FA9Gd2B6_VDptVDg", authDomain: "arcanthproject.firebaseapp.com", databaseURL: "https://arcanthproject-default-rtdb.firebaseio.com ", projectId: "arcanthproject", storageBucket: "arcanthproject.firebasestorage.app", messagingSenderId: "826341954149", appId: "1:826341954149:web:6429d61a5b40810009ac8c" };
+        // ==========================================
+        // YÜKLEME EKRANI YÖNETİMİ - BAŞLANGIÇ
+        // ==========================================
+        
+        // Global değişkenler - Önce tanımla
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCnkk6j1CGsi4sNXJ8FA9Gd2B6_VDptVDg", 
+            authDomain: "arcanthproject.firebaseapp.com", 
+            databaseURL: "https://arcanthproject-default-rtdb.firebaseio.com ", 
+            projectId: "arcanthproject", 
+            storageBucket: "arcanthproject.firebasestorage.app", 
+            messagingSenderId: "826341954149", 
+            appId: "1:826341954149:web:6429d61a5b40810009ac8c" 
+        };
 
-        /* ══════════════════════════════════════════════
-           TOTP 2FA — RFC 6238, Pure Web Crypto
-        ══════════════════════════════════════════════ */
+        // g fonksiyonunu hemen tanımla
+        function g(id) { 
+            return document.getElementById(id); 
+        }
+
+        // Loading screen gizleme fonksiyonu
+        function hideLoadingScreen() {
+            const ls = document.getElementById('loading-screen');
+            if (ls) {
+                ls.classList.add('hidden');
+                console.log('Loading screen gizlendi');
+            }
+        }
+
+        // Hata durumunda loading screen'i gizle ve hatayı göster
+        function showFatalError(msg) {
+            hideLoadingScreen();
+            const loginDiv = document.getElementById('login');
+            if (loginDiv) {
+                loginDiv.style.display = 'flex';
+                const errEl = document.getElementById('loginErr');
+                if (errEl) {
+                    errEl.textContent = msg;
+                    errEl.classList.remove('hidden');
+                }
+            }
+            alert('Kritik Hata: ' + msg);
+        }
+
+        // ==========================================
+        // FIREBASE BAŞLATMA
+        // ==========================================
+        
+        let auth, db, provider;
+        let K = { 
+            ann: 'admin_announcements', 
+            proj: 'admin_projects', 
+            dl: 'admin_downloads', 
+            sponsor: 'admin_sponsors', 
+            cms: 'admin_cms_content', 
+            cookies: 'admin_cookie_settings', 
+            settings: 'admin_settings', 
+            act: 'admin_activity' 
+        };
+        let editId = { ann: null, proj: null, dl: null, sponsor: null };
+        let allUsers = [];
+        let _2faSecret = null, _2faTimer = null, _pendingUser = null, _setupSecret = null;
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            auth = firebase.auth();
+            provider = new firebase.auth.GoogleAuthProvider();
+            db = firebase.database();
+            console.log('Firebase başlatıldı');
+        } catch (e) {
+            console.error('Firebase başlatma hatası:', e);
+            showFatalError('Firebase bağlantı hatası: ' + e.message);
+        }
+
+        // ==========================================
+        // 2FA FONKSİYONLARI
+        // ==========================================
+
         function b32decode(s) {
             var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
             s = s.toUpperCase().replace(/[^A-Z2-7]/g,'');
@@ -1373,13 +1446,20 @@
             for(var i=0;i<s.length;i++){val=(val<<5)|chars.indexOf(s[i]);bits+=5;if(bits>=8){out.push((val>>>(bits-8))&255);bits-=8;}}
             return new Uint8Array(out);
         }
+
         function b32encode(bytes) {
             var chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567',out='',bits=0,val=0;
             for(var i=0;i<bytes.length;i++){val=(val<<8)|bytes[i];bits+=8;while(bits>=5){out+=chars[(val>>>(bits-5))&31];bits-=5;}}
             if(bits>0)out+=chars[(val<<(5-bits))&31];
             return out;
         }
-        function generateTOTPSecret(){var b=new Uint8Array(20);crypto.getRandomValues(b);return b32encode(b);}
+
+        function generateTOTPSecret() {
+            var b=new Uint8Array(20);
+            crypto.getRandomValues(b);
+            return b32encode(b);
+        }
+
         async function computeTOTP(secret,time){
             var counter=Math.floor((time||Date.now()/1000)/30);
             var key=b32decode(secret);
@@ -1393,14 +1473,12 @@
             var code=((hash[off]&0x7f)<<24)|((hash[off+1]&0xff)<<16)|((hash[off+2]&0xff)<<8)|(hash[off+3]&0xff);
             return String(code%1000000).padStart(6,'0');
         }
+
         async function verifyTOTP(secret,code){
             var now=Date.now()/1000;
             for(var o of[-1,0,1]){if(await computeTOTP(secret,now+o*30)===code)return true;}
             return false;
         }
-
-        /* ── 2FA State ── */
-        var _2faSecret=null,_2faTimer=null,_pendingUser=null,_setupSecret=null;
 
         function start2FATimer(){
             if(_2faTimer)clearInterval(_2faTimer);
@@ -1413,162 +1491,291 @@
                 if(rem===30){var inp=document.getElementById('tfa-code-input');if(inp&&inp.value.length>0&&inp.value.length<6)inp.value='';}
             },250);
         }
-        function stop2FATimer(){if(_2faTimer){clearInterval(_2faTimer);_2faTimer=null;}}
+
+        function stop2FATimer(){
+            if(_2faTimer){
+                clearInterval(_2faTimer);
+                _2faTimer=null;
+            }
+        }
 
         function show2FAVerify(user){
             _pendingUser=user;
-            g('loading-screen').classList.add('hidden');
+            hideLoadingScreen();
             var s=document.getElementById('screen-2fa');
-            s.classList.remove('hidden');s.classList.add('flex');
+            s.classList.remove('hidden');
+            s.classList.add('flex');
             var inp=document.getElementById('tfa-code-input');
-            if(inp){inp.value='';setTimeout(function(){inp.focus();},200);}
+            if(inp){
+                inp.value='';
+                setTimeout(function(){inp.focus();},200);
+            }
             document.getElementById('tfa-err').classList.add('hidden');
             start2FATimer();
         }
+
         async function verify2FA(){
             var code=document.getElementById('tfa-code-input').value.trim();
-            if(code.length!==6){show2FAErr('6 haneli kodu eksiksiz girin');return;}
+            if(code.length!==6){
+                show2FAErr('6 haneli kodu eksiksiz girin');
+                return;
+            }
             var btn=document.getElementById('tfa-verify-btn');
-            btn.textContent='Doğrulanıyor...';btn.disabled=true;
+            btn.textContent='Doğrulanıyor...';
+            btn.disabled=true;
             try{
                 var snap=await db.ref('admin_2fa/'+_pendingUser.uid+'/secret').once('value');
                 var secret=snap.val();
-                if(!secret){show2FAErr('2FA kaydı bulunamadı, tekrar giriş yapın.');btn.textContent='Doğrula';btn.disabled=false;return;}
+                if(!secret){
+                    show2FAErr('2FA kaydı bulunamadı, tekrar giriş yapın.');
+                    btn.textContent='Doğrula';
+                    btn.disabled=false;
+                    return;
+                }
                 var ok=await verifyTOTP(secret,code);
                 if(ok){
                     stop2FATimer();
                     document.getElementById('screen-2fa').classList.add('hidden');
                     document.getElementById('screen-2fa').classList.remove('flex');
                     sessionStorage.setItem('2fa_verified','1');
-                    g('login').style.display='none';g('admin').style.display='flex';
+                    g('login').style.display='none';
+                    g('admin').style.display='flex';
                     g('current-user-uid').textContent='UID: '+_pendingUser.uid.substring(0,12)+'...';
                     g('current-user-uid').title=_pendingUser.uid;
-                    try{await initApp();}catch(e2){showAT('Yukleme hatasi: '+e2.message,'error');}
+                    try{
+                        await initApp();
+                    }catch(e2){
+                        showAT('Yukleme hatasi: '+e2.message,'error');
+                    }
                 }else{
                     show2FAErr('Hatalı kod. Uygulamayı kontrol edin.');
                     document.getElementById('tfa-code-input').value='';
                     document.getElementById('tfa-code-input').focus();
-                    btn.textContent='Doğrula';btn.disabled=false;
+                    btn.textContent='Doğrula';
+                    btn.disabled=false;
                 }
-            }catch(e){show2FAErr('Hata: '+e.message);btn.textContent='Doğrula';btn.disabled=false;}
+            }catch(e){
+                show2FAErr('Hata: '+e.message);
+                btn.textContent='Doğrula';
+                btn.disabled=false;
+            }
         }
-        function show2FAErr(msg){var el=document.getElementById('tfa-err');el.textContent=msg;el.classList.remove('hidden');setTimeout(function(){el.classList.add('hidden');},4000);}
-        function cancel2FA(){stop2FATimer();_pendingUser=null;auth.signOut();document.getElementById('screen-2fa').classList.add('hidden');document.getElementById('screen-2fa').classList.remove('flex');g('login').style.display='flex';}
 
-        /* ── 2FA Setup ── */
+        function show2FAErr(msg){
+            var el=document.getElementById('tfa-err');
+            el.textContent=msg;
+            el.classList.remove('hidden');
+            setTimeout(function(){el.classList.add('hidden');},4000);
+        }
+
+        function cancel2FA(){
+            stop2FATimer();
+            _pendingUser=null;
+            auth.signOut();
+            document.getElementById('screen-2fa').classList.add('hidden');
+            document.getElementById('screen-2fa').classList.remove('flex');
+            g('login').style.display='flex';
+        }
+
         async function show2FASetup(user){
-            _pendingUser=user;_setupSecret=generateTOTPSecret();
-            g('loading-screen').classList.add('hidden');
+            _pendingUser=user;
+            _setupSecret=generateTOTPSecret();
+            hideLoadingScreen();
             var issuer='ArcanthAdmin';
             var label=encodeURIComponent(issuer+':'+user.email);
             var qrUrl='otpauth://totp/'+label+'?secret='+_setupSecret+'&issuer='+issuer+'&algorithm=SHA1&digits=6&period=30';
             var img=document.createElement('img');
-            img.src='https://chart.googleapis.com/chart?chs=180x180&cht=qr&chl= '+encodeURIComponent(qrUrl)+'&choe=UTF-8';
+            img.src='https://chart.googleapis.com/chart?chs=180x180&cht=qr&chl='+encodeURIComponent(qrUrl)+'&choe=UTF-8';
             img.style='width:180px;height:180px;border-radius:8px;display:block;';
-            var qrDiv=document.getElementById('setup-qr');qrDiv.innerHTML='';qrDiv.appendChild(img);
+            var qrDiv=document.getElementById('setup-qr');
+            qrDiv.innerHTML='';
+            qrDiv.appendChild(img);
             document.getElementById('setup-secret-display').textContent=_setupSecret.match(/.{1,4}/g).join(' ');
-            var s=document.getElementById('screen-2fa-setup');s.classList.remove('hidden');s.classList.add('flex');
-        }
-        async function complete2FASetup(){
-            var code=document.getElementById('setup-verify-code').value.trim();
-            if(code.length!==6){document.getElementById('setup-err').textContent='6 haneli kodu girin';document.getElementById('setup-err').classList.remove('hidden');return;}
-            var ok=await verifyTOTP(_setupSecret,code);
-            if(!ok){document.getElementById('setup-err').textContent='Hatalı kod, tekrar deneyin';document.getElementById('setup-err').classList.remove('hidden');document.getElementById('setup-verify-code').value='';return;}
-            await db.ref('admin_2fa/'+_pendingUser.uid).set({secret:_setupSecret,enabled:true,setupAt:new Date().toISOString()});
-            document.getElementById('screen-2fa-setup').classList.add('hidden');document.getElementById('screen-2fa-setup').classList.remove('flex');
-            sessionStorage.setItem('2fa_verified','1');
-            g('login').style.display='none';g('admin').style.display='flex';
-            g('current-user-uid').textContent='UID: '+_pendingUser.uid.substring(0,12)+'...';
-            showAT('2FA kurulumu tamamlandı! Hesabınız artık korunuyor 🔐','success');
-            try{await initApp();}catch(e){}
-        }
-        function skip2FASetup(){
-            document.getElementById('screen-2fa-setup').classList.add('hidden');document.getElementById('screen-2fa-setup').classList.remove('flex');
-            sessionStorage.setItem('2fa_skipped','1');
-            g('login').style.display='none';g('admin').style.display='flex';
-            g('current-user-uid').textContent='UID: '+_pendingUser.uid.substring(0,12)+'...';
-            showAT('2FA atlandı — Ayarlar menüsünden kurabilirsiniz','info');
-            try{initApp();}catch(e){}
-        }
-        async function setup2FAFromSettings(){
-            var user=auth.currentUser;if(!user)return;
-            var snap=await db.ref('admin_2fa/'+user.uid+'/enabled').once('value');
-            if(snap.val()===true){
-                showConfirm({title:'2FA Kaldır',msg:'İki faktörlü doğrulamayı devre dışı bırakmak istediğinize emin misiniz?',icon:'🔓',iconBg:'rgba(239,68,68,.12)',okLabel:'Kaldır',okClass:'bg-red-600 hover:bg-red-500 text-white',
-                    onOk:async function(){await db.ref('admin_2fa/'+user.uid).remove();showAT('2FA kaldırıldı','info');load2FAStatus();}
-                });
-            }else{await show2FASetup(user);}
-        }
-        async function load2FAStatus(){
-            var user=auth.currentUser;if(!user)return;
-            var snap=await db.ref('admin_2fa/'+user.uid+'/enabled').once('value');
-            var el=document.getElementById('tfa-status-badge');if(!el)return;
-            if(snap.val()===true){el.textContent='✓ Aktif';el.className='px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-green-500/15 text-green-400';}
-            else{el.textContent='Devre Dışı';el.className='px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-500/15 text-red-400';}
+            var s=document.getElementById('screen-2fa-setup');
+            s.classList.remove('hidden');
+            s.classList.add('flex');
         }
 
+        async function complete2FASetup(){
+            var code=document.getElementById('setup-verify-code').value.trim();
+            if(code.length!==6){
+                document.getElementById('setup-err').textContent='6 haneli kodu girin';
+                document.getElementById('setup-err').classList.remove('hidden');
+                return;
+            }
+            var ok=await verifyTOTP(_setupSecret,code);
+            if(!ok){
+                document.getElementById('setup-err').textContent='Hatalı kod, tekrar deneyin';
+                document.getElementById('setup-err').classList.remove('hidden');
+                document.getElementById('setup-verify-code').value='';
+                return;
+            }
+            await db.ref('admin_2fa/'+_pendingUser.uid).set({
+                secret:_setupSecret,
+                enabled:true,
+                setupAt:new Date().toISOString()
+            });
+            document.getElementById('screen-2fa-setup').classList.add('hidden');
+            document.getElementById('screen-2fa-setup').classList.remove('flex');
+            sessionStorage.setItem('2fa_verified','1');
+            g('login').style.display='none';
+            g('admin').style.display='flex';
+            g('current-user-uid').textContent='UID: '+_pendingUser.uid.substring(0,12)+'...';
+            showAT('2FA kurulumu tamamlandı! Hesabınız artık korunuyor 🔐','success');
+            try{
+                await initApp();
+            }catch(e){}
+        }
+
+        function skip2FASetup(){
+            document.getElementById('screen-2fa-setup').classList.add('hidden');
+            document.getElementById('screen-2fa-setup').classList.remove('flex');
+            sessionStorage.setItem('2fa_skipped','1');
+            g('login').style.display='none';
+            g('admin').style.display='flex';
+            g('current-user-uid').textContent='UID: '+_pendingUser.uid.substring(0,12)+'...';
+            showAT('2FA atlandı — Ayarlar menüsünden kurabilirsiniz','info');
+            try{
+                initApp();
+            }catch(e){}
+        }
+
+        // ==========================================
+        // KİMLİK DOĞRULAMA
+        // ==========================================
+
         const allowedAdmins = ["dlfMOzh6PXWnNghZYDRYcdgPHQs2", "rBoqVOBlyRU5MHclICBtoKKR8Fe2"];
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth(), provider = new firebase.auth.GoogleAuthProvider(), db = firebase.database();
-        var K = { ann: 'admin_announcements', proj: 'admin_projects', dl: 'admin_downloads', sponsor: 'admin_sponsors', cms: 'admin_cms_content', cookies: 'admin_cookie_settings', settings: 'admin_settings', act: 'admin_activity' };
-        var editId = { ann: null, proj: null, dl: null, sponsor: null };
-        function g(id) { return document.getElementById(id) }
-        function ls(k, v) { if (v !== undefined) { localStorage.setItem(k, JSON.stringify(v)); return v } if (k === K.cms || k === K.cookies || k === K.settings) return JSON.parse(localStorage.getItem(k) || '{}'); return JSON.parse(localStorage.getItem(k) || '[]') }
-        auth.onAuthStateChanged(async user => {
+
+        // Ana kimlik doğrulama dinleyicisi
+        auth.onAuthStateChanged(async function(user) {
+            console.log('Auth state changed:', user ? 'User var' : 'User yok');
+            
             if (user) {
+                console.log('User UID:', user.uid);
+                
                 if (allowedAdmins.includes(user.uid)) {
+                    console.log('Admin yetkisi doğrulandı');
+                    
                     const rememberMe = localStorage.getItem('rememberMe') === 'true';
-                    if (!rememberMe && sessionStorage.getItem('currentSession') !== 'active') sessionStorage.setItem('currentSession', 'active');
-                    /* Check 2FA */
-                    const already2fa = sessionStorage.getItem('2fa_verified') === '1' || sessionStorage.getItem('2fa_skipped') === '1';
+                    if (!rememberMe && sessionStorage.getItem('currentSession') !== 'active') {
+                        sessionStorage.setItem('currentSession', 'active');
+                    }
+                    
+                    // 2FA kontrolü
+                    const already2fa = sessionStorage.getItem('2fa_verified') === '1' || 
+                                      sessionStorage.getItem('2fa_skipped') === '1';
+                    
                     if (already2fa) {
-                        g('loading-screen').classList.add('hidden');
+                        console.log('2FA zaten yapılmış, panele yönlendiriliyor');
+                        hideLoadingScreen();
                         g('login').style.display = 'none';
                         g('admin').style.display = 'flex';
                         g('current-user-uid').textContent = "UID: " + user.uid.substring(0, 12) + "...";
                         g('current-user-uid').title = user.uid;
-                        try { await initApp(); } catch (e) { console.error('Init error:', e); showAT('Yukleme hatasi: '+e.message,'error'); }
+                        try { 
+                            await initApp(); 
+                        } catch (e) { 
+                            console.error('Init error:', e); 
+                            showAT('Yukleme hatasi: '+e.message,'error'); 
+                        }
                     } else {
-                        /* Check if 2FA is set up for this user */
+                        console.log('2FA kontrolü yapılıyor...');
                         try {
                             const snap = await db.ref('admin_2fa/' + user.uid + '/enabled').once('value');
+                            console.log('2FA durumu:', snap.val());
                             if (snap.val() === true) {
                                 show2FAVerify(user);
                             } else {
-                                /* No 2FA set up yet — offer setup */
                                 show2FASetup(user);
                             }
                         } catch(e) {
-                            /* Firebase error — proceed without 2FA */
-                            g('loading-screen').classList.add('hidden');
+                            console.error('2FA kontrol hatası:', e);
+                            hideLoadingScreen();
                             g('login').style.display = 'none';
                             g('admin').style.display = 'flex';
                             g('current-user-uid').textContent = "UID: " + user.uid.substring(0, 12) + "...";
-                            try { await initApp(); } catch(e2) {}
+                            try { 
+                                await initApp(); 
+                            } catch(e2) {
+                                console.error('InitApp hatası:', e2);
+                            }
                         }
                     }
                 } else {
-                    g('loading-screen').classList.add('hidden');
+                    console.log('Yetkisiz UID:', user.uid);
+                    hideLoadingScreen();
                     g('login').style.display = 'flex';
                     auth.signOut();
                     g('loginErr').textContent = "Yetkisiz UID: " + user.uid;
                     g('loginErr').classList.remove('hidden');
                 }
             } else {
+                console.log('Kullanıcı giriş yapmamış');
                 sessionStorage.removeItem('2fa_verified');
                 sessionStorage.removeItem('2fa_skipped');
-                g('loading-screen').classList.add('hidden');
+                hideLoadingScreen();
                 g('login').style.display = 'flex';
                 g('admin').style.display = 'none';
             }
         });
-        window.addEventListener('beforeunload', () => { if (localStorage.getItem('rememberMe') !== 'true') sessionStorage.removeItem('currentSession') });
-        function doGoogleLogin() { const rememberMe = g('rememberMe').checked; localStorage.setItem('rememberMe', rememberMe); if (!rememberMe) auth.setPersistence(firebase.auth.Auth.Persistence.SESSION); auth.signInWithPopup(provider).catch(e => { g('loginErr').textContent = "Hata: " + e.message; g('loginErr').classList.remove('hidden') }) }
-        function doLogout(){ showConfirm({title:'Cikis Yap',msg:'Admin panelden cikis yapilacak.',icon:'>',iconBg:'rgba(99,102,241,.12)',okLabel:'Cikis',okClass:'bg-indigo-600 hover:bg-indigo-500 text-white',onOk:function(){localStorage.removeItem('rememberMe');sessionStorage.removeItem('currentSession');auth.signOut();}}); }
-        async function initApp() { setTimeout(load2FAStatus, 500);
+
+        // ==========================================
+        // YARDIMCI FONKSİYONLAR
+        // ==========================================
+
+        function ls(k, v) { 
+            if (v !== undefined) { 
+                localStorage.setItem(k, JSON.stringify(v)); 
+                return v; 
+            } 
+            if (k === K.cms || k === K.cookies || k === K.settings) {
+                return JSON.parse(localStorage.getItem(k) || '{}'); 
+            }
+            return JSON.parse(localStorage.getItem(k) || '[]'); 
+        }
+
+        function doGoogleLogin() { 
+            const rememberMe = g('rememberMe').checked; 
+            localStorage.setItem('rememberMe', rememberMe); 
+            if (!rememberMe) auth.setPersistence(firebase.auth.Auth.Persistence.SESSION); 
+            auth.signInWithPopup(provider).catch(e => { 
+                g('loginErr').textContent = "Hata: " + e.message; 
+                g('loginErr').classList.remove('hidden');
+                console.error('Login hatası:', e);
+            });
+        }
+
+        function doLogout(){ 
+            showConfirm({
+                title:'Cikis Yap',
+                msg:'Admin panelden cikis yapilacak.',
+                icon:'>',
+                iconBg:'rgba(99,102,241,.12)',
+                okLabel:'Cikis',
+                okClass:'bg-indigo-600 hover:bg-indigo-500 text-white',
+                onOk:function(){
+                    localStorage.removeItem('rememberMe');
+                    sessionStorage.removeItem('currentSession');
+                    auth.signOut();
+                }
+            }); 
+        }
+
+        // ==========================================
+        // UYGULAMA BAŞLATMA
+        // ==========================================
+
+        async function initApp() { 
+            console.log('initApp başlatılıyor...');
+            setTimeout(load2FAStatus, 500);
             try {
-                [K.ann, K.proj, K.dl, K.sponsor].forEach(k => { if (!localStorage.getItem(k)) ls(k, []) });
-                [K.cms, K.cookies, K.settings].forEach(k => { if (!localStorage.getItem(k)) ls(k, {}) });
+                [K.ann, K.proj, K.dl, K.sponsor].forEach(k => { 
+                    if (!localStorage.getItem(k)) ls(k, []); 
+                });
+                [K.cms, K.cookies, K.settings].forEach(k => { 
+                    if (!localStorage.getItem(k)) ls(k, {}); 
+                });
+                
                 loadAnn();
                 loadProj();
                 loadDl();
@@ -1584,18 +1791,24 @@
                 loadBakimStatus();
                 stats();
                 checkConnection();
-                /* F5 sonrası tüm UI'yi Firebase verileriyle yenile */
+                
+                // F5 sonrası tüm UI'yi Firebase verileriyle yenile
                 loadSettings();
                 loadCMS();
                 loadCookies();
                 loadEventThemeStatus();
+                
+                console.log('initApp tamamlandı');
             } catch (e) {
                 console.error('InitApp error:', e);
                 showAT('Yükleme hatası: ' + e.message, 'error');
             }
         }
 
-        let allUsers = [];
+        // ==========================================
+        // KULLANICI YÖNETİMİ
+        // ==========================================
+
         async function loadUsers() {
             try {
                 const snapshot = await db.ref('users').once('value');
@@ -1649,7 +1862,10 @@
 
         function searchUsers() {
             const query = document.getElementById('userSearch').value.toLowerCase();
-            if (!query) { displayUsers(allUsers); return; }
+            if (!query) { 
+                displayUsers(allUsers); 
+                return; 
+            }
             const filtered = allUsers.filter(u =>
                 (u.name || '').toLowerCase().includes(query) ||
                 (u.email || '').toLowerCase().includes(query) ||
@@ -1671,19 +1887,82 @@
             const monthUsers = allUsers.filter(u => u.created && new Date(u.created).getMonth() === thisMonth).length;
             document.getElementById('stat-month-users').textContent = monthUsers;
         }
-        /* _old_viewUser replaced by openUD */
-        /* toggleUserBlock replaced by doToggleBlock */
+
+        // Placeholder fonksiyonlar
+        function openUD(uid) {
+            console.log('Kullanıcı detayı:', uid);
+            showAT('Kullanıcı detay fonksiyonu yapım aşamasında', 'info');
         }
-        async function loadSupport() { try { const snapshot = await db.ref('support_tickets').once('value'); const tickets = []; snapshot.forEach(child => { tickets.push(child.val()) }); tickets.sort((a, b) => b.created.localeCompare(a.created)); const el = g('supportList'); const statusColors = { aktif: 'text-green-400 bg-green-500/15', beklemede: 'text-yellow-400 bg-yellow-500/15', kapali: 'text-gray-400 bg-gray-500/15' }; el.innerHTML = tickets.map(t => `<tr><td class="text-sm">${t.userEmail}</td><td class="font-semibold">${t.subject}</td><td><span class="px-2 py-0.5 bg-purple-500/15 text-purple-400 rounded text-[10px] font-bold uppercase">${t.category}</span></td><td><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusColors[t.status] || statusColors.aktif}">${t.status}</span></td><td class="text-gray-500 text-xs">${new Date(t.created).toLocaleString('tr-TR')}</td><td class="whitespace-nowrap"><button onclick="openTD(${t.id})" class="btn-s mr-1">Gör</button><button onclick="replyTicket(${t.id})" class="btn-p text-[10px] px-2 py-1 mr-1">Yanıtla</button><button onclick="openTD(${t.id})" class="btn-s mr-1">Durum</button><button onclick="delTicket(${t.id})" class="btn-d">Sil</button></td></tr>`).join('') || '<tr><td colspan="6" class="text-center text-gray-500 py-8">Henüz destek talebi yok</td></tr>' } catch (e) { g('supportList').innerHTML = '<tr><td colspan="6" class="text-center text-red-500 py-8">Hata: ' + e.message + '</td></tr>' } }
-        /* _old_viewTicket replaced by openTD */
-        /* changeStatus replaced by setTStatus via openTD */
-        function delTicket(id){ showConfirm({title:'Sil',msg:'Bu talep kalici olarak silinecek.',icon:'!',iconBg:'rgba(239,68,68,.12)',okLabel:'Sil',okClass:'bg-red-600 hover:bg-red-500 text-white',onOk:async function(){try{await db.ref('support_tickets/'+id).remove();loadSupport();showAT('Talep silindi','success');}catch(e){showAT('Hata: '+e.message,'error');}}}); }
+
+        function doToggleBlock(uid, block) {
+            console.log('Toggle block:', uid, block);
+            showAT('Engelleme fonksiyonu yapım aşamasında', 'info');
+        }
+
+        // ==========================================
+        // DESTEK TALEPLERİ
+        // ==========================================
+
+        async function loadSupport() { 
+            try { 
+                const snapshot = await db.ref('support_tickets').once('value'); 
+                const tickets = []; 
+                snapshot.forEach(child => { 
+                    tickets.push(child.val());
+                }); 
+                tickets.sort((a, b) => b.created.localeCompare(a.created)); 
+                const el = g('supportList'); 
+                const statusColors = { 
+                    aktif: 'text-green-400 bg-green-500/15', 
+                    beklemede: 'text-yellow-400 bg-yellow-500/15', 
+                    kapali: 'text-gray-400 bg-gray-500/15' 
+                }; 
+                el.innerHTML = tickets.map(t => `<tr>
+                    <td class="text-sm">${t.userEmail}</td>
+                    <td class="font-semibold">${t.subject}</td>
+                    <td><span class="px-2 py-0.5 bg-purple-500/15 text-purple-400 rounded text-[10px] font-bold uppercase">${t.category}</span></td>
+                    <td><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusColors[t.status] || statusColors.aktif}">${t.status}</span></td>
+                    <td class="text-gray-500 text-xs">${new Date(t.created).toLocaleString('tr-TR')}</td>
+                    <td class="whitespace-nowrap">
+                        <button onclick="openTD(${t.id})" class="btn-s mr-1">Gör</button>
+                        <button onclick="replyTicket(${t.id})" class="btn-p text-[10px] px-2 py-1 mr-1">Yanıtla</button>
+                        <button onclick="openTD(${t.id})" class="btn-s mr-1">Durum</button>
+                        <button onclick="delTicket(${t.id})" class="btn-d">Sil</button>
+                    </td>
+                </tr>`).join('') || '<tr><td colspan="6" class="text-center text-gray-500 py-8">Henüz destek talebi yok</td></tr>';
+            } catch (e) { 
+                g('supportList').innerHTML = '<tr><td colspan="6" class="text-center text-red-500 py-8">Hata: ' + e.message + '</td></tr>';
+            } 
+        }
+
+        function delTicket(id){ 
+            showConfirm({
+                title:'Sil',
+                msg:'Bu talep kalici olarak silinecek.',
+                icon:'!',
+                iconBg:'rgba(239,68,68,.12)',
+                okLabel:'Sil',
+                okClass:'bg-red-600 hover:bg-red-500 text-white',
+                onOk:async function(){
+                    try{
+                        await db.ref('support_tickets/'+id).remove();
+                        loadSupport();
+                        showAT('Talep silindi','success');
+                    }catch(e){
+                        showAT('Hata: '+e.message,'error');
+                    }
+                }
+            }); 
+        }
 
         async function replyTicket(id) {
             try {
                 const snapshot = await db.ref('support_tickets/' + id).once('value');
                 const ticket = snapshot.val();
-                if(!ticket){showAT('Ticket bulunamiyor','error');return;}
+                if(!ticket){
+                    showAT('Ticket bulunamiyor','error');
+                    return;
+                }
 
                 document.getElementById('replyUserEmail').textContent = ticket.userEmail;
                 document.getElementById('replyCategory').textContent = ticket.category;
@@ -1723,8 +2002,14 @@
 
         async function sendReply() {
             const replyText = document.getElementById('replyText').value.trim();
-            if(!replyText){showAT('Yanit yazin!','error');return;}
-            if(!window.currentReplyTicketId){showAT('Ticket ID yok','error');return;}
+            if(!replyText){
+                showAT('Yanit yazin!','error');
+                return;
+            }
+            if(!window.currentReplyTicketId){
+                showAT('Ticket ID yok','error');
+                return;
+            }
 
             try {
                 const replyId = Date.now();
@@ -1745,26 +2030,392 @@
                 showAT('Hata: '+e.message,'error');
             }
         }
-        async function checkConnection() { try { await db.ref('.info/connected').once('value'); g('sync-dot').className = 'sync-dot sync-ok'; g('sync-text').textContent = 'Sistem Sorunsuz'; g('system-status').textContent = 'Sistem Sorunsuz Çalışıyor' } catch (e) { g('sync-dot').className = 'sync-dot sync-err'; g('sync-text').textContent = 'Bağlantı Hatası'; g('system-status').textContent = 'Bağlantıda Sorun Var' } }
-        async function sync() { g('sync-dot').className = 'sync-dot sync-loading'; g('sync-text').textContent = 'Kaydediliyor...'; try { await db.ref('site_data').set({ announcements: ls(K.ann), projects: ls(K.proj), downloads: ls(K.dl), sponsors: ls(K.sponsor), cms_content: ls(K.cms), cookie_settings: ls(K.cookies), settings: ls(K.settings) }); g('sync-dot').className = 'sync-dot sync-ok'; g('sync-text').textContent = 'Sistem Sorunsuz'; g('system-status').textContent = 'Sistem Sorunsuz Çalışıyor' } catch (e) { g('sync-dot').className = 'sync-dot sync-err'; g('sync-text').textContent = 'Hata: ' + e.message; g('system-status').textContent = 'Bağlantıda Sorun Var' } }
-        function go(tab, el) { document.querySelectorAll('.tab-c').forEach(t => t.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); g('t-' + tab).classList.add('active'); if (el) el.classList.add('active') }
-        function loadAnn() { var arr = ls(K.ann), el = g('annList'); el.innerHTML = arr.map(a => `<tr><td class="font-semibold">${a.title}</td><td><span class="px-2 py-0.5 bg-blue-500/15 text-blue-400 rounded text-[10px] font-bold uppercase">${a.category}</span></td><td class="text-gray-500 text-xs">${a.date}</td><td class="flex gap-1"><button onclick="openModal('ann',${a.id})" class="btn-s">Düz</button><button onclick="delAnn(${a.id})" class="btn-d">Sil</button></td></tr>`).join('') || '<tr><td colspan="4" class="text-center text-gray-500 py-8">Henüz duyuru yok</td></tr>' }
-        function saveAnn() { var t = g('annTitle').value, c = g('annContent').value, cat = g('annCat').value; if(!t||!c){showAT('Tum alanlari doldurun','error');return;}; var arr = ls(K.ann); if (editId.ann) { var i = arr.findIndex(x => x.id === editId.ann); arr[i] = { ...arr[i], title: t, content: c, category: cat } } else { arr.push({ id: Date.now(), title: t, content: c, category: cat, date: new Date().toLocaleDateString('tr-TR') }) } ls(K.ann, arr); loadAnn(); closeModal('ann'); sync(); log('Duyuru güncellendi'); stats() }
-        function delAnn(id){ showConfirm({title:'Sil',msg:'Bu duyuru kalici olarak silinecek.',icon:'!',iconBg:'rgba(239,68,68,.12)',okLabel:'Sil',okClass:'bg-red-600 hover:bg-red-500 text-white',onOk:function(){ls(K.ann,ls(K.ann).filter(function(x){return x.id!==id;}));loadAnn();sync();showAT('Duyuru silindi','success');stats();}}); }
-        function loadProj() { var arr = ls(K.proj), el = g('projList'); const sc = { release: 'text-green-400 bg-green-500/15', beta: 'text-yellow-400 bg-yellow-500/15', alpha: 'text-purple-400 bg-purple-500/15', development: 'text-blue-400 bg-blue-500/15' }; el.innerHTML = arr.map(p => `<tr><td class="font-semibold">${p.name}</td><td><span class="px-2 py-0.5 bg-purple-500/15 text-purple-400 rounded text-[10px] font-bold uppercase">${p.type}</span></td><td><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${sc[p.status]}">${p.status}</span></td><td class="text-gray-500 text-xs">${p.version}</td><td class="flex gap-1"><button onclick="openModal('proj',${p.id})" class="btn-s">Düz</button><button onclick="delProj(${p.id})" class="btn-d">Sil</button></td></tr>`).join('') || '<tr><td colspan="5" class="text-center text-gray-500 py-8">Henüz proje yok</td></tr>' }
-        function saveProj() { var n = g('projName').value, d = g('projDesc').value; if(!n){showAT('Proje adi gerekli','error');return;}; var arr = ls(K.proj); var obj = { name: n, description: d, version: g('projVer').value || 'v1.0', type: g('projType').value, category: g('projCat').value || '', status: g('projStatus').value, link: g('projLink').value, icon: g('projIcon').value }; if (editId.proj) { var i = arr.findIndex(x => x.id === editId.proj); arr[i] = { ...arr[i], ...obj } } else { arr.push({ id: Date.now(), ...obj }) } ls(K.proj, arr); loadProj(); closeModal('proj'); sync(); log('Proje güncellendi'); stats() }
-        function delProj(id){ showConfirm({title:'Sil',msg:'Bu proje kalici olarak silinecek.',icon:'!',iconBg:'rgba(239,68,68,.12)',okLabel:'Sil',okClass:'bg-red-600 hover:bg-red-500 text-white',onOk:function(){ls(K.proj,ls(K.proj).filter(function(x){return x.id!==id;}));loadProj();sync();showAT('Proje silindi','success');stats();}}); }
-        function loadDl() { var arr = ls(K.dl), el = g('dlList'); el.innerHTML = arr.map(d => `<tr><td class="font-semibold">${d.name}</td><td class="text-gray-500 text-xs">${d.version}</td><td><span class="px-2 py-0.5 bg-cyan-500/15 text-cyan-400 rounded text-[10px] font-bold uppercase">${d.type}</span></td><td><a href="${d.link}" target="_blank" class="text-blue-400 hover:underline text-xs">Aç</a></td><td class="flex gap-1"><button onclick="openModal('dl',${d.id})" class="btn-s">Düz</button><button onclick="delDl(${d.id})" class="btn-d">Sil</button></td></tr>`).join('') || '<tr><td colspan="5" class="text-center text-gray-500 py-8">Henüz indirme yok</td></tr>' }
-        function saveDl() { var n = g('dlName').value, l = g('dlLink').value; if(!n||!l){showAT('Isim ve link gerekli','error');return;}; var arr = ls(K.dl); var obj = { name: n, version: g('dlVer').value || '1.0', type: g('dlType').value, link: l }; if (editId.dl) { var i = arr.findIndex(x => x.id === editId.dl); arr[i] = { ...arr[i], ...obj } } else { arr.push({ id: Date.now(), ...obj }) } ls(K.dl, arr); loadDl(); closeModal('dl'); sync(); log('İndirme güncellendi'); stats() }
-        function delDl(id){ showConfirm({title:'Sil',msg:'Bu indirme kalici olarak silinecek.',icon:'!',iconBg:'rgba(239,68,68,.12)',okLabel:'Sil',okClass:'bg-red-600 hover:bg-red-500 text-white',onOk:function(){ls(K.dl,ls(K.dl).filter(function(x){return x.id!==id;}));loadDl();sync();showAT('Indirme silindi','success');stats();}}); }
-        function loadSponsors() { var arr = ls(K.sponsor); if (!arr.length) { arr = [{ id: Date.now(), name: 'LuaNetwork', tagline: 'Minecraft Server', description: 'Özgün SkyBlock deneyimi', logo: 'luanetwork.png', website: 'https://luanetwork.com.tr/ ', discord: 'https://discord.gg/yfpqrY68tM ', ip: 'mc.luanetwork.com.tr', features: ['Özgün SkyBlock sistemi', 'Özel spawner sistemi', 'Aktif topluluk'] }]; ls(K.sponsor, arr) } var el = g('sponsorList'); el.innerHTML = arr.map(s => `<div class="glass p-6"><div class="flex items-center justify-between mb-4"><div class="flex items-center gap-4"><div class="w-12 h-12 bg-orange-500/10 rounded-lg flex items-center justify-center overflow-hidden">${s.logo ? `<img src="${s.logo}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<span class=\\'text-orange-500 font-black\\'>${s.name[0]}</span>'">` : `<span class="text-orange-500 font-black">${s.name[0]}</span>`}</div><div><h3 class="font-bold text-lg">${s.name}</h3><p class="text-xs text-gray-500">${s.tagline || ''}</p></div></div><div class="flex gap-2"><button onclick='editSponsor(${JSON.stringify(s).replace(/'/g, "\\'")})' class="btn-s">Düz</button><button onclick="delSponsor(${s.id})" class="btn-d">Sil</button></div></div>${s.description ? `<p class="text-sm text-gray-400">${s.description}</p>` : ''}</div>`).join('') }
-        function saveSponsor() { var n = g('spName').value; if(!n){showAT('Sponsor adi gerekli','error');return;}; var arr = ls(K.sponsor); var features = g('spFeatures').value.split('\n').filter(f => f.trim()); var obj = { name: n, tagline: g('spTag').value, description: g('spDesc').value, logo: g('spLogo').value, website: g('spWeb').value, discord: g('spDiscord').value, ip: g('spIP').value, features: features }; if (editId.sponsor) { var i = arr.findIndex(x => x.id === editId.sponsor); arr[i] = { ...arr[i], ...obj } } else { arr.push({ id: Date.now(), ...obj }) } ls(K.sponsor, arr); loadSponsors(); closeModal('sponsor'); sync(); log('Sponsor güncellendi'); stats() }
-        function editSponsor(s) { editId.sponsor = s.id; g('spName').value = s.name; g('spTag').value = s.tagline || ''; g('spDesc').value = s.description || ''; g('spLogo').value = s.logo || ''; g('spWeb').value = s.website || ''; g('spDiscord').value = s.discord || ''; g('spIP').value = s.ip || ''; g('spFeatures').value = (s.features || []).join('\n'); g('m-sponsor').classList.add('active') }
-        function delSponsor(id){ showConfirm({title:'Sil',msg:'Bu sponsor kalici olarak silinecek.',icon:'!',iconBg:'rgba(239,68,68,.12)',okLabel:'Sil',okClass:'bg-red-600 hover:bg-red-500 text-white',onOk:function(){ls(K.sponsor,ls(K.sponsor).filter(function(x){return x.id!==id;}));loadSponsors();sync();showAT('Sponsor silindi','success');stats();}}); }
-        function loadCMS() { var d = ls(K.cms); if (d.hero) { g('cmsBadge').value = d.hero.badge || ''; g('cmsTitle').value = d.hero.title || ''; g('cmsSub').value = d.hero.subtitle || '' } }
-        function saveCMS() { var d = ls(K.cms); d.hero = { badge: g('cmsBadge').value, title: g('cmsTitle').value, subtitle: g('cmsSub').value }; ls(K.cms, d); sync(); log('CMS güncellendi'); showAT('✓ CMS güncellendi!','success') }
-        function loadCookies() { var c = ls(K.cookies); g('cookieTitle').value = c.title || 'Bu site temel cerezler kullanir'; g('cookieDesc').value = c.description || 'Deneyiminizi gelistirmek icin temel cerezleri kullaniyoruz.'; g('cookieAccept').value = c.acceptText || 'Anladim'; g('cookieReject').value = c.rejectText || 'Reddet' }
-        function saveCookies() { var c = { title: g('cookieTitle').value, description: g('cookieDesc').value, acceptText: g('cookieAccept').value, rejectText: g('cookieReject').value }; ls(K.cookies, c); sync(); log('Çerez ayarları güncellendi'); showAT('✓ Çerez ayarları kaydedildi!','success') }
+
+        // Placeholder
+        function openTD(id) {
+            console.log('Ticket detay:', id);
+        }
+
+        function setTStatus(status) {
+            console.log('Status değiştir:', status);
+        }
+
+        // ==========================================
+        // DİĞER FONKSİYONLAR
+        // ==========================================
+
+        async function checkConnection() { 
+            try { 
+                await db.ref('.info/connected').once('value'); 
+                g('sync-dot').className = 'sync-dot sync-ok'; 
+                g('sync-text').textContent = 'Sistem Sorunsuz'; 
+                g('system-status').textContent = 'Sistem Sorunsuz Çalışıyor';
+            } catch (e) { 
+                g('sync-dot').className = 'sync-dot sync-err'; 
+                g('sync-text').textContent = 'Bağlantı Hatası'; 
+                g('system-status').textContent = 'Bağlantıda Sorun Var';
+            } 
+        }
+
+        async function sync() { 
+            g('sync-dot').className = 'sync-dot sync-loading'; 
+            g('sync-text').textContent = 'Kaydediliyor...'; 
+            try { 
+                await db.ref('site_data').set({ 
+                    announcements: ls(K.ann), 
+                    projects: ls(K.proj), 
+                    downloads: ls(K.dl), 
+                    sponsors: ls(K.sponsor), 
+                    cms_content: ls(K.cms), 
+                    cookie_settings: ls(K.cookies), 
+                    settings: ls(K.settings) 
+                }); 
+                g('sync-dot').className = 'sync-dot sync-ok'; 
+                g('sync-text').textContent = 'Sistem Sorunsuz'; 
+                g('system-status').textContent = 'Sistem Sorunsuz Çalışıyor';
+            } catch (e) { 
+                g('sync-dot').className = 'sync-dot sync-err'; 
+                g('sync-text').textContent = 'Hata: ' + e.message; 
+                g('system-status').textContent = 'Bağlantıda Sorun Var';
+            } 
+        }
+
+        function go(tab, el) { 
+            document.querySelectorAll('.tab-c').forEach(t => t.classList.remove('active')); 
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); 
+            g('t-' + tab).classList.add('active'); 
+            if (el) el.classList.add('active');
+        }
+
+        function loadAnn() { 
+            var arr = ls(K.ann), el = g('annList'); 
+            el.innerHTML = arr.map(a => `<tr>
+                <td class="font-semibold">${a.title}</td>
+                <td><span class="px-2 py-0.5 bg-blue-500/15 text-blue-400 rounded text-[10px] font-bold uppercase">${a.category}</span></td>
+                <td class="text-gray-500 text-xs">${a.date}</td>
+                <td class="flex gap-1">
+                    <button onclick="openModal('ann',${a.id})" class="btn-s">Düz</button>
+                    <button onclick="delAnn(${a.id})" class="btn-d">Sil</button>
+                </td>
+            </tr>`).join('') || '<tr><td colspan="4" class="text-center text-gray-500 py-8">Henüz duyuru yok</td></tr>';
+        }
+
+        function saveAnn() { 
+            var t = g('annTitle').value, c = g('annContent').value, cat = g('annCat').value; 
+            if(!t||!c){
+                showAT('Tum alanlari doldurun','error');
+                return;
+            }
+            var arr = ls(K.ann); 
+            if (editId.ann) { 
+                var i = arr.findIndex(x => x.id === editId.ann); 
+                arr[i] = { ...arr[i], title: t, content: c, category: cat };
+            } else { 
+                arr.push({ 
+                    id: Date.now(), 
+                    title: t, 
+                    content: c, 
+                    category: cat, 
+                    date: new Date().toLocaleDateString('tr-TR') 
+                });
+            } 
+            ls(K.ann, arr); 
+            loadAnn(); 
+            closeModal('ann'); 
+            sync(); 
+            log('Duyuru güncellendi'); 
+            stats();
+        }
+
+        function delAnn(id){ 
+            showConfirm({
+                title:'Sil',
+                msg:'Bu duyuru kalici olarak silinecek.',
+                icon:'!',
+                iconBg:'rgba(239,68,68,.12)',
+                okLabel:'Sil',
+                okClass:'bg-red-600 hover:bg-red-500 text-white',
+                onOk:function(){
+                    ls(K.ann,ls(K.ann).filter(function(x){return x.id!==id;}));
+                    loadAnn();
+                    sync();
+                    showAT('Duyuru silindi','success');
+                    stats();
+                }
+            }); 
+        }
+
+        function loadProj() { 
+            var arr = ls(K.proj), el = g('projList'); 
+            const sc = { 
+                release: 'text-green-400 bg-green-500/15', 
+                beta: 'text-yellow-400 bg-yellow-500/15', 
+                alpha: 'text-purple-400 bg-purple-500/15', 
+                development: 'text-blue-400 bg-blue-500/15' 
+            }; 
+            el.innerHTML = arr.map(p => `<tr>
+                <td class="font-semibold">${p.name}</td>
+                <td><span class="px-2 py-0.5 bg-purple-500/15 text-purple-400 rounded text-[10px] font-bold uppercase">${p.type}</span></td>
+                <td><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${sc[p.status]}">${p.status}</span></td>
+                <td class="text-gray-500 text-xs">${p.version}</td>
+                <td class="flex gap-1">
+                    <button onclick="openModal('proj',${p.id})" class="btn-s">Düz</button>
+                    <button onclick="delProj(${p.id})" class="btn-d">Sil</button>
+                </td>
+            </tr>`).join('') || '<tr><td colspan="5" class="text-center text-gray-500 py-8">Henüz proje yok</td></tr>';
+        }
+
+        function saveProj() { 
+            var n = g('projName').value, d = g('projDesc').value; 
+            if(!n){
+                showAT('Proje adi gerekli','error');
+                return;
+            }
+            var arr = ls(K.proj); 
+            var obj = { 
+                name: n, 
+                description: d, 
+                version: g('projVer').value || 'v1.0', 
+                type: g('projType').value, 
+                category: g('projCat').value || '', 
+                status: g('projStatus').value, 
+                link: g('projLink').value, 
+                icon: g('projIcon').value 
+            }; 
+            if (editId.proj) { 
+                var i = arr.findIndex(x => x.id === editId.proj); 
+                arr[i] = { ...arr[i], ...obj };
+            } else { 
+                arr.push({ id: Date.now(), ...obj });
+            } 
+            ls(K.proj, arr); 
+            loadProj(); 
+            closeModal('proj'); 
+            sync(); 
+            log('Proje güncellendi'); 
+            stats();
+        }
+
+        function delProj(id){ 
+            showConfirm({
+                title:'Sil',
+                msg:'Bu proje kalici olarak silinecek.',
+                icon:'!',
+                iconBg:'rgba(239,68,68,.12)',
+                okLabel:'Sil',
+                okClass:'bg-red-600 hover:bg-red-500 text-white',
+                onOk:function(){
+                    ls(K.proj,ls(K.proj).filter(function(x){return x.id!==id;}));
+                    loadProj();
+                    sync();
+                    showAT('Proje silindi','success');
+                    stats();
+                }
+            }); 
+        }
+
+        function loadDl() { 
+            var arr = ls(K.dl), el = g('dlList'); 
+            el.innerHTML = arr.map(d => `<tr>
+                <td class="font-semibold">${d.name}</td>
+                <td class="text-gray-500 text-xs">${d.version}</td>
+                <td><span class="px-2 py-0.5 bg-cyan-500/15 text-cyan-400 rounded text-[10px] font-bold uppercase">${d.type}</span></td>
+                <td><a href="${d.link}" target="_blank" class="text-blue-400 hover:underline text-xs">Aç</a></td>
+                <td class="flex gap-1">
+                    <button onclick="openModal('dl',${d.id})" class="btn-s">Düz</button>
+                    <button onclick="delDl(${d.id})" class="btn-d">Sil</button>
+                </td>
+            </tr>`).join('') || '<tr><td colspan="5" class="text-center text-gray-500 py-8">Henüz indirme yok</td></tr>';
+        }
+
+        function saveDl() { 
+            var n = g('dlName').value, l = g('dlLink').value; 
+            if(!n||!l){
+                showAT('Isim ve link gerekli','error');
+                return;
+            }
+            var arr = ls(K.dl); 
+            var obj = { 
+                name: n, 
+                version: g('dlVer').value || '1.0', 
+                type: g('dlType').value, 
+                link: l 
+            }; 
+            if (editId.dl) { 
+                var i = arr.findIndex(x => x.id === editId.dl); 
+                arr[i] = { ...arr[i], ...obj };
+            } else { 
+                arr.push({ id: Date.now(), ...obj });
+            } 
+            ls(K.dl, arr); 
+            loadDl(); 
+            closeModal('dl'); 
+            sync(); 
+            log('İndirme güncellendi'); 
+            stats();
+        }
+
+        function delDl(id){ 
+            showConfirm({
+                title:'Sil',
+                msg:'Bu indirme kalici olarak silinecek.',
+                icon:'!',
+                iconBg:'rgba(239,68,68,.12)',
+                okLabel:'Sil',
+                okClass:'bg-red-600 hover:bg-red-500 text-white',
+                onOk:function(){
+                    ls(K.dl,ls(K.dl).filter(function(x){return x.id!==id;}));
+                    loadDl();
+                    sync();
+                    showAT('Indirme silindi','success');
+                    stats();
+                }
+            }); 
+        }
+
+        function loadSponsors() { 
+            var arr = ls(K.sponsor); 
+            if (!arr.length) { 
+                arr = [{ 
+                    id: Date.now(), 
+                    name: 'LuaNetwork', 
+                    tagline: 'Minecraft Server', 
+                    description: 'Özgün SkyBlock deneyimi', 
+                    logo: 'luanetwork.png', 
+                    website: 'https://luanetwork.com.tr/ ', 
+                    discord: 'https://discord.gg/yfpqrY68tM ', 
+                    ip: 'mc.luanetwork.com.tr', 
+                    features: ['Özgün SkyBlock sistemi', 'Özel spawner sistemi', 'Aktif topluluk'] 
+                }]; 
+                ls(K.sponsor, arr);
+            } 
+            var el = g('sponsorList'); 
+            el.innerHTML = arr.map(s => `<div class="glass p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-orange-500/10 rounded-lg flex items-center justify-center overflow-hidden">
+                            ${s.logo ? `<img src="${s.logo}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<span class=\\'text-orange-500 font-black\\'>${s.name[0]}</span>'">` : `<span class="text-orange-500 font-black">${s.name[0]}</span>`}
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">${s.name}</h3>
+                            <p class="text-xs text-gray-500">${s.tagline || ''}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick='editSponsor(${JSON.stringify(s).replace(/'/g, "\\'")})' class="btn-s">Düz</button>
+                        <button onclick="delSponsor(${s.id})" class="btn-d">Sil</button>
+                    </div>
+                </div>
+                ${s.description ? `<p class="text-sm text-gray-400">${s.description}</p>` : ''}
+            </div>`).join('');
+        }
+
+        function saveSponsor() { 
+            var n = g('spName').value; 
+            if(!n){
+                showAT('Sponsor adi gerekli','error');
+                return;
+            }
+            var arr = ls(K.sponsor); 
+            var features = g('spFeatures').value.split('\n').filter(f => f.trim()); 
+            var obj = { 
+                name: n, 
+                tagline: g('spTag').value, 
+                description: g('spDesc').value, 
+                logo: g('spLogo').value, 
+                website: g('spWeb').value, 
+                discord: g('spDiscord').value, 
+                ip: g('spIP').value, 
+                features: features 
+            }; 
+            if (editId.sponsor) { 
+                var i = arr.findIndex(x => x.id === editId.sponsor); 
+                arr[i] = { ...arr[i], ...obj };
+            } else { 
+                arr.push({ id: Date.now(), ...obj });
+            } 
+            ls(K.sponsor, arr); 
+            loadSponsors(); 
+            closeModal('sponsor'); 
+            sync(); 
+            log('Sponsor güncellendi'); 
+            stats();
+        }
+
+        function editSponsor(s) { 
+            editId.sponsor = s.id; 
+            g('spName').value = s.name; 
+            g('spTag').value = s.tagline || ''; 
+            g('spDesc').value = s.description || ''; 
+            g('spLogo').value = s.logo || ''; 
+            g('spWeb').value = s.website || ''; 
+            g('spDiscord').value = s.discord || ''; 
+            g('spIP').value = s.ip || ''; 
+            g('spFeatures').value = (s.features || []).join('\n'); 
+            g('m-sponsor').classList.add('active');
+        }
+
+        function delSponsor(id){ 
+            showConfirm({
+                title:'Sil',
+                msg:'Bu sponsor kalici olarak silinecek.',
+                icon:'!',
+                iconBg:'rgba(239,68,68,.12)',
+                okLabel:'Sil',
+                okClass:'bg-red-600 hover:bg-red-500 text-white',
+                onOk:function(){
+                    ls(K.sponsor,ls(K.sponsor).filter(function(x){return x.id!==id;}));
+                    loadSponsors();
+                    sync();
+                    showAT('Sponsor silindi','success');
+                    stats();
+                }
+            }); 
+        }
+
+        function loadCMS() { 
+            var d = ls(K.cms); 
+            if (d.hero) { 
+                g('cmsBadge').value = d.hero.badge || ''; 
+                g('cmsTitle').value = d.hero.title || ''; 
+                g('cmsSub').value = d.hero.subtitle || '';
+            } 
+        }
+
+        function saveCMS() { 
+            var d = ls(K.cms); 
+            d.hero = { 
+                badge: g('cmsBadge').value, 
+                title: g('cmsTitle').value, 
+                subtitle: g('cmsSub').value 
+            }; 
+            ls(K.cms, d); 
+            sync(); 
+            log('CMS güncellendi'); 
+            showAT('✓ CMS güncellendi!','success');
+        }
+
+        function loadCookies() { 
+            var c = ls(K.cookies); 
+            g('cookieTitle').value = c.title || 'Bu site temel cerezler kullanir'; 
+            g('cookieDesc').value = c.description || 'Deneyiminizi gelistirmek icin temel cerezleri kullaniyoruz.'; 
+            g('cookieAccept').value = c.acceptText || 'Anladim'; 
+            g('cookieReject').value = c.rejectText || 'Reddet';
+        }
+
+        function saveCookies() { 
+            var c = { 
+                title: g('cookieTitle').value, 
+                description: g('cookieDesc').value, 
+                acceptText: g('cookieAccept').value, 
+                rejectText: g('cookieReject').value 
+            }; 
+            ls(K.cookies, c); 
+            sync(); 
+            log('Çerez ayarları güncellendi'); 
+            showAT('✓ Çerez ayarları kaydedildi!','success');
+        }
+
         function loadSettings(){
             var s=ls(K.settings)||{};
             if(g('siteTitle'))  g('siteTitle').value  = s.siteTitle||'';
@@ -1777,25 +2428,41 @@
             if(g('mob-pwaname'))    g('mob-pwaname').value    = s.pwaName||'ArcanthProject';
             if(g('mob-themecolor')) g('mob-themecolor').value = s.themeColor||'#020408';
         }
+
         function saveSocialLinks(){
             var s=ls(K.settings)||{};
-            ['discord','github','instagram','youtube','twitter','tiktok'].forEach(function(f){var el=g('sm-'+f);if(el)s[f]=el.value.trim();});
-            ls(K.settings,s); sync(); log('Sosyal medya güncellendi'); showAT('✓ Sosyal medya linkleri kaydedildi!','success');
+            ['discord','github','instagram','youtube','twitter','tiktok'].forEach(function(f){
+                var el=g('sm-'+f);
+                if(el)s[f]=el.value.trim();
+            });
+            ls(K.settings,s); 
+            sync(); 
+            log('Sosyal medya güncellendi'); 
+            showAT('✓ Sosyal medya linkleri kaydedildi!','success');
         }
+
         function saveMobileSettings(){
             var s=ls(K.settings)||{};
             if(g('mob-appstore'))   s.appStore  =g('mob-appstore').value.trim();
             if(g('mob-playstore'))  s.playStore =g('mob-playstore').value.trim();
             if(g('mob-pwaname'))    s.pwaName   =g('mob-pwaname').value.trim();
             if(g('mob-themecolor')) s.themeColor=g('mob-themecolor').value;
-            ls(K.settings,s); sync(); log('Mobil ayarlar güncellendi'); showAT('✓ Mobil ayarlar kaydedildi!','success');
+            ls(K.settings,s); 
+            sync(); 
+            log('Mobil ayarlar güncellendi'); 
+            showAT('✓ Mobil ayarlar kaydedildi!','success');
         }
+
         function saveSiteSettings(){
             var s=ls(K.settings)||{};
             s.siteTitle=g('siteTitle')?g('siteTitle').value.trim():'';
             s.siteDescription=g('siteDesc')?g('siteDesc').value.trim():'';
-            ls(K.settings,s); sync(); log('Site başlığı güncellendi'); showAT('✓ Site ayarları kaydedildi!','success');
+            ls(K.settings,s); 
+            sync(); 
+            log('Site başlığı güncellendi'); 
+            showAT('✓ Site ayarları kaydedildi!','success');
         }
+
         function showAT(msg,type){
             var cols={success:'#4ade80',error:'#f87171',info:'#60a5fa'};
             var bgs={success:'#0a2d14',error:'#2d0a0a',info:'#0a142d'};
@@ -1804,22 +2471,140 @@
             d.innerHTML='<span style="font-size:16px">'+(type==='error'?'⚠':'✓')+'</span><span>'+msg+'</span>';
             d.onclick=function(){d.remove();};
             document.body.appendChild(d);
-            setTimeout(function(){d.style.transition='opacity .4s';d.style.opacity='0';setTimeout(function(){d.remove();},400);},4000);
+            setTimeout(function(){
+                d.style.transition='opacity .4s';
+                d.style.opacity='0';
+                setTimeout(function(){d.remove();},400);
+            },4000);
         }
-        function log(m) { var arr = ls(K.act); arr.unshift({ message: m, time: new Date().toLocaleTimeString('tr-TR') }); if (arr.length > 20) arr.pop(); ls(K.act, arr); loadAct() }
-        function loadAct() { var arr = ls(K.act); g('actList').innerHTML = arr.map(a => `<div class="glass p-3 flex items-center justify-between text-xs"><span class="font-semibold">${a.message}</span><span class="text-gray-500">${a.time}</span></div>`).join('') || '<div class="glass p-6 text-center text-gray-500">Henüz aktivite yok</div>' }
-        function clearAct(){ showConfirm({title:'Temizle',msg:'Tum aktivite gecmisi silinecek.',icon:'!',iconBg:'rgba(239,68,68,.12)',okLabel:'Temizle',okClass:'bg-red-600 hover:bg-red-500 text-white',onOk:function(){ls(K.act,[]);loadAct();showAT('Aktivite temizlendi','success');}}); }
-        function stats() { g('s-ann').textContent = ls(K.ann).length; g('s-proj').textContent = ls(K.proj).length; g('s-dl').textContent = ls(K.dl).length; g('s-sponsor').textContent = ls(K.sponsor).length }
-        function openModal(t, id) { editId[t] = id || null; g('m-' + t).classList.add('active'); if (id) { var d = ls(K[t]).find(x => x.id === id); if (t === 'ann') { g('annTitle').value = d.title; g('annContent').value = d.content; g('annCat').value = d.category } if (t === 'proj') { g('projName').value = d.name; g('projDesc').value = d.description; g('projVer').value = d.version; g('projType').value = d.type; g('projCat').value = d.category || ''; g('projStatus').value = d.status; g('projLink').value = d.link; g('projIcon').value = d.icon } if (t === 'dl') { g('dlName').value = d.name; g('dlVer').value = d.version; g('dlType').value = d.type; g('dlLink').value = d.link } } else { if (t === 'ann') { g('annTitle').value = ''; g('annContent').value = ''; g('annCat').value = 'bilgi' } if (t === 'proj') { g('projName').value = ''; g('projDesc').value = ''; g('projVer').value = ''; g('projType').value = 'modpack'; g('projCat').value = ''; g('projStatus').value = 'release'; g('projLink').value = ''; g('projIcon').value = '' } if (t === 'dl') { g('dlName').value = ''; g('dlVer').value = ''; g('dlType').value = 'modpack'; g('dlLink').value = '' } if (t === 'sponsor') { g('spName').value = ''; g('spTag').value = ''; g('spDesc').value = ''; g('spLogo').value = ''; g('spWeb').value = ''; g('spDiscord').value = ''; g('spIP').value = ''; g('spFeatures').value = '' } } }
-        function closeModal(t) { g('m-' + t).classList.remove('active'); editId[t] = null }
+
+        function log(m) { 
+            var arr = ls(K.act); 
+            arr.unshift({ message: m, time: new Date().toLocaleTimeString('tr-TR') }); 
+            if (arr.length > 20) arr.pop(); 
+            ls(K.act, arr); 
+            loadAct();
+        }
+
+        function loadAct() { 
+            var arr = ls(K.act); 
+            g('actList').innerHTML = arr.map(a => `<div class="glass p-3 flex items-center justify-between text-xs">
+                <span class="font-semibold">${a.message}</span>
+                <span class="text-gray-500">${a.time}</span>
+            </div>`).join('') || '<div class="glass p-6 text-center text-gray-500">Henüz aktivite yok</div>';
+        }
+
+        function clearAct(){ 
+            showConfirm({
+                title:'Temizle',
+                msg:'Tum aktivite gecmisi silinecek.',
+                icon:'!',
+                iconBg:'rgba(239,68,68,.12)',
+                okLabel:'Temizle',
+                okClass:'bg-red-600 hover:bg-red-500 text-white',
+                onOk:function(){
+                    ls(K.act,[]);
+                    loadAct();
+                    showAT('Aktivite temizlendi','success');
+                }
+            }); 
+        }
+
+        function stats() { 
+            g('s-ann').textContent = ls(K.ann).length; 
+            g('s-proj').textContent = ls(K.proj).length; 
+            g('s-dl').textContent = ls(K.dl).length; 
+            g('s-sponsor').textContent = ls(K.sponsor).length;
+        }
+
+        function openModal(t, id) { 
+            editId[t] = id || null; 
+            g('m-' + t).classList.add('active'); 
+            if (id) { 
+                var d = ls(K[t]).find(x => x.id === id); 
+                if (t === 'ann') { 
+                    g('annTitle').value = d.title; 
+                    g('annContent').value = d.content; 
+                    g('annCat').value = d.category;
+                } 
+                if (t === 'proj') { 
+                    g('projName').value = d.name; 
+                    g('projDesc').value = d.description; 
+                    g('projVer').value = d.version; 
+                    g('projType').value = d.type; 
+                    g('projCat').value = d.category || ''; 
+                    g('projStatus').value = d.status; 
+                    g('projLink').value = d.link; 
+                    g('projIcon').value = d.icon;
+                } 
+                if (t === 'dl') { 
+                    g('dlName').value = d.name; 
+                    g('dlVer').value = d.version; 
+                    g('dlType').value = d.type; 
+                    g('dlLink').value = d.link;
+                } 
+            } else { 
+                if (t === 'ann') { 
+                    g('annTitle').value = ''; 
+                    g('annContent').value = ''; 
+                    g('annCat').value = 'bilgi';
+                } 
+                if (t === 'proj') { 
+                    g('projName').value = ''; 
+                    g('projDesc').value = ''; 
+                    g('projVer').value = ''; 
+                    g('projType').value = 'modpack'; 
+                    g('projCat').value = ''; 
+                    g('projStatus').value = 'release'; 
+                    g('projLink').value = ''; 
+                    g('projIcon').value = '';
+                } 
+                if (t === 'dl') { 
+                    g('dlName').value = ''; 
+                    g('dlVer').value = ''; 
+                    g('dlType').value = 'modpack'; 
+                    g('dlLink').value = '';
+                } 
+                if (t === 'sponsor') { 
+                    g('spName').value = ''; 
+                    g('spTag').value = ''; 
+                    g('spDesc').value = ''; 
+                    g('spLogo').value = ''; 
+                    g('spWeb').value = ''; 
+                    g('spDiscord').value = ''; 
+                    g('spIP').value = ''; 
+                    g('spFeatures').value = '';
+                } 
+            } 
+        }
+
+        function closeModal(t) { 
+            g('m-' + t).classList.remove('active'); 
+            editId[t] = null;
+        }
 
         // ============== BLOG CRUD ==============
         let editBlogId = null;
-        function openNewPost() { editBlogId = null; g('blogTitle').value = ''; g('blogContent').value = ''; g('blogCategory').value = 'genel'; g('blogAuthor').value = ''; g('blogImage').value = ''; g('m-blog').classList.add('active'); }
-        function closeBlogModal() { g('m-blog').classList.remove('active'); editBlogId = null; }
+
+        function openNewPost() { 
+            editBlogId = null; 
+            g('blogTitle').value = ''; 
+            g('blogContent').value = ''; 
+            g('blogCategory').value = 'genel'; 
+            g('blogAuthor').value = ''; 
+            g('blogImage').value = ''; 
+            g('m-blog').classList.add('active'); 
+        }
+
+        function closeBlogModal() { 
+            g('m-blog').classList.remove('active'); 
+            editBlogId = null; 
+        }
+
         function editBlogPost(id) {
             db.ref('site_data/blog/' + id).once('value').then(snap => {
-                const p = snap.val(); if (!p) return;
+                const p = snap.val(); 
+                if (!p) return;
                 editBlogId = id;
                 g('blogTitle').value = p.title || '';
                 g('blogContent').value = p.content || '';
@@ -1829,10 +2614,14 @@
                 g('m-blog').classList.add('active');
             });
         }
+
         async function saveBlogPost() {
             const title = g('blogTitle').value.trim();
             const content = g('blogContent').value.trim();
-            if(!title||!content){showAT('Baslik ve icerik gerekli!','error');return;}
+            if(!title||!content){
+                showAT('Baslik ve icerik gerekli!','error');
+                return;
+            }
             const id = editBlogId || Date.now().toString();
             const post = {
                 id: id,
@@ -1845,25 +2634,35 @@
                 views: editBlogId ? undefined : 0
             };
             // Remove undefined keys
-            Object.keys(post).forEach(k => { if (post[k] === undefined) delete post[k]; });
+            Object.keys(post).forEach(k => { 
+                if (post[k] === undefined) delete post[k]; 
+            });
             try {
-                if (editBlogId) { await db.ref('site_data/blog/' + id).update(post); }
-                else { await db.ref('site_data/blog/' + id).set(post); }
+                if (editBlogId) { 
+                    await db.ref('site_data/blog/' + id).update(post); 
+                } else { 
+                    await db.ref('site_data/blog/' + id).set(post); 
+                }
                 closeBlogModal();
                 loadBlog();
                 log(editBlogId ? 'Blog yazısı düzenlendi' : 'Yeni blog yazısı eklendi');
                 showAT('Blog kaydedildi!','success');
-            } catch(e){ showAT('Hata: '+e.message,'error'); }
+            } catch(e){ 
+                showAT('Hata: '+e.message,'error'); 
+            }
         }
+
         async function deleteBlogPost(id) {
-            // confirm replaced by showConfirm below
             try {
                 await db.ref('site_data/blog/' + id).remove();
                 await db.ref('comments/' + id).remove();
                 loadBlog();
                 log('Blog yazısı silindi');
-            } catch(e){ showAT('Hata: '+e.message,'error'); }
+            } catch(e){ 
+                showAT('Hata: '+e.message,'error'); 
+            }
         }
+
         function loadBlog() {
             db.ref('site_data/blog').once('value').then(snap => {
                 const el = g('blogList');
@@ -1890,22 +2689,15 @@
             });
         }
 
-        // ============== SITE SETTINGS ==============
-        function saveSiteSettings() {
-            const title = g('siteTitle') ? g('siteTitle').value : '';
-            const desc = g('siteDesc') ? g('siteDesc').value : '';
-            const settings = ls(K.settings);
-            if (title) settings.siteTitle = title;
-            if (desc) settings.siteDescription = desc;
-            ls(K.settings, settings);
-            sync();
-            log('Site ayarları güncellendi');
-            showAT('Site ayarlari kaydedildi!','success');
+        // ============== MAINTENANCE MODE ==============
+        function openBakimModal() { 
+            g('m-bakim').classList.add('active'); 
         }
 
-        // ============== MAINTENANCE MODE ==============
-        function openBakimModal() { g('m-bakim').classList.add('active'); }
-        function closeBakimModal() { g('m-bakim').classList.remove('active'); }
+        function closeBakimModal() { 
+            g('m-bakim').classList.remove('active'); 
+        }
+
         async function startBakim() {
             const message = g('bakimMsgInput').value.trim();
             const duration = parseInt(g('bakimTimeInput').value) || 30;
@@ -1922,17 +2714,22 @@
                 loadBakimStatus();
                 log('Bakım modu açıldı (' + duration + ' dk)');
                 showAT('✓ Bakım modu açıldı! Süre: '+duration+' dk','success');
-            } catch(e){ showAT('Hata: '+e.message,'error'); }
+            } catch(e){ 
+                showAT('Hata: '+e.message,'error'); 
+            }
         }
+
         async function closeBakim() {
-            
             try {
                 await db.ref('site_data/settings/maintenance').set({ enabled: false });
                 loadBakimStatus();
                 log('Bakım modu kapatıldı');
                 showAT('✓ Bakım modu kapatıldı','success');
-            } catch(e){ showAT('Hata: '+e.message,'error'); }
+            } catch(e){ 
+                showAT('Hata: '+e.message,'error'); 
+            }
         }
+
         function loadBakimStatus() {
             db.ref('site_data/settings/maintenance').once('value').then(snap => {
                 const data = snap.val();
@@ -1953,12 +2750,12 @@
 
         // ============== SYSTEM MANAGEMENT ==============
         function clearAllCache() {
-            
             [K.ann, K.proj, K.dl, K.sponsor, K.cms, K.cookies, K.settings, K.act].forEach(k => localStorage.removeItem(k));
             log('Önbellek temizlendi');
             showAT('✓ Önbellek temizlendi, yenileniyor...','success');
             location.reload();
         }
+
         function exportData() {
             const data = {
                 announcements: ls(K.ann),
@@ -1979,9 +2776,8 @@
             URL.revokeObjectURL(url);
             log('Veri yedeği indirildi');
         }
+
         function resetToDefaults() {
-            
-            
             [K.ann, K.proj, K.dl, K.sponsor, K.cms, K.cookies, K.settings, K.act].forEach(k => localStorage.removeItem(k));
             log('Sistem sıfırlandı');
             showAT('✓ Sistem sıfırlandı','success');
@@ -2008,17 +2804,28 @@
                 counts.sort((a, b) => b.count - a.count);
                 const topEl = g('top-downloads');
                 if (counts.length) {
-                    topEl.innerHTML = counts.slice(0, 10).map((c, i) => `<div class="flex items-center justify-between py-2 ${i > 0 ? 'border-t border-white/5' : ''}"><span class="font-semibold text-sm">${i + 1}. ${c.name}</span><span class="text-blue-400 font-bold">${c.count}</span></div>`).join('');
+                    topEl.innerHTML = counts.slice(0, 10).map((c, i) => `<div class="flex items-center justify-between py-2 ${i > 0 ? 'border-t border-white/5' : ''}">
+                        <span class="font-semibold text-sm">${i + 1}. ${c.name}</span>
+                        <span class="text-blue-400 font-bold">${c.count}</span>
+                    </div>`).join('');
                 } else {
                     topEl.innerHTML = '<p class="text-gray-500 text-sm">Henüz indirme verisi yok</p>';
                 }
 
                 // Recent activities from Firebase
                 const actSnap = await db.ref('activity_logs').limitToLast(10).once('value');
-                const acts = []; actSnap.forEach(c => acts.push(c.val())); acts.reverse();
+                const acts = []; 
+                actSnap.forEach(c => acts.push(c.val())); 
+                acts.reverse();
                 const actEl = g('recent-activities');
                 if (acts.length) {
-                    actEl.innerHTML = acts.map(a => `<div class="flex items-center justify-between py-2 border-t border-white/5 first:border-0"><div><span class="text-sm font-semibold">${a.email || a.userId || 'Bilinmiyor'}</span><span class="text-gray-500 text-xs ml-2">${a.type === 'login' ? 'Giriş yaptı' : a.action || a.type}</span></div><span class="text-gray-500 text-xs">${a.timestamp ? new Date(a.timestamp).toLocaleString('tr-TR') : ''}</span></div>`).join('');
+                    actEl.innerHTML = acts.map(a => `<div class="flex items-center justify-between py-2 border-t border-white/5 first:border-0">
+                        <div>
+                            <span class="text-sm font-semibold">${a.email || a.userId || 'Bilinmiyor'}</span>
+                            <span class="text-gray-500 text-xs ml-2">${a.type === 'login' ? 'Giriş yaptı' : a.action || a.type}</span>
+                        </div>
+                        <span class="text-gray-500 text-xs">${a.timestamp ? new Date(a.timestamp).toLocaleString('tr-TR') : ''}</span>
+                    </div>`).join('');
                 } else {
                     actEl.innerHTML = '<p class="text-gray-500 text-sm">Henüz aktivite yok</p>';
                 }
@@ -2037,7 +2844,11 @@
                 const pvTable = g('analytics-pageviews-table');
                 const pvEntries = Object.entries(pvData).sort((a, b) => b[1].count - a[1].count);
                 if (pvEntries.length) {
-                    pvTable.innerHTML = pvEntries.map(([page, d]) => `<tr><td class="font-semibold">${page}</td><td class="text-blue-400 font-bold">${d.count}</td><td class="text-gray-500 text-xs">${d.last ? new Date(d.last).toLocaleString('tr-TR') : '-'}</td></tr>`).join('');
+                    pvTable.innerHTML = pvEntries.map(([page, d]) => `<tr>
+                        <td class="font-semibold">${page}</td>
+                        <td class="text-blue-400 font-bold">${d.count}</td>
+                        <td class="text-gray-500 text-xs">${d.last ? new Date(d.last).toLocaleString('tr-TR') : '-'}</td>
+                    </tr>`).join('');
                 } else {
                     pvTable.innerHTML = '<tr><td colspan="3" class="text-center text-gray-500 py-4">Henüz veri yok</td></tr>';
                 }
@@ -2045,7 +2856,10 @@
                 // Downloads table
                 const dlTable = g('analytics-downloads-table');
                 if (counts.length) {
-                    dlTable.innerHTML = counts.map(c => `<tr><td class="font-semibold">${c.name}</td><td class="text-cyan-400 font-bold">${c.count}</td></tr>`).join('');
+                    dlTable.innerHTML = counts.map(c => `<tr>
+                        <td class="font-semibold">${c.name}</td>
+                        <td class="text-cyan-400 font-bold">${c.count}</td>
+                    </tr>`).join('');
                 } else {
                     dlTable.innerHTML = '<tr><td colspan="2" class="text-center text-gray-500 py-4">Henüz veri yok</td></tr>';
                 }
@@ -2065,7 +2879,8 @@
                 `;
 
                 // Support tickets table: group by category and status
-                const tickets = []; tkSnap.forEach(c => tickets.push(c.val()));
+                const tickets = []; 
+                tkSnap.forEach(c => tickets.push(c.val()));
                 const catStats = {};
                 tickets.forEach(t => {
                     const cat = t.category || 'diger';
@@ -2076,7 +2891,13 @@
                 const tkTable = g('analytics-tickets-table');
                 const catEntries = Object.entries(catStats);
                 if (catEntries.length) {
-                    tkTable.innerHTML = catEntries.map(([cat, s]) => `<tr><td class="font-semibold capitalize">${cat}</td><td class="text-green-400 font-bold">${s.aktif}</td><td class="text-yellow-400 font-bold">${s.beklemede}</td><td class="text-gray-400 font-bold">${s.kapali}</td><td class="font-bold">${s.total}</td></tr>`).join('');
+                    tkTable.innerHTML = catEntries.map(([cat, s]) => `<tr>
+                        <td class="font-semibold capitalize">${cat}</td>
+                        <td class="text-green-400 font-bold">${s.aktif}</td>
+                        <td class="text-yellow-400 font-bold">${s.beklemede}</td>
+                        <td class="text-gray-400 font-bold">${s.kapali}</td>
+                        <td class="font-bold">${s.total}</td>
+                    </tr>`).join('');
                 } else {
                     tkTable.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-4">Henüz veri yok</td></tr>';
                 }
@@ -2121,6 +2942,7 @@
             newyear:  'btn-p px-5 py-2 !from-red-600 !to-rose-600 text-xs',
             halloween:'btn-p px-5 py-2 !from-orange-600 !to-amber-700 text-xs'
         };
+
         function loadEventThemeStatus() {
             db.ref('site_data/settings/active_theme').once('value').then(snap => {
                 const activeTheme = snap.val() || 'normal';
@@ -2136,8 +2958,98 @@
                         btn.className = THEME_BTNS_MAP[t];
                     }
                 });
-            }).catch(function(e){ console.error('Theme status error:', e); });
+            }).catch(function(e){ 
+                console.error('Theme status error:', e); 
+            });
         }
+
+        // ============== CONFIRM MODAL ==============
+        let _scCallback = null;
+
+        function showConfirm(opts) {
+            _scCallback = opts.onOk || null;
+            const m = document.getElementById('sys-confirm');
+            const icon = document.getElementById('sc-icon');
+            const title = document.getElementById('sc-title');
+            const msg = document.getElementById('sc-msg');
+            const okBtn = document.getElementById('sc-ok');
+            
+            icon.textContent = opts.icon || '?';
+            icon.style.background = opts.iconBg || 'rgba(59,130,246,.12)';
+            icon.style.color = opts.iconColor || '#60a5fa';
+            title.textContent = opts.title || 'Onay';
+            msg.textContent = opts.msg || '';
+            okBtn.textContent = opts.okLabel || 'Tamam';
+            okBtn.className = 'flex-1 py-2.5 rounded-xl font-bold text-sm transition-all ' + (opts.okClass || 'bg-blue-600 hover:bg-blue-500 text-white');
+            
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+        }
+
+        function closeSC(ok) {
+            const m = document.getElementById('sys-confirm');
+            m.classList.add('hidden');
+            m.classList.remove('flex');
+            if (ok && _scCallback) {
+                _scCallback();
+            }
+            _scCallback = null;
+        }
+
+        // 2FA durumunu yükle
+        async function load2FAStatus(){
+            var user=auth.currentUser;
+            if(!user)return;
+            var snap=await db.ref('admin_2fa/'+user.uid+'/enabled').once('value');
+            var el=document.getElementById('tfa-status-badge');
+            if(!el)return;
+            if(snap.val()===true){
+                el.textContent='✓ Aktif';
+                el.className='px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-green-500/15 text-green-400';
+            }else{
+                el.textContent='Devre Dışı';
+                el.className='px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-500/15 text-red-400';
+            }
+        }
+
+        // User detail modal placeholder
+        function closeUD() {
+            const m = document.getElementById('m-user-detail');
+            if (m) {
+                m.classList.add('hidden');
+                m.classList.remove('flex');
+            }
+        }
+
+        // Ticket detail modal placeholder  
+        function closeTD() {
+            const m = document.getElementById('m-ticket-detail');
+            if (m) {
+                m.classList.add('hidden');
+                m.classList.remove('flex');
+            }
+        }
+
+        // Sayfa kapatılırken session temizle
+        window.addEventListener('beforeunload', () => { 
+            if (localStorage.getItem('rememberMe') !== 'true') {
+                sessionStorage.removeItem('currentSession');
+            }
+        });
+
+        // 10 saniye sonra hala yükleniyorsa zorla gizle (güvenlik önlemi)
+        setTimeout(function() {
+            const ls = document.getElementById('loading-screen');
+            if (ls && !ls.classList.contains('hidden')) {
+                console.warn('Loading screen 10 saniye sonra zorla gizlendi');
+                hideLoadingScreen();
+                // Kullanıcıya bilgi ver
+                if (!auth.currentUser) {
+                    g('login').style.display = 'flex';
+                }
+            }
+        }, 10000);
+
     </script>
     <!-- PREMIUM SYSTEM MODALS -->
     <div id="sys-confirm" class="fixed inset-0 z-[9000] hidden items-center justify-center p-4" style="background:rgba(0,0,0,.75);backdrop-filter:blur(12px)">
