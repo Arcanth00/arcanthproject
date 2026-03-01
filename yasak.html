@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erişim Engellendi — Arcanth Project</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: #030508;
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated bg */
+        .bg-glow {
+            position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(239,68,68,.12), transparent),
+                        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(239,68,68,.05), transparent);
+        }
+        @keyframes bgPulse { 0%,100%{opacity:.8} 50%{opacity:1} }
+        .bg-glow { animation: bgPulse 6s ease-in-out infinite; }
+
+        /* Grid pattern */
+        .grid-pattern {
+            position: fixed; inset: 0; z-0; opacity: .025; pointer-events: none;
+            background-image: linear-gradient(rgba(239,68,68,.5) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(239,68,68,.5) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .container {
+            position: relative; z-index: 10;
+            min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        /* Shield icon */
+        .shield-wrap {
+            position: relative;
+            width: 120px; height: 120px;
+            margin: 0 auto 2rem;
+        }
+        .shield-glow {
+            position: absolute; inset: -20px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(239,68,68,.2), transparent 70%);
+            animation: shieldPulse 3s ease-in-out infinite;
+        }
+        @keyframes shieldPulse { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.2);opacity:1} }
+        .shield-icon {
+            position: relative; z-index: 1;
+            width: 120px; height: 120px;
+            background: rgba(239,68,68,.08);
+            border: 2px solid rgba(239,68,68,.25);
+            border-radius: 2rem;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .shield-icon svg { color: #ef4444; filter: drop-shadow(0 0 20px rgba(239,68,68,.5)); }
+
+        /* Error code */
+        .error-code {
+            font-size: .75rem; font-weight: 900; letter-spacing: .3em;
+            text-transform: uppercase; color: rgba(239,68,68,.6);
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ef4444, #f87171, #fca5a5);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1rem; color: #64748b; max-width: 480px;
+            line-height: 1.7; margin-bottom: 2.5rem;
+        }
+
+        /* Info card */
+        .info-card {
+            background: rgba(239,68,68,.04);
+            border: 1px solid rgba(239,68,68,.12);
+            border-radius: 1.5rem;
+            padding: 1.5rem 2rem;
+            max-width: 440px;
+            margin: 0 auto 2.5rem;
+            text-align: left;
+        }
+        .info-card h3 {
+            font-size: .65rem; font-weight: 900; letter-spacing: .2em;
+            text-transform: uppercase; color: rgba(239,68,68,.5);
+            margin-bottom: 1rem;
+        }
+        .info-row {
+            display: flex; align-items: flex-start; gap: .75rem;
+            padding: .625rem 0;
+            border-bottom: 1px solid rgba(255,255,255,.04);
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-row svg { flex-shrink: 0; margin-top: .1rem; }
+        .info-row p { font-size: .875rem; color: #94a3b8; line-height: 1.5; }
+        .info-row p strong { color: #e2e8f0; font-weight: 700; }
+
+        /* Buttons */
+        .btn-group { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
+        .btn-support {
+            display: inline-flex; align-items: center; gap: .625rem;
+            padding: .875rem 1.75rem; border-radius: 1rem;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white; font-weight: 800; font-size: .875rem;
+            text-decoration: none; border: none; cursor: pointer;
+            font-family: inherit; letter-spacing: .05em; text-transform: uppercase;
+            transition: all .2s; box-shadow: 0 8px 24px rgba(239,68,68,.25);
+        }
+        .btn-support:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(239,68,68,.4); }
+        .btn-back {
+            display: inline-flex; align-items: center; gap: .625rem;
+            padding: .875rem 1.75rem; border-radius: 1rem;
+            background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1);
+            color: #94a3b8; font-weight: 700; font-size: .875rem;
+            text-decoration: none; cursor: pointer; font-family: inherit;
+            letter-spacing: .05em; transition: all .2s;
+        }
+        .btn-back:hover { background: rgba(255,255,255,.08); color: #e2e8f0; }
+
+        /* UID display */
+        .uid-badge {
+            display: inline-flex; align-items: center; gap: .5rem;
+            padding: .5rem 1rem; border-radius: .75rem;
+            background: rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.06);
+            font-family: monospace; font-size: .75rem; color: #475569;
+            margin-bottom: 2rem;
+        }
+
+        /* Footer */
+        footer { 
+            position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+            font-size: .75rem; color: #1e293b; white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="grid-pattern"></div>
+
+    <div class="container">
+        <!-- Shield -->
+        <div class="shield-wrap">
+            <div class="shield-glow"></div>
+            <div class="shield-icon">
+                <svg width="56" height="56" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                          d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                          d="M12 8v4M12 16h.01"/>
+                </svg>
+            </div>
+        </div>
+
+        <p class="error-code">Hata 403 · Erişim Reddedildi</p>
+
+        <h1>Bu Hesap<br>Engellendi</h1>
+
+        <p class="subtitle">
+            Arcanth Project platformuna erişiminiz, kullanım koşullarımızın ihlali
+            nedeniyle geçici olarak askıya alınmıştır.
+        </p>
+
+        <!-- Info -->
+        <div class="info-card">
+            <h3>Durum Bilgisi</h3>
+            <div class="info-row">
+                <svg width="16" height="16" fill="none" stroke="#ef4444" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <p>Hesabınız platform <strong>kurallarına aykırı</strong> bir eylem sonucu engellendi.</p>
+            </div>
+            <div class="info-row">
+                <svg width="16" height="16" fill="none" stroke="#94a3b8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p>Kararın hatalı olduğunu düşünüyorsanız destek ekibimizle iletişime geçin.</p>
+            </div>
+            <div class="info-row">
+                <svg width="16" height="16" fill="none" stroke="#94a3b8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                <p>Hesabınıza <strong>giriş yapmanız veya içeriklere erişmeniz</strong> engellenmiştir.</p>
+            </div>
+        </div>
+
+        <!-- UID -->
+        <div class="uid-badge" id="uid-display" style="display:none">
+            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
+            </svg>
+            <span id="uid-text">—</span>
+        </div>
+
+        <!-- Actions -->
+        <div class="btn-group">
+            <a href="destek.html" class="btn-support">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+                </svg>
+                Destek Talebi Oluştur
+            </a>
+            <button onclick="doSignOut()" class="btn-back">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+                Çıkış Yap
+            </button>
+        </div>
+    </div>
+
+    <footer>© 2026 Arcanth Project · Kullanım Koşulları</footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCnkk6j1CGsi4sNXJ8FA9Gd2B6_VDptVDg",
+            authDomain: "arcanthproject.firebaseapp.com",
+            databaseURL: "https://arcanthproject-default-rtdb.firebaseio.com",
+            projectId: "arcanthproject",
+            storageBucket: "arcanthproject.firebasestorage.app",
+            messagingSenderId: "826341954149",
+            appId: "1:826341954149:web:6429d61a5b40810009ac8c"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        auth.onAuthStateChanged(function(user) {
+            if (user) {
+                var uidEl = document.getElementById('uid-display');
+                var uidTx = document.getElementById('uid-text');
+                if (uidEl && uidTx) {
+                    uidEl.style.display = 'inline-flex';
+                    uidTx.textContent = 'UID: ' + user.uid.substring(0, 16) + '...';
+                }
+            }
+        });
+
+        function doSignOut() {
+            auth.signOut().then(function() {
+                window.location.href = 'index.html';
+            });
+        }
+    </script>
+</body>
+</html>
