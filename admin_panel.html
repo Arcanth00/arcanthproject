@@ -515,13 +515,7 @@
                     </svg>
                     Blog
                 </div>
-                <div class="nav-item" onclick="go('cms',this)">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    CMS
-                </div>
+
                 <div class="nav-item" onclick="go('cookies',this)">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -557,28 +551,133 @@
 
         <div class="flex-1 lg:ml-64 p-6 pb-20 lg:pb-6">
             <div id="t-dashboard" class="tab-c active space-y-6">
-                <h2 class="text-2xl font-black">Genel Durum</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="stat">
-                        <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Duyurular</p>
-                        <p class="text-3xl font-black mt-1" id="s-ann">0</p>
+                <!-- Header -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-black">Dashboard</h2>
+                        <p class="text-gray-500 text-sm mt-0.5" id="dash-greeting">Hoş geldiniz</p>
                     </div>
-                    <div class="stat">
-                        <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Projeler</p>
-                        <p class="text-3xl font-black mt-1" id="s-proj">0</p>
-                    </div>
-                    <div class="stat">
-                        <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">İndirmeler</p>
-                        <p class="text-3xl font-black mt-1" id="s-dl">0</p>
-                    </div>
-                    <div class="stat">
-                        <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Sponsorlar</p>
-                        <p class="text-3xl font-black mt-1" id="s-sponsor">0</p>
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-xl" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]"></span>
+                        <span class="text-xs font-bold text-emerald-400">Sistem Aktif</span>
+                        <span class="text-gray-700 mx-1">·</span>
+                        <span class="text-xs text-gray-500" id="dash-time">--:--</span>
                     </div>
                 </div>
-                <div class="glass p-6">
-                    <h3 class="font-bold mb-2 text-blue-400">Hoş Geldiniz</h3>
-                    <p class="text-gray-400 text-sm" id="system-status">Sistem Sorunsuz Çalışıyor</p>
+
+                <!-- Stat Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="stat group cursor-pointer" onclick="switchTab('t-announcements')">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Duyurular</p>
+                            <div class="w-8 h-8 rounded-xl bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-all">
+                                <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
+                            </div>
+                        </div>
+                        <p class="text-3xl font-black mt-1" id="s-ann">0</p>
+                        <p class="text-[10px] text-gray-600 mt-1">Aktif duyuru</p>
+                    </div>
+                    <div class="stat group cursor-pointer" onclick="switchTab('t-projects')">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Projeler</p>
+                            <div class="w-8 h-8 rounded-xl bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-all">
+                                <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                            </div>
+                        </div>
+                        <p class="text-3xl font-black mt-1" id="s-proj">0</p>
+                        <p class="text-[10px] text-gray-600 mt-1">Yayınlanan proje</p>
+                    </div>
+                    <div class="stat group cursor-pointer" onclick="switchTab('t-downloads')">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">İndirmeler</p>
+                            <div class="w-8 h-8 rounded-xl bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 transition-all">
+                                <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            </div>
+                        </div>
+                        <p class="text-3xl font-black mt-1" id="s-dl">0</p>
+                        <p class="text-[10px] text-gray-600 mt-1">İndirme kaydı</p>
+                    </div>
+                    <div class="stat group cursor-pointer" onclick="switchTab('t-users')">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Kullanıcılar</p>
+                            <div class="w-8 h-8 rounded-xl bg-green-500/10 flex items-center justify-center group-hover:bg-green-500/20 transition-all">
+                                <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                            </div>
+                        </div>
+                        <p class="text-3xl font-black mt-1" id="s-users">0</p>
+                        <p class="text-[10px] text-gray-600 mt-1">Kayıtlı kullanıcı</p>
+                    </div>
+                </div>
+
+                <!-- Middle Row: Quick Actions + Recent Activity -->
+                <div class="grid md:grid-cols-3 gap-4">
+                    <!-- Quick Actions -->
+                    <div class="glass p-5 space-y-3">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-gray-500">Hızlı İşlemler</p>
+                        <button onclick="switchTab('t-announcements');setTimeout(()=>openModal('ann'),100)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-blue-500/10 border border-white/[0.05] hover:border-blue-500/20 transition-all group">
+                            <div class="w-7 h-7 bg-blue-500/15 rounded-lg flex items-center justify-center group-hover:bg-blue-500/25 transition-all"><svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></div>
+                            <span class="text-sm font-semibold">Yeni Duyuru</span>
+                        </button>
+                        <button onclick="switchTab('t-projects');setTimeout(()=>openModal('proj'),100)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-purple-500/10 border border-white/[0.05] hover:border-purple-500/20 transition-all group">
+                            <div class="w-7 h-7 bg-purple-500/15 rounded-lg flex items-center justify-center group-hover:bg-purple-500/25 transition-all"><svg class="w-3.5 h-3.5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></div>
+                            <span class="text-sm font-semibold">Yeni Proje</span>
+                        </button>
+                        <button onclick="switchTab('t-downloads');setTimeout(()=>openModal('dl'),100)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-cyan-500/10 border border-white/[0.05] hover:border-cyan-500/20 transition-all group">
+                            <div class="w-7 h-7 bg-cyan-500/15 rounded-lg flex items-center justify-center group-hover:bg-cyan-500/25 transition-all"><svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></div>
+                            <span class="text-sm font-semibold">Yeni İndirme</span>
+                        </button>
+                        <button onclick="switchTab('t-blog');setTimeout(()=>openModal('blog-modal'),100)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-green-500/10 border border-white/[0.05] hover:border-green-500/20 transition-all group">
+                            <div class="w-7 h-7 bg-green-500/15 rounded-lg flex items-center justify-center group-hover:bg-green-500/25 transition-all"><svg class="w-3.5 h-3.5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></div>
+                            <span class="text-sm font-semibold">Yeni Blog Yazısı</span>
+                        </button>
+                    </div>
+                    <!-- System Info -->
+                    <div class="glass p-5 space-y-3">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-gray-500">Sistem Bilgisi</p>
+                        <div class="space-y-2.5">
+                            <div class="flex items-center justify-between py-2 border-b border-white/[0.04]">
+                                <span class="text-xs text-gray-500">Firebase</span>
+                                <span class="flex items-center gap-1.5 text-xs font-bold text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Bağlı</span>
+                            </div>
+                            <div class="flex items-center justify-between py-2 border-b border-white/[0.04]">
+                                <span class="text-xs text-gray-500">Aktif Tema</span>
+                                <span class="text-xs font-bold text-blue-400" id="dash-active-theme">—</span>
+                            </div>
+                            <div class="flex items-center justify-between py-2 border-b border-white/[0.04]">
+                                <span class="text-xs text-gray-500">Admin</span>
+                                <span class="text-xs font-bold text-gray-300" id="dash-admin-uid">—</span>
+                            </div>
+                            <div class="flex items-center justify-between py-2 border-b border-white/[0.04]">
+                                <span class="text-xs text-gray-500">Aktif Kullanıcı</span>
+                                <span class="text-xs font-bold text-green-400" id="dash-active-users">—</span>
+                            </div>
+                            <div class="flex items-center justify-between py-2">
+                                <span class="text-xs text-gray-500">Destek Talepleri</span>
+                                <span class="text-xs font-bold" id="dash-tickets">—</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Recent Tickets -->
+                    <div class="glass p-5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-gray-500">Son Talepler</p>
+                            <button onclick="switchTab('t-support')" class="text-[10px] text-blue-400 hover:text-blue-300 font-bold">Tümünü Gör →</button>
+                        </div>
+                        <div id="dash-recent-tickets" class="space-y-2 text-xs text-gray-500">
+                            <p>Yükleniyor...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Log -->
+                <div class="glass p-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-gray-500">Son Aktivite</p>
+                        <button onclick="switchTab('t-analytics')" class="text-[10px] text-blue-400 hover:text-blue-300 font-bold">Analitik Paneli →</button>
+                    </div>
+                    <div id="dash-activity" class="space-y-1 text-sm text-gray-500">
+                        <p class="text-xs">Yükleniyor...</p>
+                    </div>
                 </div>
             </div>
 
@@ -951,16 +1050,7 @@
                 </div>
             </div>
 
-            <div id="t-cms" class="tab-c space-y-6">
-                <h2 class="text-2xl font-black">CMS İçerik</h2>
-                <div class="glass p-6 space-y-4">
-                    <h3 class="font-bold text-sm uppercase text-gray-500">Ana Sayfa Hero</h3>
-                    <input type="text" id="cmsBadge" class="input-f" placeholder="Badge">
-                    <input type="text" id="cmsTitle" class="input-f" placeholder="Başlık">
-                    <textarea id="cmsSub" class="input-f" rows="2" placeholder="Alt Başlık"></textarea>
-                    <button onclick="saveCMS()" class="btn-p">Kaydet</button>
-                </div>
-            </div>
+
 
             <div id="t-cookies" class="tab-c space-y-6">
                 <h2 class="text-2xl font-black">Çerez Ayarları</h2>
@@ -1369,6 +1459,7 @@
                 loadCMS();
                 loadCookies();
                 loadEventThemeStatus();
+                initDashboard();
             } catch (e) {
                 console.error('InitApp error:', e);
                 showAT('Yükleme hatası: ' + e.message, 'error');
@@ -1405,8 +1496,8 @@
                 return;
             }
             el.innerHTML = users.map(u => `<tr>
-                <td class="font-semibold">${u.name || 'Bilinmiyor'}</td>
-                <td class="text-sm">${u.email}</td>
+                <td class="font-semibold">${u.name || u.displayName || u.email?.split('@')[0] || '—'}</td>
+                <td class="text-sm">${u.email || '<span class=\"text-gray-600\">—</span>'}</td>
                 <td class="text-gray-500 text-xs">${u.created ? new Date(u.created).toLocaleDateString('tr-TR') : 'Bilinmiyor'}</td>
                 <td><span class="px-2 py-0.5 bg-blue-500/15 text-blue-400 rounded text-[10px] font-bold uppercase">${u.provider || 'email'}</span></td>
                 <td class="text-center"><span class="px-2 py-1 bg-purple-500/15 text-purple-400 rounded font-bold text-sm" id="ticket-count-${u.uid}">0</span></td>
@@ -1721,7 +1812,81 @@
         function log(m) { var arr = ls(K.act); arr.unshift({ message: m, time: new Date().toLocaleTimeString('tr-TR') }); if (arr.length > 20) arr.pop(); ls(K.act, arr); loadAct() }
         function loadAct() { var arr = ls(K.act); g('actList').innerHTML = arr.map(a => `<div class="glass p-3 flex items-center justify-between text-xs"><span class="font-semibold">${a.message}</span><span class="text-gray-500">${a.time}</span></div>`).join('') || '<div class="glass p-6 text-center text-gray-500">Henüz aktivite yok</div>' }
         function clearAct(){ showConfirm({title:'Temizle',msg:'Tum aktivite gecmisi silinecek.',icon:'!',iconBg:'rgba(239,68,68,.12)',okLabel:'Temizle',okClass:'bg-red-600 hover:bg-red-500 text-white',onOk:function(){ls(K.act,[]);loadAct();showAT('Aktivite temizlendi','success');}}); }
-        function stats() { g('s-ann').textContent = ls(K.ann).length; g('s-proj').textContent = ls(K.proj).length; g('s-dl').textContent = ls(K.dl).length; g('s-sponsor').textContent = ls(K.sponsor).length }
+        function switchTab(tabId) { document.querySelectorAll('.tab-c').forEach(t => t.classList.remove('active')); const t = g(tabId); if (t) t.classList.add('active'); }
+        function stats() {
+            g('s-ann').textContent = ls(K.ann).length;
+            g('s-proj').textContent = ls(K.proj).length;
+            g('s-dl').textContent = ls(K.dl).length;
+            if (g('s-sponsor')) g('s-sponsor').textContent = ls(K.sponsor).length;
+            if (g('s-users')) g('s-users').textContent = allUsers.length || '—';
+        }
+        function initDashboard() {
+            // Greeting
+            const hr = new Date().getHours();
+            const greet = hr < 12 ? 'Günaydın' : hr < 18 ? 'İyi Öğleden Sonralar' : 'İyi Akşamlar';
+            if (g('dash-greeting')) g('dash-greeting').textContent = greet + ', Admin 👋';
+            // Clock
+            function updateClock() { if (g('dash-time')) g('dash-time').textContent = new Date().toLocaleTimeString('tr-TR', {hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
+            updateClock(); setInterval(updateClock, 1000);
+            // Admin UID
+            const u = auth.currentUser;
+            if (g('dash-admin-uid') && u) g('dash-admin-uid').textContent = u.uid.substring(0, 10) + '...';
+            // Active users
+            const active = allUsers.filter(u => !u.blocked).length;
+            if (g('dash-active-users')) g('dash-active-users').textContent = active + ' / ' + allUsers.length;
+            // Active theme
+            db.ref('site_data/settings/active_theme').once('value').then(snap => {
+                const t = snap.val() || 'normal';
+                if (g('dash-active-theme')) g('dash-active-theme').textContent = t.charAt(0).toUpperCase() + t.slice(1);
+            });
+            // Open tickets
+            db.ref('support_tickets').orderByChild('status').equalTo('aktif').once('value').then(snap => {
+                const count = snap.numChildren();
+                if (g('dash-tickets')) {
+                    g('dash-tickets').textContent = count + ' aktif';
+                    g('dash-tickets').className = 'text-xs font-bold ' + (count > 0 ? 'text-yellow-400' : 'text-gray-500');
+                }
+                // Recent tickets
+                const arr = [];
+                snap.forEach(c => arr.push(c.val()));
+                arr.sort((a,b) => (b.created||'').localeCompare(a.created||''));
+                const el = g('dash-recent-tickets');
+                if (el) {
+                    if (arr.length) {
+                        el.innerHTML = arr.slice(0,4).map(t =>
+                            '<div class="flex items-center gap-2 py-1.5 border-b border-white/[0.04] last:border-0">'
+                            + '<span class="w-1.5 h-1.5 rounded-full bg-yellow-500 flex-shrink-0"></span>'
+                            + '<div class="min-w-0 flex-1"><p class="text-xs font-semibold truncate">' + (t.subject||'-') + '</p>'
+                            + '<p class="text-[10px] text-gray-600">' + (t.userEmail||'').split('@')[0] + '</p></div>'
+                            + '<button onclick="openTD(' + t.id + ')" class="text-[10px] text-blue-400 hover:text-blue-300 flex-shrink-0">Gör</button>'
+                            + '</div>'
+                        ).join('');
+                    } else {
+                        el.innerHTML = '<p class="text-xs text-gray-600">Aktif talep yok ✓</p>';
+                    }
+                }
+            }).catch(() => { if (g('dash-tickets')) g('dash-tickets').textContent = '—'; });
+            // Activity
+            db.ref('activity_logs').limitToLast(8).once('value').then(snap => {
+                const acts = []; snap.forEach(c => acts.push(c.val())); acts.reverse();
+                const el = g('dash-activity');
+                if (el) {
+                    if (acts.length) {
+                        el.innerHTML = acts.map(a => {
+                            const icons = {login:'🔐',download:'📥',logout:'👋',register:'✨'};
+                            return '<div class="flex items-center gap-3 py-2 border-b border-white/[0.04] last:border-0">'
+                                + '<span class="text-base flex-shrink-0">' + (icons[a.type]||'⚡') + '</span>'
+                                + '<div class="flex-1 min-w-0"><span class="text-xs font-semibold">' + (a.email||a.userId||'?').split('@')[0] + '</span>'
+                                + '<span class="text-gray-600 text-xs ml-2">' + (a.type==='login'?'Giriş yaptı':a.action||a.type) + '</span></div>'
+                                + '<span class="text-[10px] text-gray-700 flex-shrink-0">' + (a.timestamp ? new Date(a.timestamp).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}) : '') + '</span>'
+                                + '</div>';
+                        }).join('');
+                    } else {
+                        el.innerHTML = '<p class="text-xs text-gray-600">Henüz aktivite yok</p>';
+                    }
+                }
+            }).catch(() => {});
+        }
         function openModal(t, id) { editId[t] = id || null; g('m-' + t).classList.add('active'); if (id) { var d = ls(K[t]).find(x => x.id === id); if (t === 'ann') { g('annTitle').value = d.title; g('annContent').value = d.content; g('annCat').value = d.category } if (t === 'proj') { g('projName').value = d.name; g('projDesc').value = d.description; g('projVer').value = d.version; g('projType').value = d.type; g('projCat').value = d.category || ''; g('projStatus').value = d.status; g('projLink').value = d.link; g('projIcon').value = d.icon } if (t === 'dl') { g('dlName').value = d.name; g('dlVer').value = d.version; g('dlType').value = d.type; g('dlLink').value = d.link } } else { if (t === 'ann') { g('annTitle').value = ''; g('annContent').value = ''; g('annCat').value = 'bilgi' } if (t === 'proj') { g('projName').value = ''; g('projDesc').value = ''; g('projVer').value = ''; g('projType').value = 'modpack'; g('projCat').value = ''; g('projStatus').value = 'release'; g('projLink').value = ''; g('projIcon').value = '' } if (t === 'dl') { g('dlName').value = ''; g('dlVer').value = ''; g('dlType').value = 'modpack'; g('dlLink').value = '' } if (t === 'sponsor') { g('spName').value = ''; g('spTag').value = ''; g('spDesc').value = ''; g('spLogo').value = ''; g('spWeb').value = ''; g('spDiscord').value = ''; g('spIP').value = ''; g('spFeatures').value = '' } } }
         function closeModal(t) { g('m-' + t).classList.remove('active'); editId[t] = null }
 
@@ -2142,24 +2307,16 @@
         };
 
         async function setEventTheme(theme) {
-            // Optimistic UI: mark all non-active buttons immediately
-            Object.keys(THEME_BTNS_MAP).forEach(t => {
-                const b = g('btn-theme-' + t);
-                if (!b) return;
-                if (t === theme) {
-                    b.textContent = 'GÜNCELLENİYOR...';
-                    b.disabled = true;
-                    b.className = 'px-5 py-2 rounded-lg font-black text-[10px] bg-blue-500/20 border border-blue-500/40 text-blue-300 opacity-80';
-                }
-            });
+            const btn = g('btn-theme-' + theme);
+            if (btn) { btn.textContent = 'GÜNCELLENİYOR...'; btn.disabled = true; }
             try {
                 await db.ref('site_data/settings/active_theme').set(theme);
                 log('Site teması değiştirildi: ' + theme);
                 showAT('✓ Tema değiştirildi: ' + theme.toUpperCase(), 'success');
             } catch (e) {
                 showAT('Hata: ' + e.message, 'error');
+                if (btn) { btn.textContent = 'Aktif Et'; btn.disabled = false; }
             } finally {
-                // Always reload status to reflect real Firebase state
                 loadEventThemeStatus();
             }
         }
