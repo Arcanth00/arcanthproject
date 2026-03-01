@@ -1287,7 +1287,10 @@
 
         // g() - hoisting güvenliği için en başta
         function g(id) { return document.getElementById(id); }
-        function g(id) { return document.getElementById(id); }
+
+        // Chart instances - global scope
+        var _charts = {};
+        function _destroyChart(id) { if (_charts[id]) { _charts[id].destroy(); delete _charts[id]; } }
 
         // Loading screen merkezi gizleme
         function hideLoadingScreen() {
@@ -1314,7 +1317,6 @@
         const auth = firebase.auth(), provider = new firebase.auth.GoogleAuthProvider(), db = firebase.database();
         var K = { ann: 'admin_announcements', proj: 'admin_projects', dl: 'admin_downloads', sponsor: 'admin_sponsors', cms: 'admin_cms_content', cookies: 'admin_cookie_settings', settings: 'admin_settings', act: 'admin_activity' };
         var editId = { ann: null, proj: null, dl: null, sponsor: null };
-        function g(id) { return document.getElementById(id) }
         function ls(k, v) { if (v !== undefined) { localStorage.setItem(k, JSON.stringify(v)); return v } if (k === K.cms || k === K.cookies || k === K.settings) return JSON.parse(localStorage.getItem(k) || '{}'); return JSON.parse(localStorage.getItem(k) || '[]') }
         auth.onAuthStateChanged(async user => {
             if (user) {
@@ -1899,8 +1901,6 @@
         }
 
         // ============== ANALYTICS + CHART.JS ==============
-        var _charts = {};
-        function _destroyChart(id) { if (_charts[id]) { _charts[id].destroy(); delete _charts[id]; } }
 
         function _chartDefaults() {
             return {
@@ -2127,24 +2127,6 @@
         }
 
         // ============== EVENT THEMES ==============
-        async function setEventTheme(theme) {
-            try {
-                const btn = g('btn-theme-' + theme);
-                const originalText = btn.textContent;
-                btn.textContent = 'GÜNCELLENİYOR...';
-                btn.disabled = true;
-
-                await db.ref('site_data/settings/active_theme').set(theme);
-
-                log('Site teması değiştirildi: ' + theme);
-                loadEventThemeStatus();
-                showAT('✓ Tema değiştirildi: ' + theme.toUpperCase(),'success');
-            } catch (e) {
-                showAT('Hata: '+e.message,'error');
-                loadEventThemeStatus();
-            }
-        }
-
         var THEME_BTNS_MAP = {
             normal:   'btn-s px-5 py-2 text-xs',
             ramadan:  'btn-p px-5 py-2 !from-emerald-600 !to-teal-600 text-xs',
@@ -2158,6 +2140,30 @@
             newyear:  'btn-p px-5 py-2 !from-red-600 !to-rose-600 text-xs',
             halloween:'btn-p px-5 py-2 !from-orange-600 !to-amber-700 text-xs'
         };
+
+        async function setEventTheme(theme) {
+            // Optimistic UI: mark all non-active buttons immediately
+            Object.keys(THEME_BTNS_MAP).forEach(t => {
+                const b = g('btn-theme-' + t);
+                if (!b) return;
+                if (t === theme) {
+                    b.textContent = 'GÜNCELLENİYOR...';
+                    b.disabled = true;
+                    b.className = 'px-5 py-2 rounded-lg font-black text-[10px] bg-blue-500/20 border border-blue-500/40 text-blue-300 opacity-80';
+                }
+            });
+            try {
+                await db.ref('site_data/settings/active_theme').set(theme);
+                log('Site teması değiştirildi: ' + theme);
+                showAT('✓ Tema değiştirildi: ' + theme.toUpperCase(), 'success');
+            } catch (e) {
+                showAT('Hata: ' + e.message, 'error');
+            } finally {
+                // Always reload status to reflect real Firebase state
+                loadEventThemeStatus();
+            }
+        }
+
         function loadEventThemeStatus() {
             db.ref('site_data/settings/active_theme').once('value').then(snap => {
                 const activeTheme = snap.val() || 'normal';
