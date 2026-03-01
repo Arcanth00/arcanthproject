@@ -6,7 +6,9 @@
     <title>Blog — Arcanth Project</title>
     <meta name="description" content="Arcanth Project blog — güncellemeler, rehberler ve haberler.">
     <link rel="icon" type="image/png" href="logo.png">
-    <script src="https://cdn.tailwindcss.com"></script>
+        <!-- Theme anti-flash -->
+    <script>(function(){var t=localStorage.getItem('ap_theme')||'dark';document.documentElement.classList.remove('dark','light');document.documentElement.classList.add(t);})();</script>
+<script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -54,6 +56,25 @@
         /* READING PROGRESS */
         #readProgress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#3b82f6,#6366f1);z-index:9999;transition:width .1s;}
     </style>
+    <style id="light-mode-overrides">
+        html.light body { background: #f1f5f9 !important; color: #0f172a !important; }
+        html.light nav { background: rgba(241,245,249,.92) !important; border-bottom-color: rgba(0,0,0,.07) !important; }
+        html.light [class*="text-gray-400"] { color: #64748b !important; }
+        html.light [class*="text-gray-500"] { color: #475569 !important; }
+        html.light [class*="text-gray-600"] { color: #334155 !important; }
+        html.light [class*="text-gray-300"] { color: #475569 !important; }
+        html.light [class*="text-white"]    { color: #0f172a !important; }
+        html.light [class*="bg-white/"]     { background: rgba(255,255,255,.85) !important; border-color: rgba(0,0,0,.07) !important; }
+        html.light [class*="border-white/"] { border-color: rgba(0,0,0,.08) !important; }
+        html.light .glass { background: rgba(255,255,255,.85) !important; border-color: rgba(0,0,0,.08) !important; }
+        html.light input,html.light select,html.light textarea { background:rgba(255,255,255,.9) !important; border-color:rgba(0,0,0,.12) !important; color:#0f172a !important; }
+        html.light input::placeholder { color:#94a3b8 !important; }
+        html.light [style*="background:#0"],html.light [style*="background: #0"] { background:#f8fafc !important; }
+        html.light [class*="bg-\[#0"] { background:#f8fafc !important; }
+        html.light [class*="bg-\[#030508\]"] { background:#f1f5f9 !important; }
+        html.light [class*="bg-black/"] { background:rgba(15,23,42,.6) !important; }
+        html.light footer { background:#f8fafc !important; border-top-color:rgba(0,0,0,.07) !important; }
+    </style>
 </head>
 <body class="min-h-screen">
 
@@ -98,7 +119,7 @@
     <div class="mb-10">
         <div class="flex items-center gap-2 mb-3">
             <div class="w-1.5 h-6 bg-blue-500 rounded-full"></div>
-            <span class="text-xs font-black uppercase tracking-widest text-blue-400">Blog & Haberler</span>
+            <span class="text-xs font-semibold uppercase tracking-wide text-blue-400">Blog & Haberler</span>
         </div>
         <h1 class="text-4xl md:text-5xl font-black leading-tight mb-3">Gelişmeler, Rehberler<br>ve Daha Fazlası</h1>
         <p class="text-gray-500 max-w-xl">Arcanth Project güncellemeleri, kurulum rehberleri ve topluluk haberleri.</p>
