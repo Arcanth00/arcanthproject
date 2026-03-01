@@ -32,15 +32,8 @@ var ThemeSystem = (function () {
             bg:'#1a0505',accent:'#f87171',
             title:'23 Nisan Ulusal Egemenlik ve Çocuk Bayramı',sub:'— Geleceğimizin Güvencesi Çocuklarımıza —',bodyClass:'theme-april23',
             particles:['#ef4444','#f87171','#3b82f6','#ffffff','#fbbf24'],shapes:['circle','rect','heart']});
-        else if (t==='may19')     applyFestival({emoji:'⭐',emoji2:'🏃',animPfx:'may19',
-            bg:'#1a0505',accent:'#dc2626',
-            title:'19 Mayıs Atatürk\u0027ü Anma, Gençlik ve Spor Bayram\u0131',sub:'— Ne Mutlu Türküm Diyene —',bodyClass:'theme-may19',
-            particles:['#ef4444','#dc2626','#fca5a5','#ffffff']});
-        else if (t==='oct29')     applyFestival({emoji:'🎆',emoji2:'🇹🇷',animPfx:'oct29',
-            bg:'#1a0500',accent:'#fb923c',
-            shimmer:'#ef4444 0%,#fb923c 30%,#fde68a 50%,#fb923c 70%,#ef4444 100%',
-            title:'Cumhuriyet Bayramımız Kutlu Olsun',sub:'— 29 Ekim 1923 — Türkiye Cumhuriyeti —',bodyClass:'theme-oct29',
-            particles:['#ef4444','#fb923c','#fde68a','#ffffff']});
+        else if (t==='may19')     applyMay19();
+        else if (t==='oct29')     applyOct29();
         else if (t==='hidrellez') applyFestival({emoji:'🌿',emoji2:'🌸',animPfx:'hidr',
             bg:'#061206',accent:'#86efac',
             title:'Hıdrellez Kutlu Olsun',sub:'— Bereket, Sağlık ve Yeni Başlangıçlar —',bodyClass:'theme-hidrellez',
@@ -470,6 +463,262 @@ var ThemeSystem = (function () {
         '</div>';
     }
 
+
+    /* ════════════════════════════════════════════════════
+       GENEL FESTIVAL BANNER (tüm yeni temalar için)
+    ════════════════════════════════════════════════════ */
+
+    /* ════════════════════════════════════════════════════
+       19 MAYIS — Atatürk Silüeti + Koşu Efekti
+    ════════════════════════════════════════════════════ */
+    function applyMay19() {
+        document.body.classList.add('season-active', 'theme-may19');
+
+        // Styles + animations
+        var s = document.createElement('style');
+        s.id = 'season-styles';
+        s.textContent =
+            '@keyframes m19Sh{0%{background-position:250% center}100%{background-position:-250% center}}' +
+            '@keyframes m19Gl{0%,100%{filter:drop-shadow(0 0 6px #dc262688)}50%{filter:drop-shadow(0 0 18px #dc2626)}}' +
+            '@keyframes m19In{from{transform:translateY(-100%)}to{transform:translateY(0)}}' +
+            '@keyframes m19Wave{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-3px) rotate(1deg)}}' +
+            '@keyframes m19Run{0%{transform:translateX(-120px)}100%{transform:translateX(calc(100vw + 120px))}}';
+        document.head.appendChild(s);
+
+        // Banner
+        var b = document.createElement('div');
+        b.id = 'season-banner';
+        b.style.cssText =
+            'position:fixed;top:0;left:0;right:0;z-index:9998;height:' + BANNER_H + 'px;' +
+            'display:flex;align-items:center;justify-content:center;overflow:hidden;' +
+            'background:linear-gradient(90deg,#0a0000 0%,#1c0000 15%,#2d0505 35%,#380808 50%,#2d0505 65%,#1c0000 85%,#0a0000 100%);' +
+            'border-bottom:1px solid rgba(220,38,38,.3);' +
+            'transform:translateY(-100%);animation:m19In .8s cubic-bezier(.16,1,.3,1) .1s forwards;';
+
+        // Atatürk silüeti (SVG path — basit profil)
+        var ataturkSVG =
+            '<svg viewBox="0 0 60 80" width="36" height="48" style="fill:#dc2626;opacity:.85;filter:drop-shadow(0 0 8px #dc262699);animation:m19Wave 4s ease-in-out infinite">' +
+            // Baş
+            '<ellipse cx="30" cy="12" rx="11" ry="13"/>' +
+            // Boyun
+            '<rect x="26" y="23" width="8" height="6"/>' +
+            // Omuz + Ceket (üniforma silüeti)
+            '<path d="M12,30 Q15,26 26,29 L30,45 L34,29 Q45,26 48,30 L52,70 L30,74 L8,70 Z"/>' +
+            // Yaka
+            '<path d="M26,29 L30,38 L34,29 L30,32 Z" fill="#1a0000"/>' +
+            // Şapka (Atatürk fötr şapkası)
+            '<ellipse cx="30" cy="4" rx="14" ry="4" fill="#b91c1c"/>' +
+            '<rect x="19" y="1" width="22" height="5" rx="2" fill="#b91c1c"/>' +
+            '</svg>';
+
+        b.innerHTML =
+            '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(220,38,38,.08),transparent 70%);pointer-events:none"></div>' +
+            '<div style="display:flex;align-items:center;gap:20px;position:relative;z-index:2">' +
+            '<span style="font-size:20px;animation:m19Gl 3s ease-in-out infinite">⭐</span>' +
+            '<div style="width:1px;height:32px;background:linear-gradient(180deg,transparent,rgba(220,38,38,.6),transparent)"></div>' +
+            ataturkSVG +
+            '<div style="text-align:center">' +
+            '<p style="margin:0;font-family:Plus Jakarta Sans,sans-serif;font-size:13px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;' +
+            'background:linear-gradient(90deg,#ef4444 0%,#fca5a5 40%,#fff 50%,#fca5a5 60%,#ef4444 100%);background-size:250% auto;' +
+            '-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:m19Sh 5s linear infinite">' +
+            '19 Mayıs Atatürkü Anma, Gençlik ve Spor Bayramı</p>' +
+            '<p style="margin:3px 0 0;font-family:Plus Jakarta Sans,sans-serif;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(252,165,165,.7)">' +
+            '— Ne Mutlu Türküm Diyene —</p>' +
+            '</div>' +
+            ataturkSVG.replace('m19Wave 4s', 'm19Wave 4s ease-in-out 1s') +
+            '<div style="width:1px;height:32px;background:linear-gradient(180deg,transparent,rgba(220,38,38,.6),transparent)"></div>' +
+            '<span style="font-size:20px;animation:m19Gl 3s ease-in-out 1s infinite">🏆</span>' +
+            '</div>';
+
+        document.body.insertBefore(b, document.body.firstChild);
+        var nav = document.querySelector('nav'); if (nav) nav.style.top = BANNER_H + 'px';
+
+        // Canvas — kırmızı & beyaz yıldızlar + koşan figürler
+        var canvas = document.createElement('canvas');
+        canvas.id = 'season-particles';
+        canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;opacity:.5';
+        document.body.appendChild(canvas);
+        var ctx = canvas.getContext('2d'), W, H;
+        function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+        resize(); window.addEventListener('resize', resize);
+
+        var stars = [];
+        for (var i = 0; i < 55; i++) stars.push({
+            x: Math.random() * 1800, y: Math.random() * 900,
+            vx: (Math.random() - .5) * .3, vy: -(Math.random() * .6 + .1),
+            r: Math.random() * 4 + 1.5,
+            color: Math.random() > .5 ? '#ef4444' : '#ffffff',
+            opacity: Math.random() * .5 + .15,
+            type: Math.random() > .7 ? 'star' : 'circle'
+        });
+
+        function drawStar(ctx, x, y, r) {
+            ctx.beginPath();
+            for (var i = 0; i < 5; i++) {
+                var a = (i * 4 * Math.PI / 5) - Math.PI / 2;
+                var b2 = a + 2 * Math.PI / 10;
+                ctx[i===0?'moveTo':'lineTo'](x + r * Math.cos(a), y + r * Math.sin(a));
+                ctx.lineTo(x + r*.4 * Math.cos(b2), y + r*.4 * Math.sin(b2));
+            }
+            ctx.closePath(); ctx.fill();
+        }
+
+        var bgAF19;
+        function draw19(ts) {
+            ctx.clearRect(0, 0, W, H);
+            stars.forEach(function(p) {
+                p.x += p.vx; p.y += p.vy;
+                if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
+                if (p.x > W + 5) p.x = -5; else if (p.x < -5) p.x = W + 5;
+                ctx.save(); ctx.globalAlpha = p.opacity; ctx.fillStyle = p.color;
+                if (p.type === 'star') drawStar(ctx, p.x, p.y, p.r);
+                else { ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill(); }
+                ctx.restore();
+            });
+            bgAF19 = requestAnimationFrame(draw19);
+        }
+        requestAnimationFrame(draw19);
+    }
+
+    /* ════════════════════════════════════════════════════
+       29 EKİM — Dalgalanan Türk Bayrağı + Havai Fişek
+    ════════════════════════════════════════════════════ */
+    function applyOct29() {
+        document.body.classList.add('season-active', 'theme-oct29');
+
+        var s = document.createElement('style');
+        s.id = 'season-styles';
+        s.textContent =
+            '@keyframes o29Sh{0%{background-position:250% center}100%{background-position:-250% center}}' +
+            '@keyframes o29Gl{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}' +
+            '@keyframes o29In{from{transform:translateY(-100%)}to{transform:translateY(0)}}' +
+            '@keyframes o29Flag{0%{transform:perspective(400px) rotateY(0deg) skewY(-1deg)}' +
+            '25%{transform:perspective(400px) rotateY(8deg) skewY(2deg)}' +
+            '50%{transform:perspective(400px) rotateY(0deg) skewY(-1deg)}' +
+            '75%{transform:perspective(400px) rotateY(-8deg) skewY(2deg)}' +
+            '100%{transform:perspective(400px) rotateY(0deg) skewY(-1deg)}}';
+        document.head.appendChild(s);
+
+        // Banner
+        var b = document.createElement('div');
+        b.id = 'season-banner';
+        b.style.cssText =
+            'position:fixed;top:0;left:0;right:0;z-index:9998;height:' + BANNER_H + 'px;' +
+            'display:flex;align-items:center;justify-content:center;overflow:hidden;' +
+            'background:linear-gradient(90deg,#0a0000 0%,#1e0000 15%,#3b0000 35%,#450000 50%,#3b0000 65%,#1e0000 85%,#0a0000 100%);' +
+            'border-bottom:1px solid rgba(239,68,68,.35);' +
+            'transform:translateY(-100%);animation:o29In .8s cubic-bezier(.16,1,.3,1) .1s forwards;';
+
+        // Türk bayrağı SVG — dalgalanan
+        var flagSVG =
+            '<div style="animation:o29Flag 3s ease-in-out infinite;transform-origin:left center">' +
+            '<svg viewBox="0 0 90 60" width="72" height="48" style="filter:drop-shadow(0 2px 12px rgba(239,68,68,.6))">' +
+            '<rect width="90" height="60" fill="#e30a17" rx="3"/>' +
+            '<circle cx="32" cy="30" r="16" fill="white"/>' +
+            '<circle cx="37" cy="30" r="13" fill="#e30a17"/>' +
+            '<polygon points="55,30 48,22.5 58,24 52,15 64,27 56,25" fill="white"/>' +
+            '</svg>' +
+            '</div>';
+
+        b.innerHTML =
+            '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(239,68,68,.1),transparent 70%);pointer-events:none"></div>' +
+            '<div style="display:flex;align-items:center;gap:18px;position:relative;z-index:2">' +
+            '<span style="font-size:22px;animation:o29Gl 2s ease-in-out infinite">🎆</span>' +
+            '<div style="width:1px;height:32px;background:linear-gradient(180deg,transparent,rgba(239,68,68,.7),transparent)"></div>' +
+            flagSVG +
+            '<div style="text-align:center">' +
+            '<p style="margin:0;font-family:Plus Jakarta Sans,sans-serif;font-size:13px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;' +
+            'background:linear-gradient(90deg,#ef4444 0%,#fb923c 30%,#fde68a 50%,#fb923c 70%,#ef4444 100%);background-size:250% auto;' +
+            '-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:o29Sh 5s linear infinite">' +
+            'Cumhuriyet Bayramımız Kutlu Olsun</p>' +
+            '<p style="margin:3px 0 0;font-family:Plus Jakarta Sans,sans-serif;font-size:10px;font-weight:600;letter-spacing:.25em;text-transform:uppercase;color:rgba(251,146,60,.7)">' +
+            '— 29 Ekim 1923 — Türkiye Cumhuriyeti —</p>' +
+            '</div>' +
+            flagSVG.replace('o29Flag 3s', 'o29Flag 3s ease-in-out 1.5s') +
+            '<div style="width:1px;height:32px;background:linear-gradient(180deg,transparent,rgba(239,68,68,.7),transparent)"></div>' +
+            '<span style="font-size:22px;animation:o29Gl 2s ease-in-out 1s infinite">✨</span>' +
+            '</div>';
+
+        document.body.insertBefore(b, document.body.firstChild);
+        var nav = document.querySelector('nav'); if (nav) nav.style.top = BANNER_H + 'px';
+
+        // Canvas — havai fişek efekti
+        var canvas = document.createElement('canvas');
+        canvas.id = 'season-particles';
+        canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;opacity:.65';
+        document.body.appendChild(canvas);
+        var ctx = canvas.getContext('2d'), W, H;
+        function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+        resize(); window.addEventListener('resize', resize);
+
+        // Havai fişek parçacıkları
+        var fireworks = [];
+        var fwColors = ['#ef4444','#fb923c','#fde68a','#ffffff','#fca5a5','#fed7aa'];
+
+        function spawnFirework() {
+            var cx = Math.random() * W * .8 + W * .1;
+            var cy = Math.random() * H * .5 + H * .05;
+            var color = fwColors[Math.floor(Math.random() * fwColors.length)];
+            var count = 28 + Math.floor(Math.random() * 20);
+            for (var i = 0; i < count; i++) {
+                var angle = (i / count) * Math.PI * 2;
+                var speed = Math.random() * 3.5 + 1.5;
+                fireworks.push({
+                    x: cx, y: cy,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    life: 1.0,
+                    decay: Math.random() * .018 + .012,
+                    r: Math.random() * 2.5 + 1,
+                    color: color,
+                    trail: []
+                });
+            }
+        }
+
+        // Spawn initial fireworks
+        spawnFirework(); spawnFirework();
+        var spawnTimer = 0;
+
+        var bgAF29;
+        function draw29(ts) {
+            ctx.fillStyle = 'rgba(0,0,0,0.18)';
+            ctx.fillRect(0, 0, W, H);
+
+            // Spawn new firework periodically
+            spawnTimer++;
+            if (spawnTimer > 90) { spawnFirework(); spawnTimer = Math.floor(Math.random() * 40); }
+
+            for (var i = fireworks.length - 1; i >= 0; i--) {
+                var p = fireworks[i];
+                p.trail.push({x: p.x, y: p.y});
+                if (p.trail.length > 5) p.trail.shift();
+                p.x += p.vx; p.y += p.vy;
+                p.vy += 0.06; // gravity
+                p.vx *= 0.97; p.vy *= 0.97;
+                p.life -= p.decay;
+                if (p.life <= 0) { fireworks.splice(i, 1); continue; }
+
+                // Trail
+                for (var j = 0; j < p.trail.length; j++) {
+                    ctx.beginPath();
+                    ctx.globalAlpha = (j / p.trail.length) * p.life * .4;
+                    ctx.fillStyle = p.color;
+                    ctx.arc(p.trail[j].x, p.trail[j].y, p.r * .5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                // Head
+                ctx.beginPath();
+                ctx.globalAlpha = p.life;
+                ctx.fillStyle = p.color;
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+            bgAF29 = requestAnimationFrame(draw29);
+        }
+        requestAnimationFrame(draw29);
+    }
 
     /* ════════════════════════════════════════════════════
        GENEL FESTIVAL BANNER (tüm yeni temalar için)
