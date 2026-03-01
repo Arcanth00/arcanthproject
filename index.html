@@ -215,7 +215,7 @@
     <div id="loading-screen">
         <img src="logo.png" class="w-16 h-16 rounded-2xl animate-pulse" onerror="this.style.display='none'">
         <div class="loader-ring"></div>
-        <p class="text-gray-500 text-sm font-bold tracking-[0.3em] uppercase">Yükleniyor</p>
+        <p class="text-gray-500 text-sm font-bold tracking-widest uppercase">Yükleniyor</p>
         <p class="loader-brand">Arcanth Project</p>
     </div>
 
@@ -367,24 +367,65 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                     </button>
-                    <div id="userDropdown" class="hidden absolute right-0 top-14 w-56 bg-[#0f1419] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
-                        <div class="p-4 border-b border-white/10">
-                            <p class="font-bold text-sm truncate" id="dropdownEmail"></p>
-                            <p class="text-xs text-gray-500">Kullanıcı</p>
+                    <div id="userDropdown" class="hidden absolute right-0 top-14 w-64 bg-[#0c1118] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50" style="animation:ddIn .15s cubic-bezier(.16,1,.3,1)">
+                        <!-- User Info -->
+                        <div class="p-4 border-b border-white/[0.07]" style="background:rgba(255,255,255,.02)">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center font-black text-sm flex-shrink-0" id="ddAvatar">?</div>
+                                <div class="min-w-0">
+                                    <p class="font-bold text-sm truncate" id="dropdownName">Kullanıcı</p>
+                                    <p class="text-xs text-gray-500 truncate" id="dropdownEmail"></p>
+                                </div>
+                            </div>
+                            <div class="mt-3 flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span class="text-[10px] text-emerald-400 font-bold">Aktif Oturum</span>
+                            </div>
                         </div>
-                        <button onclick="window.location.href='profil.html'" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors text-left">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                            <span class="text-sm font-semibold">Profili Yönet</span>
-                        </button>
-                        <a href="destek.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                            <span class="text-sm font-semibold">Destek Taleplerim</span>
-                        </a>
-                        <button onclick="logoutUser()" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-500/10 text-red-400 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                            <span class="text-sm font-semibold">Çıkış Yap</span>
-                        </button>
+                        <!-- Actions -->
+                        <div class="p-2">
+                            <button onclick="window.location.href='profil.html'" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 rounded-xl transition-colors text-left group">
+                                <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+                                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold">Profilim</p>
+                                    <p class="text-[10px] text-gray-600">Hesap ayarları</p>
+                                </div>
+                            </button>
+                            <a href="destek.html" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 rounded-xl transition-colors group">
+                                <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
+                                    <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold">Destek</p>
+                                    <p class="text-[10px] text-gray-600">Taleplerim & yardım</p>
+                                </div>
+                            </a>
+                            <button onclick="window.location.href='blog.html'" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 rounded-xl transition-colors text-left group">
+                                <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center group-hover:bg-green-500/20 transition-colors">
+                                    <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold">Blog</p>
+                                    <p class="text-[10px] text-gray-600">Haberler & yazılar</p>
+                                </div>
+                            </button>
+                        </div>
+                        <!-- Divider + Logout -->
+                        <div class="p-2 border-t border-white/[0.07]">
+                            <button onclick="logoutUser()" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-red-500/10 rounded-xl text-red-400 transition-colors group">
+                                <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-sm font-semibold">Çıkış Yap</p>
+                                    <p class="text-[10px] text-red-500/60">Oturumu sonlandır</p>
+                                </div>
+                            </button>
+                        </div>
                     </div>
+                    <style>@keyframes ddIn{from{opacity:0;transform:translateY(-8px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}</style>
                 </div>
 
                 <button id="authButton" onclick="handleAuth()" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider transition-all">Giriş Yap</button>
@@ -517,15 +558,15 @@
                         <a href="https://discord.gg/y4tAHYGzC6" target="_blank" class="btn-shine inline-block w-full px-8 py-5 bg-[#5865F2] text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:bg-[#4752c4] transition-all shadow-2xl">SUNUCUYA KATIL</a>
                     </div>
                 </div>
-                <div class="glass-card p-10 md:p-14 rounded-[3rem] text-center space-y-10 group relative overflow-hidden border-orange-500/20 hover:border-orange-500/50 transition-all">
+                <div id="sponsor-discord-card" class="hidden glass-card p-10 md:p-14 rounded-[3rem] text-center space-y-10 group relative overflow-hidden border-orange-500/20 hover:border-orange-500/50 transition-all">
                     <div class="absolute inset-0 bg-gradient-to-br from-orange-600/5 via-transparent to-yellow-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                     <div class="relative z-10 space-y-8">
                         <div class="w-20 h-20 bg-orange-500/10 rounded-2xl flex items-center justify-center mx-auto">
                             <svg class="w-10 h-10 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
                         </div>
-                        <h3 class="text-4xl font-black uppercase italic tracking-tighter text-orange-500">LuaNetwork</h3>
-                        <p class="text-gray-400">Sponsorumuzun Discord Sunucusuna katil.</p>
-                        <a href="https://discord.gg/yfpqrY68tM" target="_blank" class="btn-shine inline-block w-full px-8 py-5 bg-orange-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:bg-orange-500 transition-all shadow-2xl">LUANETWORK'E KATIL</a>
+                        <h3 id="sp-discord-name" class="text-4xl font-black uppercase italic tracking-tighter text-orange-500">Sponsor</h3>
+                        <p class="text-gray-400">Sponsorumuzun Discord sunucusuna katıl.</p>
+                        <a id="sp-discord-link" href="#" target="_blank" class="btn-shine inline-block w-full px-8 py-5 bg-orange-600 text-white font-black rounded-2xl text-sm uppercase tracking-widest hover:bg-orange-500 transition-all shadow-2xl">SUNUCUYA KATIL</a>
                     </div>
                 </div>
             </div>
@@ -644,22 +685,22 @@
                         <li><a href="destek.html"  class="text-gray-500 hover:text-white text-sm font-semibold transition-all hover:translate-x-1 inline-block">Destek</a></li>
                     </ul>
                 </div>
-                <!-- Durum -->
+                <!-- Bağlantılar -->
                 <div class="space-y-4">
-                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-600">Sistem</p>
-                    <div class="space-y-3">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981] animate-pulse flex-shrink-0"></span>
-                            <span class="text-sm text-gray-400 font-semibold">Tüm sistemler çalışıyor</span>
-                        </div>
-                        <div class="footer-stat-card p-4 rounded-2xl">
-                            <p class="text-xs text-gray-600 font-bold uppercase tracking-wider mb-1">Toplam Proje</p>
-                            <p class="text-2xl font-black text-blue-400" id="footer-stat-projects">—</p>
-                        </div>
-                        <div class="footer-stat-card p-4 rounded-2xl">
-                            <p class="text-xs text-gray-600 font-bold uppercase tracking-wider mb-1">İndirme</p>
-                            <p class="text-2xl font-black text-purple-400">1K+</p>
-                        </div>
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-600">Hızlı Erişim</p>
+                    <div class="space-y-2">
+                        <a href="destek.html" class="flex items-center gap-2 text-sm text-gray-500 hover:text-blue-400 transition-colors font-semibold group">
+                            <svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            Destek Talebi Oluştur
+                        </a>
+                        <a href="blog.html" class="flex items-center gap-2 text-sm text-gray-500 hover:text-purple-400 transition-colors font-semibold group">
+                            <svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            Blog & Haberler
+                        </a>
+                        <a href="profil.html" class="flex items-center gap-2 text-sm text-gray-500 hover:text-green-400 transition-colors font-semibold group">
+                            <svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            Profil Yönetimi
+                        </a>
                     </div>
                 </div>
             </div>
@@ -695,7 +736,55 @@
     <!-- Site JS dosyaları (sıra önemli) -->
     <script src="assets/js/core.js"></script>
     <script src="assets/js/themes.js"></script>
-    <script src="assets/js/content.js"></script>
+    <script src="assets/js/content.js">
+
+        // Load sponsor Discord from Firebase
+        function loadSponsorDiscord() {
+            try {
+                var stored = localStorage.getItem('admin_sponsors');
+                var sponsors = stored ? JSON.parse(stored) : [];
+                var withDc = sponsors.filter(function(s) { return s.discord && s.discord.trim(); });
+                var card = document.getElementById('sponsor-discord-card');
+                if (!card) return;
+                if (withDc.length > 0) {
+                    var sp = withDc[0];
+                    card.classList.remove('hidden');
+                    var nameEl = document.getElementById('sp-discord-name');
+                    var linkEl = document.getElementById('sp-discord-link');
+                    if (nameEl) nameEl.textContent = sp.name;
+                    if (linkEl) { linkEl.href = sp.discord; linkEl.textContent = sp.name.toUpperCase() + ''E KATIL'; }
+                    // Check if grid needs to adjust
+                    var grid = card.parentElement;
+                    if (grid) grid.classList.toggle('lg:grid-cols-1', withDc.length === 0);
+                } else {
+                    card.classList.add('hidden');
+                }
+            } catch(e) { console.warn('Sponsor discord load:', e); }
+        }
+        loadSponsorDiscord();
+
+        // Update dropdown avatar/name from Firebase
+        if (typeof auth !== 'undefined') {
+            auth.onAuthStateChanged(function(user) {
+                if (!user) return;
+                var av = document.getElementById('ddAvatar');
+                var nm = document.getElementById('dropdownName');
+                // Try Firebase first
+                try {
+                    db.ref('users/' + user.uid).once('value').then(function(snap) {
+                        var data = snap.val() || {};
+                        var name = data.name || data.displayName || user.displayName || user.email.split('@')[0];
+                        if (nm) nm.textContent = name;
+                        if (av) av.textContent = name.charAt(0).toUpperCase();
+                    });
+                } catch(e) {
+                    var name = user.displayName || user.email.split('@')[0];
+                    if (nm) nm.textContent = name;
+                    if (av) av.textContent = name.charAt(0).toUpperCase();
+                }
+            });
+        }
+</script>
 
 </body>
 </html>
