@@ -36,6 +36,18 @@ auth.onAuthStateChanged(function (user) {
     var profileContainer  = document.getElementById('userProfileContainer');
 
     if (user) {
+        // Check if user is blocked
+        db.ref('users/' + user.uid + '/blocked').once('value').then(function(snap) {
+            if (snap.val() === true) {
+                // Redirect to banned page (don't redirect if already on yasak or admin)
+                var path = window.location.pathname;
+                if (path.indexOf('yasak') === -1 && path.indexOf('admin') === -1) {
+                    window.location.replace('yasak.html');
+                    return;
+                }
+            }
+        }).catch(function() {});
+
         if (authBtn)          authBtn.classList.add('hidden');
         if (profileContainer) profileContainer.classList.remove('hidden');
         var emailEl = document.getElementById('dropdownEmail');
@@ -43,7 +55,7 @@ auth.onAuthStateChanged(function (user) {
     } else {
         if (authBtn) {
             authBtn.classList.remove('hidden');
-            authBtn.textContent = 'Giris Yap';
+            authBtn.textContent = 'Giriş Yap';
             authBtn.onclick = handleAuth;
         }
         if (profileContainer) profileContainer.classList.add('hidden');
